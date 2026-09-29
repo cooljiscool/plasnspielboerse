@@ -1,7 +1,7 @@
 """Regelstrategie ohne KI und ohne Kosten. Zugleich Vergleichsbasis im Backtest und Rückfall, wenn die KI ausfällt.
 
-Aufbau nach Tests in 22 Planspiel-Jahren (jeweils 1.10. bis 25.1., 2004/05 bis 2025/26, 214 Titel aus DAX, MDAX, Europa und USA; siehe
-bot/lab.py), nicht nach Bauchgefühl:
+Aufbau nach Tests in 22 Planspiel-Jahren (jeweils 1.10. bis 25.1., 2004/05 bis 2025/26; zuerst 214 Titel aus DAX, MDAX, Europa und USA in Heimatwährung,
+zuletzt das amtliche Universum von 511 Titeln in Euro; siehe bot/lab.py), nicht nach Bauchgefühl:
 - Ranking nach mittelfristigem Momentum: Mittel aus 60-Tage-, 120-Tage- und 12-1-Monats-Rendite. Das beste Signal von rund 20 getesteten
   (Reversal, 52-Wochen-Hoch, niedrige Volatilität, Residual-Momentum und Mischungen waren gleich gut oder schlechter).
 - 6 gleich große Positionen, kaum umschichten: Gehalten wird, solange ein Titel in den oberen 70 % des Rankings bleibt (Gebühren).
@@ -9,8 +9,9 @@ bot/lab.py), nicht nach Bauchgefühl:
   Kostete im Test keinen Rang, senkte aber den schlechtesten Fall von -12,8 % auf -9,9 %.
 - Getestet und verworfen: Trendfilter beim Kauf, Marktumfeld-Filter (DAX unter SMA200, VIX, Ampel), Trailing-Stops, enge Stopps,
   Verkauf unter SMA50, Gewichtung nach Volatilität. Sie senkten den Rang. Über PARAMS bleiben sie schaltbar.
-Erwartung: im exakten Planspiel-Fenster schlug die Strategie 81 % zufälliger 6-Titel-Depots, bei verschobenen Fenstern und beliebigen
-Startpunkten nur etwa 63 %. Rechnet man mit dem zweiten Wert. Die Tests nutzen heutige Indexmitglieder (zu optimistisch).
+Erwartung: Am amtlichen Universum in Euro schlug die Strategie im exakten Planspiel-Fenster 67 % zufälliger 6-Titel-Depots, bei um Wochen verschobenen Fenstern
+im Mittel 61 % (im früheren, kleineren Testuniversum in Heimatwährung 81 % bzw. 63 %). Rechnet man mit dem zweiten Wert. Die Tests nutzen heutige
+Indexmitglieder (zu optimistisch).
 Nicht testbar (keine historischen Daten): Termine, Fundamentaldaten, Web-Recherche; sie gelten als Vorsichtsregeln."""
 from . import config, signals
 

@@ -1,5 +1,6 @@
 """Baut data/universe.json.
 
+  python -m bot.universe_tool official [x.pdf|x.txt|URL]   # EMPFOHLEN: die amtliche Wertpapierliste des Planspiels (ohne Angabe: die aktuelle von planspiel-boerse.de)
   python -m bot.universe_tool tested         # das getestete Universum (bot/universes.py: DAX, MDAX, Europa, USA) mit Namen und ISINs
   python -m bot.universe_tool build          # DAX/MDAX/TecDAX/SDAX aus Wikipedia + Symbolsuche (yfinance)
   python -m bot.universe_tool import x.csv   # eigene Liste: Spalten isin,name[,stars][,yf]
@@ -102,10 +103,40 @@ def build_tested(workers: int = 8, lookup=None, alive=None) -> list:
              "markt": group_of[s]} for s, i in zip(syms, info)]
 
 
+def build_official(source: str = None):
+    """Amtliche Liste (URL, PDF- oder Textdatei; ohne Angabe die aktuelle von planspiel-boerse.de) einlesen und zu Yahoo-Symbolen zuordnen: (Zeilen, Bericht)."""
+    from . import official
+
+    path = source
+    if not path or path.startswith("http"):
+        path = official.download_pdf(os.path.join(config.DATA_DIR, "cache", "wertpapierliste.pdf"), path)
+    return official.build(official.pdf_text(path))
+
+
+def report_text(rep: dict) -> str:
+    """Bericht der amtlichen Liste in Worten."""
+    lines = [f"Amtliche Liste: {rep['aus_liste']} Aktien, davon {rep['universum']} mit Kürzel und aktuellen Kursen im Universum.",
+             "Verteilung: " + ", ".join(f"{g} {n}" for g, n in rep["je_gruppe"].items()) + f"; {rep['mit_stern']} mit Nachhaltigkeits-Kennzeichen; Währungen: "
+             + ", ".join(f"{c} {n}" for c, n in rep["waehrungen"].items()) + " (alle Kurse werden in Euro umgerechnet)."]
+    if rep["ohne_kuerzel"]:
+        lines.append(f"Kein Börsenkürzel gefunden ({len(rep['ohne_kuerzel'])}, werden nicht gehandelt): " + "; ".join(rep["ohne_kuerzel"]))
+    if rep["ohne_kurse"]:
+        lines.append(f"Ohne aktuelle oder genug Kurse ({len(rep['ohne_kurse'])}, werden nicht gehandelt): " + "; ".join(rep["ohne_kurse"]))
+    return "\n".join(lines)
+
+
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] not in ("build", "import", "tested"):
+    if len(sys.argv) < 2 or sys.argv[1] not in ("build", "import", "tested", "official"):
         raise SystemExit(__doc__)
-    if sys.argv[1] == "tested":
+    if sys.argv[1] == "official":
+        rows, rep = build_official(sys.argv[2] if len(sys.argv) > 2 else None)
+        print(report_text(rep))
+        if len(rows) < 100:
+            raise SystemExit(f"Nur {len(rows)} Wertpapiere zugeordnet: Das sieht nach einem Fehler aus, data/universe.json bleibt unverändert.")
+        old = os.path.join(config.DATA_DIR, "universe.json")
+        if os.path.exists(old):
+            os.replace(old, os.path.join(config.DATA_DIR, "universe_vorher.json"))   # eine Sicherung der bisherigen Liste
+    elif sys.argv[1] == "tested":
         rows = build_tested()
     elif sys.argv[1] == "build":
         rows = build()

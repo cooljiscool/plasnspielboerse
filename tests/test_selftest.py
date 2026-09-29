@@ -58,3 +58,14 @@ def test_required_checks_still_fail_the_selftest():
 @pytest.fixture(autouse=True)
 def _quiet_pause(monkeypatch):
     monkeypatch.setattr(edgar, "PAUSE", 0)
+
+
+def test_official_universe_check_explains_how_to_get_the_official_list():
+    row = {"isin": "DE000A1EWWW0", "name": "adidas", "markt": "dax", "currency": "EUR", "stars": 0}
+    rows = {"a": row, "b": {**row, "isin": "US0378331005", "currency": "USD", "stars": 1}}
+    msg = selftest.official_check(rows)
+    assert "2 von 2 mit echter ISIN" in msg and "1 mit Nachhaltigkeits-Kennzeichen" in msg and "EUR, USD" in msg
+    with pytest.raises(RuntimeError, match="Wertpapierliste des Planspiels laden"):
+        selftest.official_check({"a": {"isin": "SAP.DE", "name": "SAP", "yf": "SAP.DE"}})       # altes Universum ohne markt und currency
+    with pytest.raises(RuntimeError):
+        selftest.official_check({})

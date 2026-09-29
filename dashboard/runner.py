@@ -115,14 +115,14 @@ class Runner:
         return self.proc is not None and self.proc.poll() is None
 
     def start(self, kind: str) -> bool:
-        """kind: 'run' (Handelslauf) oder 'selftest'. False, wenn schon ein Prozess läuft."""
+        """kind: 'run' (Handelslauf), 'selftest' oder 'universe' (amtliche Wertpapierliste laden). False, wenn schon ein Prozess läuft."""
         with self.lock:
             if self.running():
                 return False
             live = self.store.settings()["live"] and kind == "run"
-            module = "bot.run" if kind == "run" else "bot.selftest"
+            cmd = {"run": ["-m", "bot.run"], "selftest": ["-m", "bot.selftest"], "universe": ["-m", "bot.universe_tool", "official"]}[kind]
             out = open(self.output_path, "w")
-            self.proc = subprocess.Popen([self.python, "-m", module], cwd=self.base, env=self._env(live),
+            self.proc = subprocess.Popen([self.python, *cmd], cwd=self.base, env=self._env(live),
                                          stdout=out, stderr=subprocess.STDOUT)
             self.last = {"kind": kind, "live": live, "start": datetime.now(TZ).isoformat(timespec="seconds"),
                          "end": None, "code": None}

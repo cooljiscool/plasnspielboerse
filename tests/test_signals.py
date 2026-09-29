@@ -5,6 +5,7 @@ from datetime import date
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from bot import brain, config, fundamentals, research, risk, rules, signals
 
@@ -134,12 +135,31 @@ def test_fundamentals_cache_and_derived_fields(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "DATA_DIR", str(tmp_path))
     calls = []
     monkeypatch.setattr(fundamentals, "_fetch", lambda sym: calls.append(sym) or
-                        {"sector": "Tech", "pe": 20.0, "earnings": "2026-10-08", "target": 120.0})
+                        {"sector": "Tech", "pe": 20.0, "earnings": "2026-10-08", "target_upside": 0.2})
     uni = {"A": {"name": "A", "yf": "A.DE"}}
     out = fundamentals.get(uni, {"A": {"price": 100.0}}, ["A"], date(2026, 10, 5))
     assert out["A"]["days_to_earnings"] == 3 and out["A"]["target_upside"] == 0.2 and out["A"]["sector"] == "Tech"
     fundamentals.get(uni, {"A": {"price": 100.0}}, ["A"], date(2026, 10, 5))
     assert calls == ["A.DE"]   # zweiter Aufruf am selben Tag kommt aus dem Cache
+
+
+def test_target_upside_uses_yahoos_own_price_and_target_in_the_same_currency(monkeypatch):
+    """Kursziel (Dollar) und Kurs (Euro nach Umrechnung) dürfen nie gemischt werden: der Aufschlag kommt aus Yahoos Kurs derselben Währung."""
+    import types
+    info = {"currentPrice": 200.0, "targetMeanPrice": 250.0, "sector": "Tech", "trailingPE": 25.0}
+    fake = types.SimpleNamespace(Ticker=lambda sym: types.SimpleNamespace(info=info, calendar={}))
+    monkeypatch.setitem(__import__("sys").modules, "yfinance", fake)
+    out = fundamentals._fetch("AAPL")
+    assert out["target_upside"] == 0.25 and "target" not in out
+    info.pop("currentPrice")
+    assert "target_upside" not in fundamentals._fetch("AAPL")                                   # ohne Kurs kein Aufschlag statt falscher Rechnung
+
+
+def test_old_cache_entries_with_raw_target_are_dropped(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "DATA_DIR", str(tmp_path))
+    (tmp_path / "fundamentals.json").write_text('{"date": "2026-10-05", "items": {"A": {"sector": "Tech", "target": 120.0}}}')
+    out = fundamentals.get({"A": {"name": "A", "yf": "A"}}, {"A": {"price": 100.0}}, ["A"], date(2026, 10, 5))
+    assert "target_upside" not in out["A"] and "target" not in out["A"]
 
 
 # --- Web-Recherche ---
@@ -194,3 +214,40 @@ def test_risk_profile_deep_crash_raises_level_and_short_history_gives_nothing():
 def test_risk_profile_ignores_nan_gaps():
     s = series(n=300, seed=6).to_numpy().copy(); s[50] = np.nan; s[120] = np.nan
     assert signals.risk_profile(s)["vola_jahr"] > 0
+
+
+# --- Datenfehler in Kurshistorien ---
+def frames_from(cols: dict):
+    idx = pd.bdate_range("2026-01-01", periods=len(next(iter(cols.values()))))
+    close = pd.DataFrame(cols, index=idx)
+    return close, close * 1.01, close * 0.99, close.copy()
+
+
+def test_clean_prices_removes_spikes_that_reverse_and_non_positive_prices():
+    c, h, l, o = frames_from({
+        "SPIKE": [100, 101, 500, 102, 103, 104, 103, 102],                  # +395 %, am nächsten Tag zurück: Datenfehler
+        "DIP": [100, 101, 20, 100, 101, 102, 103, 102],                     # Kurs stürzt und erholt sich sofort: Datenfehler
+        "NEG": [100, 101, -60, 102, 103, 104, 103, 102],                    # negativer Kurs
+        "JUMP": [100, 101, 190, 191, 192, 190, 191, 192],                   # echter Sprung ohne Gegenbewegung (Übernahmeangebot)
+        "CALM": [100, 101, 100, 102, 101, 103, 102, 101]})
+    cc, hh, ll, oo = signals.clean_prices(c, h, l, o)
+    assert np.isnan(cc["SPIKE"].iloc[2]) and np.isnan(cc["DIP"].iloc[2]) and np.isnan(cc["NEG"].iloc[2])
+    assert np.isnan(hh["SPIKE"].iloc[2]) and np.isnan(ll["SPIKE"].iloc[2]) and np.isnan(oo["SPIKE"].iloc[2])       # High, Low, Open desselben Tages ebenfalls
+    assert cc["SPIKE"].iloc[3] == 102 and cc["SPIKE"].iloc[1] == 101                                              # Nachbartage bleiben
+    assert cc["JUMP"].iloc[2] == 190 and cc["CALM"].isna().sum() == 0                                             # echte Sprünge bleiben
+    assert c["SPIKE"].iloc[2] == 500                                                                               # Eingabe unverändert
+    assert cc.ffill().loc[:, "SPIKE"].iloc[2] == 101                                                               # anschließendes Auffüllen nimmt den letzten guten Kurs
+
+
+def test_clean_prices_handles_alternating_error_chains():
+    c, h, l, o = frames_from({"CHAIN": [100, 400, 80, 400, 80, 100, 101, 102]})   # +300 %, -80 %, +400 %, -80 %: wechselnde Fehler
+    cc = signals.clean_prices(c, h, l, o)[0]
+    ok = cc["CHAIN"].dropna()
+    assert ok.max() < 150 and ok.min() > 70                                        # keine Ausreißer mehr
+
+
+def test_max_jump_reports_the_largest_daily_move_in_the_recent_window():
+    c, *_ = frames_from({"A": [100, 101, 190, 191, 190, 191, 190, 191], "B": [100, 101, 100, 102, 101, 103, 102, 101]})
+    j = signals.max_jump(c, days=6)
+    assert j["A"] == pytest.approx(0.881, abs=0.01) and j["B"] < 0.05
+    assert signals.max_jump(c, days=3)["A"] < 0.05                                 # der Sprung liegt außerhalb des Fensters

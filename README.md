@@ -38,7 +38,7 @@ Tag ist der Verbrauch für dein Abo gering. Behandle das Token wie ein Passwort.
 ## Wie der Bot entscheidet
 
 Pro Lauf, in dieser Reihenfolge:
-1. **Kurse und Kennzahlen** (Yahoo, 14 Monate, alle Titel plus DAX, S&P 500, VIX): Momentum über 5/20/60/120 Tage, Trend (SMA50/200),
+1. **Kurse und Kennzahlen** (Yahoo, 14 Monate, alle Titel der amtlichen Wertpapierliste plus DAX, S&P 500, VIX; **in Euro umgerechnet**, offensichtliche Datenfehler entfernt): Momentum über 5/20/60/120 Tage, Trend (SMA50/200),
    RSI, Schwankung (ATR, Volatilität), Abstand zum 52-Wochen-Hoch, Stärke gegen den DAX (`bot/signals.py`). Das **Marktumfeld** (fünf
    Prüfungen aus DAX, S&P und VIX) wird angezeigt und an Claude gegeben, steuert die Regeln aber nicht (siehe Backtest).
 2. **Fundamentaldaten und Termine** für die engere Auswahl (Depot plus die 15 stärksten): Branche, KGV, Wachstum, Marge,
@@ -66,8 +66,8 @@ große Positionen, gehalten wird, solange ein Titel in den oberen 70 % des Ranki
 
 ### Wie die Strategie entstanden ist und was sie kann (`python -m bot.lab --years`, ca. 1 Minute)
 
-Getestet wurde in **22 echten Planspiel-Zeiträumen** (jedes Jahr 1.10. bis 25.1., 2004/05 bis 2025/26, darunter 2008, 2011, 2018, 2022) mit 214 Titeln aus
-DAX, MDAX, Europa und USA, 50.000 € und den Gebühren der Plattform. Rang = Anteil zufällig zusammengestellter 6-Titel-Depots, die die Strategie
+Getestet wurde in **22 echten Planspiel-Zeiträumen** (jedes Jahr 1.10. bis 25.1., 2004/05 bis 2025/26, darunter 2008, 2011, 2018, 2022), zuerst mit einem **Testuniversum von 214 Titeln** aus
+DAX, MDAX, Europa und USA in Heimatwährung (die Tabelle hier), danach am amtlichen Universum in Euro (nächster Abschnitt, **das ist die Zahl, die für das Spiel zählt**), mit 50.000 € und den Gebühren der Plattform. Rang = Anteil zufällig zusammengestellter 6-Titel-Depots, die die Strategie
 im selben Zeitraum schlägt (50 % = Durchschnitt). Rund 20 Signale und Filter wurden verglichen, nach früher/später Zeit und nach Markt getrennt.
 
 | Ergebnis | Regelstrategie (jetzt) | meine erste Version (alle Filter) |
@@ -81,16 +81,58 @@ im selben Zeitraum schlägt (50 % = Durchschnitt). Rund 20 Signale und Filter wu
 Krisenjahre gegenüber dem Durchschnitt aller Titel: 2008 −9,5 % gegen −30,9 %, 2007 −11,1 % gegen −15,5 %, 2018 −3,0 % gegen −7,3 %. Schwach: 2011, 2014 und 2022 (Trendwenden).
 
 **Was gilt und was nicht, ohne Schönfärberei:**
-- **Realistisch sind eher 63 % als 81 %.** Im exakten Planspiel-Fenster liegt der Rang bei 81 %, bei um Wochen verschobenen Fenstern und beliebigen
-  Startpunkten seit 2004 nur bei 55-70 %, im Mittel 63 % (Vorsprung gegenüber dem Durchschnitt aller Titel im Mittel +3,9 %).
+- **Realistisch sind deutlich weniger als 81 %.** Im exakten Planspiel-Fenster liegt der Rang im Testuniversum bei 81 %, bei um Wochen verschobenen Fenstern und beliebigen
+  Startpunkten seit 2004 nur bei 55-70 %, im Mittel 63 %. Am amtlichen Universum in Euro sind es 67 % bzw. im Mittel 61 % (nächster Abschnitt).
 - **Innerhalb einzelner Märkte ist der Vorsprung klein:** DAX 51 %, Europa 43 %, MDAX 61 %, USA 66 %. Den großen Wert erreicht erst das gemischte Universum
   (wie im Spiel), weil das Ranking dort zwischen Märkten und Branchen auswählen kann.
-- **Zu optimistische Grundlage:** heutige Indexmitglieder (Überlebens-Verzerrung), Kurse in Landeswährung, keine Fundamentaldaten, Termine, Web-Recherche
+- **Zu optimistische Grundlage:** heutige Indexmitglieder (Überlebens-Verzerrung), in dieser Tabelle Kurse in Landeswährung (Euro-Nachprüfung im nächsten Abschnitt), keine Fundamentaldaten, Termine, Web-Recherche
   und kein Urteil von Claude, weil es dafür keine historischen Daten gibt. Ob Claude besser entscheidet als die Regeln, zeigt nur der Trockenlauf.
 - **Was verworfen wurde,** weil es den Rang senkte: Trendfilter, Marktumfeld-Filter (DAX unter SMA200, VIX, Ampel), Trailing-Stops, enge Stopps, Verkauf unter
   SMA50, Gewichtung nach Volatilität, Reversal-Ideen (Rücksetzer, überverkauft), Nähe zum 52-Wochen-Hoch, niedrige Volatilität, Residual-Momentum,
   Mischungen mehrerer Signale und Teildepots. Wer Gewinner länger hält, spart Gebühren und liegt vorne.
 - Auf einen Fehler in meinen ersten Tests hin (Feiertagslücken in den Kursen verfälschten die Kennzahlen) wurden alle Ergebnisse neu berechnet.
+
+### Amtliche Wertpapierliste, Euro-Umrechnung und der Test darauf (Stand 29.9.2026)
+
+Beim Nachsehen nach Datenquellen habe ich die **amtliche Wertpapierliste des Planspiels 2026** gefunden (Stand 14.9.2026, [planspiel-boerse.de/wertpapierliste.html](https://www.planspiel-boerse.de/wertpapierliste.html)).
+Bis dahin nutzte der Bot ein selbst zusammengestelltes Universum. Jetzt liest `python -m bot.universe_tool official` die Liste (im Dashboard: Tab Steuerung, **Wertpapierliste des Planspiels laden**),
+ordnet jeder ISIN über die Yahoo-Suche das Börsenkürzel zu (Heimatbörse bevorzugt, US-Hauptnotiz bei Konzernen mit europäischer ISIN, Xetra statt Frankfurt) und speichert `data/universe.json`:
+
+- **520 Aktien** aus DAX 40, MDAX 50, SDAX 70, TecDAX 30, EuroStoxx 50, Auswahl aus dem Stoxx Europe 600, Dow Jones 30, Nasdaq 100, FTSE MIB, ATX, LuxX und Global Challenges 50 mit echten ISIN
+  (die Prüfziffer jeder ISIN wird kontrolliert). **517 davon sind im Universum**; drei entfallen, weil Yahoo keine aktuellen Kurse kennt (Klöckner & Co, EDF, Electronic Arts, vermutlich übernommen oder delistet).
+- **50 Titel mit Nachhaltigkeits-Kennzeichen** (Global Challenges Index) bekommen den Stern für die Nachhaltigkeitswertung. Fonds, ETFs, Anleihen und ETCs stehen ebenfalls in der Liste, Kryptowerte
+  und Zertifikate nur im Trainingsdepot; die Strategie handelt nur Aktien.
+- Die Order sucht künftig nach der **echten ISIN** (`{isin}` bzw. `{search}` in den Selektoren) statt nach einem Namen: Der Name „Siemens“ träfe drei Unternehmen, die ISIN genau eines.
+  Nimmt das Suchfeld der Plattform keine ISIN an, trägst du in `selectors.json` `{name}` ein.
+- Weil die Liste sich ändern kann („Änderungen vorbehalten“), lohnt es sich, sie vor dem Start und gelegentlich danach neu zu laden. Eine Sicherung der bisherigen Liste bleibt in `data/universe_vorher.json`.
+
+**Zwei Korrekturen, die das mit sich brachte:**
+1. **Kurse in Euro.** Das Spiel handelt und wertet alles in Euro (Stuttgart), Yahoo liefert Dollar, Kronen, Franken, Pence und Yen. Bisher wurden Dollarkurse wie Euro behandelt: Signale, Stückzahlen und Depotwert
+   waren bei US-Aktien um den Wechselkurs falsch. Jetzt rechnet `bot/fx.py` alles mit dem Tageskurs in Euro um (Yahoo-Reihen `EURUSD=X` usw.). Fehlt ein Wechselkurs, bleibt der Titel ohne Kurs und wird nicht gehandelt.
+   Kursziele werden gegen den Kurs in derselben Währung gerechnet.
+2. **Datenbereinigung.** Yahoos Historien enthalten vor allem bei Nebenwerten Fehler (in den Tests: Tagesbewegungen von +400 % und −80 % im Wechsel, negative Kurse). Solche Ausreißer täuschen Momentum vor.
+   `signals.clean_prices` entfernt nicht positive Kurse und Kursspitzen, die am nächsten Tag zurückgenommen werden (Labor und Live-Lauf rechnen gleich). Live werden außerdem Titel mit einer Tagesbewegung über 50 % in den letzten
+   300 Handelstagen (Übernahme, Spaltung, Datenfehler) nicht gehandelt. Auf die Testergebnisse hatte das kaum Einfluss (Rang 67 % vorher wie nachher).
+
+**Ergebnis am amtlichen Universum** (`python -m bot.lab --official`, gleiche 22 Planspiel-Jahre, Rang gegen zufällige 6-Titel-Depots aus demselben Universum, was der Auswahl der anderen Teams entspricht):
+
+| Universum und Kurse | Titel | Median | schlechtestes Jahr | Rang (früh / spät) |
+|---|---|---|---|---|
+| Testuniversum, Heimatwährung (bisherige Zahl) | 214 | +17,4 % | −9,9 % | **81 %** (76 / 86) |
+| Testuniversum, in Euro | 214 | +13,9 % | −10,5 % | 77 % (76 / 78) |
+| amtliches Universum, in Euro (gleiche Basisvariante wie darüber) | 511 | +10,6 % | −11,8 % | 68 % (70 / 66) |
+| **amtliches Universum, in Euro (Standard-Regeln wie live)** | 511 | +13,1 % | −15,2 % | **67 %** (70 / 64) |
+| amtliches Universum, nur dessen Titel aus dem alten Testuniversum | 178 | +16,3 % | −8,4 % | 76 % (73 / 79) |
+
+Einzelne Märkte im amtlichen Universum: DAX 50 %, MDAX 54 %, SDAX 65 %, Europa 58 %, USA 63 %. Bei um Wochen verschobenen Fenstern (±20, 40 und 60 Handelstage) liegt der Rang zwischen 53 und 69 %, **im Mittel bei 61 %**.
+
+**Was das heißt, ohne Schönfärberei:**
+- Die frühere Zahl von 81 % war zu hoch: Rund 4 Punkte gehen auf die Euro-Umrechnung (der schwankende Dollar), der Rest auf das breitere und gemischtere Universum, in dem Momentum weniger sicher trägt. **Rechne mit rund zwei Dritteln zufälliger
+  Depots, die die Strategie schlägt, in ungünstigen Zeiträumen mit weniger.** Das ist immer noch ein Vorsprung, aber kein sicherer Sieg: In Wendejahren (2011, 2022, 2025) landete sie ganz unten (Rang 5 %, 1,5 % und 0,5 %), in Jahren mit Trend ganz oben (2012, 2019, 2024: 98 bis 100 %).
+- Ich habe geprüft, ob sich das durch Einstellungen retten lässt: Haltegrenze (30 bis 100 %), andere Bewertungsformeln (60/120 Tage, 120 Tage, 12-1, Residual-Momentum) und der Verzicht auf einzelne Teile des Universums (ohne SDAX,
+  nur Großwerte, nur USA, ohne USA, nur Deutschland) ergaben alle 64 bis 70 %, bei wechselnden Vorzeichen zwischen früher und später Hälfte. **Kein Ergebnis ist verlässlich besser, deshalb bleibt alles wie es ist** (das gesamte amtliche Universum,
+  die bisherigen Regeln). Ausnahme nach unten: nur Europa ohne deutsche Indizes (52 %) und nur Nasdaq 100 (60 %) sind schwächer.
+- Grenzen wie zuvor: heutige Indexmitglieder (Überlebens-Verzerrung, die Zahlen sind eher zu gut), keine Fundamentaldaten, Termine und Web-Recherche im Test. Ob Claude die Ergebnisse verbessert, zeigt nur der Trockenlauf und später die Prognose-Bilanz.
 
 ### Was ich von anderen übernommen habe (Recherche)
 
@@ -117,7 +159,7 @@ Krisenjahre gegenüber dem Durchschnitt aller Titel: 2008 −9,5 % gegen −30,9
 ### Weitere Daten: Zinsen, Konjunktur, Bilanzen, Insider, Analysten, Stimmung, Risiko
 
 Der Bot betrachtet zusätzlich diese Daten. **Nur Claude sieht sie, die feste Berechnung nutzt sie nicht.** Grund: Was sich nicht an der Vergangenheit prüfen lässt, darf die Auswahl
-nicht steuern. Meine erste Version mit vielen ungeprüften Zusatzregeln lag bei 46 % Rang, die einfache bei 81 %. Als Grund für ein Veto (Kauf streichen) zählt nur ein gemessener Befund:
+nicht steuern. Meine erste Version mit vielen ungeprüften Zusatzregeln lag bei 46 % Rang, die einfache bei 81 % (beides im damaligen Test mit 214 Titeln; am amtlichen Universum in Euro sind es 67 %). Als Grund für ein Veto (Kauf streichen) zählt nur ein gemessener Befund:
 Nachrichtenlage −1 oder −2, Termin oder Gewinnmeldung in den nächsten Tagen, festes Übernahmeangebot, schweres Bilanz-Warnsignal oder deutlich gesenkte Analystenschätzungen.
 Claudes eigene Meinung (Szenarien, Risikoeinschätzung) zählt nie, sonst könnte er Vetos mit seiner eigenen Vermutung begründen.
 
@@ -245,6 +287,76 @@ Ein Detail, das gegen voreilige Schlüsse hilft: Im früheren Zeitraum (2023–2
 ist ein einzelner t-Wert über 2 zudem auch Zufall. Die Trainingsdaten von Kronos haben kein veröffentlichtes Enddatum. Ein fairer Test ist deshalb nur für Zeiträume nach Erscheinen des Papiers
 (August 2025) möglich, das sind nur rund 13 Monate. Solange ein Test keinen Nutzen zeigt, bleibt `kronos_weight` auf 0 und Kronos ausgeschaltet.
 
+### Werkzeug-Check: Datenquellen, Bausteine und Modelle aus dem Internet (Stand 29.9.2026)
+
+Eine Liste bekannter Werkzeuge für Daten, Backtests, Prognosen und Hilfsmittel habe ich einzeln daraufhin geprüft, ob sie dem Bot nützen. **Getestet** heißt: im selben Labor über die 22 Planspiel-Jahre, mit der Regel, dass nur eine
+belegte Verbesserung in die Strategie darf. Alles andere ist begründet, nicht getestet, und so gekennzeichnet.
+
+| Werkzeug | Was es kann | Für den Bot |
+|---|---|---|
+| **yfinance** | Kurse, Kennzahlen, Schätzungen von Yahoo (inoffiziell) | Hauptquelle, bleibt. Schwäche: inoffiziell und gelegentlich gedrosselt. Fehlen Kurse, handelt der Bot in diesem Lauf nicht. |
+| **FRED, EZB** | Zinsen, Konjunktur | schon eingebaut, Test: keine Verbesserung (siehe oben) |
+| **OpenBB** | bündelt viele Datenquellen (Yahoo, FRED, SEC, ...) | nicht eingebaut: Die freien Quellen sind einzeln angebunden, die übrigen brauchen Schlüssel. |
+| **Alpha Vantage, Finnhub, Twelve Data** | freie Tarife mit Schlüssel und Limits (25 Abrufe/Tag, 60/Minute, 800/Tag) | nicht eingebaut: Yahoo und SEC liefern dasselbe ohne Schlüssel. Finnhub wäre die erste Wahl als Zweitquelle, falls Yahoo länger ausfällt. |
+| **Destatis, EZB-Portal** | deutsche und europäische Statistik | kein belegter Nutzen für die Auswahl (Makro-Test), nicht eingebaut |
+| **Alpaca, CCXT, Freqtrade** | US-Broker mit Paper-Trading, Krypto-Börsen, Krypto-Bot | nicht nutzbar: Das Planspiel läuft bei der Sparkasse, Krypto gibt es dort nur im Trainingsdepot |
+| **Backtrader, vectorbt, Backtesting.py, Zipline, NautilusTrader, QuantConnect LEAN** | Backtest-Gerüste | Das eigene Labor bildet das Planspiel genau nach (Fenster 1.10. bis 25.1., Gebühr 0,3 % mind. 15 €, Ausführung zum Eröffnungskurs des Folgetags, Rang gegen Zufallsdepots). Ein Wechsel brächte nichts. |
+| **scikit-learn, XGBoost, LightGBM** | Vorhersagemodelle auf Tabellen | **getestet, schlechter als Momentum** (unten) |
+| **Chronos, TimesFM, Lag-Llama** (Zeitreihen-Modelle) | vortrainiert, sagen Kurse voraus | **Chronos getestet, keine verlässliche Vorhersagekraft** (unten); TimesFM laut Fachliteratur ebenso ohne Nutzen (unten, nicht selbst getestet); Lag-Llama nicht geprüft |
+| **PyPortfolioOpt, Riskfolio-Lib** | Portfolio-Optimierung (Minimum-Varianz, HRP, Risikoparität) | **getestet, kein Vorteil** (unten): gleiche Gewichte bleiben |
+| **PyTorch, TensorFlow** | Deep Learning | keine eigene Verwendung; Kronos und Chronos laufen darauf |
+| **Prophet, statsmodels, sktime, Darts** | klassische Zeitreihenprognose | nicht getestet: Trendfortschreibung ist im Kern Momentum, das der Bot schon hat |
+| **FinRL, Stable-Baselines3** | Reinforcement Learning | nicht getestet: braucht sehr viele Daten und überanpasst bei 22 Zeiträumen leicht |
+| **FinBERT** | Stimmung aus Finanztexten | nicht eingebaut: Claude liest die Nachrichten selbst und meldet die Stimmung; für einen Test fehlt eine Nachrichten-Historie |
+| **Qlib** (Microsoft) | Forschungsplattform mit Merkmalssammlung (Alpha158) | nicht nötig: Der LightGBM-Test nutzt ähnliche Merkmale |
+| **pandas-ta, TA-Lib** | technische Indikatoren | nicht nötig: Die Kennzahlen sind in `bot/signals.py` selbst berechnet und getestet |
+| **Optuna** | automatische Parameter-Suche | nicht eingebaut: 22 Zeiträume reichen für eine Feinabstimmung nicht, ohne dass sie überanpasst. Die Grundeinstellungen sind flach (Haltegrenze 30 bis 100 %: Rang 67 bis 69 %). |
+| **MLflow, SQLite, PostgreSQL, DuckDB** | Experimente und Daten verwalten | nicht nötig: JSON-Dateien genügen |
+
+**Gradient-Boosting (LightGBM) gegen Momentum** (`python scripts/experiment_ml.py`, 19 Planspiel-Jahre 2007 bis 2025, Testuniversum): Für jedes Jahr wurde ein Modell nur mit Daten trainiert, deren 80-Tage-Ergebnis vor dem Start feststand
+(28 Merkmale wie Renditen über 5 bis 250 Tage, Abstand zu Durchschnittslinien, Volatilität, Beta, jeweils als Rang unter allen Titeln), und dann in der Strategie eingesetzt.
+
+| Variante | Median | schlechtestes Jahr | Rang (früh / spät) |
+|---|---|---|---|
+| **Momentum (Standard)** | +15,7 % | **−9,9 %** | **78 %** (70 / 86) |
+| LightGBM, reiner Modell-Rang (28 Merkmale) | +12,6 % | −22,3 % | 56 % (54 / 58) |
+| LightGBM, reiner Modell-Rang (8 Merkmale) | +12,9 % | −16,1 % | 66 % (63 / 69) |
+| LightGBM, die 6 Besten aus den Top 15 des Momentum nach Modell | +15,0 % | −15,7 % | 73 % (67 / 78) |
+| LightGBM, Top 15 des Momentum halb nach Modell neu sortiert | +11,9 % | −15,7 % | 69 % (59 / 79) |
+| Ridge-Regression (linear), 28 Merkmale | +14,5 % | −18,7 % | 59 % (59 / 59) |
+
+Die sechs besten Titel nach Modell erzielten im Mittel eine ähnliche Überrendite wie die nach Momentum (etwa +6 bis +7 Prozentpunkte über 80 Tage, überlappende Zeiträume, deshalb sind die t-Werte zu hoch), aber mit deutlich größeren
+Ausschlägen nach unten: In der Strategie sinkt der Rang, und das schlechteste Jahr wird bis zu mehr als doppelt so schlecht. **Kein Beleg für einen Vorteil, dafür mehr Aufwand und Risiko: nicht eingebaut.** Auch Qlibs eigener Vergleich
+für LightGBM auf 158 Merkmalen (chinesischer CSI 500) zeigt nur einen Informationskoeffizienten von etwa 0,04: ein kleiner Vorsprung für viel Aufwand.
+
+**Chronos gegen Momentum** (`python scripts/experiment_foundation.py`, 60 zufällige Titel, Rangkorrelation der Prognose mit der tatsächlichen Rendite je Tag, Mittelwert und t-Wert):
+
+| Modell | 10 Tage: nach Aug. 2025 | 2023-2024 | 2018-2022 | 20 Tage: nach Aug. 2025 | 2023-2024 | 2018-2022 |
+|---|---|---|---|---|---|---|
+| Chronos-Bolt small | +0,033 | +0,041 | +0,004 | +0,004 | +0,055 | −0,003 |
+| Chronos-Bolt base | −0,013 | +0,008 | −0,011 | −0,014 | −0,007 | −0,031 |
+| Chronos-2 | −0,001 | +0,003 | −0,016 | +0,011 | +0,047 | −0,029 |
+| **Momentum** | **+0,070** | **+0,069** | **+0,024** | **+0,089** | **+0,106** | **+0,013** |
+
+Keines der Modelle ist in allen Zeiträumen positiv, das größere Bolt-Modell und Chronos-2 liegen um null, und Momentum ist durchweg besser. Die einzelnen Ausschläge (Bolt small 2023-2024, Chronos-2 bei 20 Tagen 2023-2024)
+können Zufall oder Kenntnis der Trainingsdaten sein; ein Effekt, der nicht in den ungesehenen Daten nach August 2025 auftaucht, gilt nicht. Zusammen mit Kronos (oben) sind damit fünf vortrainierte Zeitreihenmodelle geprüft
+(Kronos mini und small, Chronos-Bolt small und base, Chronos-2), ohne Nutzen. Die Fachliteratur sagt dasselbe: [Re(Visiting) Time Series Foundation Models in Finance](https://arxiv.org/abs/2511.18578) prüfte Chronos in fünf und
+TimesFM in zwei Größen an täglichen Renditen und fand für alle deutlich negative Bestimmtheitsmaße außerhalb der Stichprobe (das beste, Chronos small, −1,27 %; TimesFM schlechter), weit hinter einem einfachen CatBoost-Modell.
+[Pretrained Time-Series Foundation Models for Financial Return Forecasting](https://arxiv.org/abs/2606.27100) kommt zum Schluss, solche Modelle seien nützliche Vorannahmen, aber keine verlässliche Quelle für Überrendite.
+
+**Gewichtung der Positionen** (`python scripts/experiment_weights.py`, gleiche Anlage wie die Tabellen zum Volatilitäts-Test, gewichtet nur bei Käufen, zwischen dem 0,6- und 1,17-fachen eines gleichen Anteils):
+
+| Gewichtung | Median | schlechtestes Jahr | Rang (früh / spät) |
+|---|---|---|---|
+| **gleich (Standard)** | +17,4 % | −9,9 % | **81 %** (76 / 86) |
+| inverse Schwankung | +16,2 % | −9,9 % | 81 % (77 / 85) |
+| Minimum-Varianz (geschrumpfte Kovarianz) | +16,6 % | −9,4 % | 82 % (77 / 86) |
+| HRP (hierarchische Risikoparität) | +17,0 % | −9,3 % | 81 % (77 / 85) |
+| nach Momentum | +18,8 % | −9,6 % | 81 % (75 / 86) |
+
+Der Rang bleibt gleich, die Unterschiede liegen im Rauschen. Das deckt sich mit der Fachliteratur: In [DeMiguel, Garlappi und Uppal](https://academic.oup.com/rfs/article-abstract/22/5/1915/1592901) schlug keines von 14 Optimierungsverfahren
+die gleiche Gewichtung 1/N verlässlich. **Gleiche Gewichte bleiben**, sie sind einfach, robust und kosten nichts.
+
 ## Dashboard fürs Handy
 
 Das Dashboard ist eine kleine Web-App, die zusammen mit dem Bot auf einem Rechner läuft, der dauerhaft an ist
@@ -253,7 +365,7 @@ Das Dashboard ist eine kleine Web-App, die zusammen mit dem Bot auf einem Rechne
 | Tab | Inhalt |
 |---|---|
 | Übersicht | Depotwert, Verlauf, Cash, Positionen mit Gewinn/Verlust, Zähler für die Mindest-Käufe |
-| Steuerung | **Start** (Zeitplan an), **Stopp** (Notaus, bricht laufenden Lauf ab), Jetzt ausführen, Selbsttest, Umschalter Trockenlauf/Live, Ausgabe |
+| Steuerung | **Start** (Zeitplan an), **Stopp** (Notaus, bricht laufenden Lauf ab), Jetzt ausführen, Selbsttest, **Wertpapierliste des Planspiels laden**, Umschalter Trockenlauf/Live, Ausgabe |
 | Protokoll | Jede Entscheidung mit Begründung, geladene Zusatzdaten, ausgeführte und abgelehnte Orders (Verbrauch der KI-Aufrufe steht im JSON-Protokoll in `logs/`) |
 | Einstellungen | Planspiel-Login, Claude-Token, SEC-Kontakt, Quiver-Schlüssel (optional), Uhrzeiten, Modell, `selectors.json`, `universe.json` |
 
@@ -277,7 +389,7 @@ liest der nächste Lauf das Depot neu und arbeitet vom tatsächlichen Stand weit
 Der GitHub-Workflow ist jetzt nur noch manuell startbar, damit nicht zwei Zeitpläne gleichzeitig handeln.
 
 **Ehrlicher Stand:** Datenabruf, Kennzahlen, Regelstrategie, Risikoschicht, Backtest, Trockenlauf, Dashboard und Zeitplan sind
-getestet (`pytest`, 211 Tests) und liefen mit echten Yahoo-Daten. Die Aufrufe von `claude -p` (Recherche in Paketen, Entscheidung mit Schutzgeländer, Schema, Websuche) habe ich
+getestet (`pytest`, 282 Tests) und liefen mit echten Yahoo-Daten (auch mit dem amtlichen Universum: Import der Liste, Zuordnung der ISIN, Euro-Umrechnung, ein ganzer Trockenlauf). Die Aufrufe von `claude -p` (Recherche in Paketen, Entscheidung mit Schutzgeländer, Schema, Websuche) habe ich
 in der Entwicklungsumgebung mit dem echten Claude Code durchgespielt, ein vollständiger Trockenlauf mit echten Daten ist gelaufen. **Nicht getestet** sind die Live-Ausführung auf der
 Plattform (braucht deinen Team-Login und die aufgezeichneten Selektoren), die Anmeldung mit *deinem* Token aus `claude setup-token` (der Aufruf ist derselbe, das Token kenne ich nicht),
 die SEC-Abfrage mit deinen Kontaktdaten (mit einer Attrappe getestet, früher mit echten Daten geprüft), Quiver und Liquid. Dafür gibt es den Selbsttest (Schritt 5), der ohne Order prüft,
@@ -300,16 +412,13 @@ Handel über Stuttgart, Luxemburg, Wien · Stop-Orders bis 14 Tage.
   eine solche Kennung bei automatischen Abfragen. Ohne sie ruft der Bot die kostenlosen Insider-Meldungen nicht ab (Umgebungsvariable `SEC_USER_AGENT`). Die Adresse wird nur an die SEC gesendet.
 
 ### 2. Wertpapieruniversum
-Die Aktien der Plattform kommen aus Indizes (DAX, MDAX, SDAX, TecDAX, EuroStoxx 50, Dow Jones, Nasdaq 100, FTSE MIB,
-Global Challenges Index) plus Fonds/ETFs/Anleihen (offizielle Liste: planspiel-boerse.de, Bereich Wertpapiere).
-- **Schon dabei:** `data/universe.json` enthält das Universum, an dem die Strategie getestet wurde (rund 210 Titel aus DAX, MDAX, Europa und USA,
-  mit Namen und ISINs von Yahoo). Neu erzeugen: `python -m bot.universe_tool tested`. Die Strategie wählt zwischen Märkten aus,
-  ein größeres, gemischtes Universum passt also besser als ein einzelner Index.
-- **Abgleich mit der Plattform (wichtig):** Nicht jeder Titel ist im Spiel handelbar (Mindestkurs 1 €, nur die Werte der Indizes und Fonds). Tausche
-  `data/universe.json` gegen die Liste der Plattform aus, sobald du sie hast: eigene CSV mit den Spalten `isin,name,stars,yf`
-  (`yf` = Yahoo-Symbol für die Kurse), dann `python -m bot.universe_tool import meine_liste.csv`. Titel, die die Plattform nicht kennt, würden bei der
-  Order scheitern. **Sterne** (1 = Deka-Kriterien, 2 = GCX) übernimmst du aus der Plattform, sonst wird die Nachhaltigkeitswertung nicht bedient.
-- Ohne echte ISIN steht das Yahoo-Symbol im Feld `isin`. Dann suchst du in der Order-Klickfolge nach `{name}` statt `{isin}`.
+**Das erledigt der Bot für dich, mit der amtlichen Liste des Planspiels:** Im Dashboard Tab Steuerung **Wertpapierliste des Planspiels laden** drücken (dauert 1 bis 2 Minuten, die Ausgabe erscheint darunter), oder auf dem Rechner
+`python -m bot.universe_tool official` (im Docker-Container: `docker compose exec dashboard python -m bot.universe_tool official`). Er lädt die aktuelle Liste von planspiel-boerse.de, ordnet jeder ISIN das Yahoo-Symbol und die Währung zu und schreibt
+`data/universe.json` mit echten ISIN und Nachhaltigkeits-Kennzeichen (Einzelheiten und Testergebnis im Abschnitt „Amtliche Wertpapierliste, Euro-Umrechnung ...“). Die mitgelieferte Datei ist der Stand vom 29.9.2026 (517 Aktien);
+**lade die Liste vor dem Start und gelegentlich danach neu**, weil sie sich ändern kann. Die Ausgabe nennt jeden Titel, der entfällt (kein Börsenkürzel, keine aktuellen Kurse).
+- Ohne Internetzugang zur Liste: PDF oder Text der Liste selbst herunterladen und angeben: `python -m bot.universe_tool official liste.pdf` (braucht `pdftotext`, Paket poppler-utils; im Docker-Image enthalten).
+- Nur zum Vergleich: `python -m bot.universe_tool tested` erzeugt das frühere Testuniversum (214 Titel, ISIN teils Symbol als Platzhalter). Eigene Listen: `python -m bot.universe_tool import meine_liste.csv` (Spalten `isin,name,stars,yf`).
+- Die Order sucht nach der ISIN (`{isin}` bzw. `{search}`); nimmt das Suchfeld der Plattform keine ISIN an, stelle in `selectors.json` auf `{name}` um.
 
 ### 3. Selektoren aufzeichnen (der einzige manuelle Teil)
 1. `playwright codegen https://trading.planspiel-boerse.de/web/auth/login` öffnen.
@@ -324,7 +433,7 @@ Global Challenges Index) plus Fonds/ETFs/Anleihen (offizielle Liste: planspiel-b
 Siehe Abschnitt „Dashboard fürs Handy“ oben. Zugangsdaten trägst du dort im Tab Einstellungen ein.
 
 ### 5. Erst testen, dann live
-1. **Selbsttest** (Tab Steuerung): prüft Universum, Marktdaten, Claude und Plattform-Login samt Depot-Auslesen.
+1. **Selbsttest** (Tab Steuerung): prüft Universum (amtliche Liste?), Marktdaten samt Euro-Umrechnung, Claude, die optionalen Zusatzdaten und den Plattform-Login samt Depot-Auslesen.
    **Alles muss `[ OK ]` zeigen.** Ohne Dashboard: `python -m bot.selftest` mit gesetzten Umgebungsvariablen.
 2. **Trockenlauf:** Standardmodus, bucht nur lokal. Lass ihn ein paar Tage laufen und lies die Begründungen im Tab Protokoll.
 3. **Live schalten:** Tab Steuerung → Modus → „auf Live“, `LIVE` eingeben. Beobachte die ersten Läufe in der Plattform.
@@ -336,6 +445,7 @@ Alternative ohne Dashboard: GitHub Actions (`.github/workflows/trade.yml`, Secre
 ## Sicherheitsnetz
 - Kann das Depot nicht gelesen werden, wird nicht gehandelt. Nach jeder Order wird das Depot neu gelesen.
 - Positionsgrenze 19 %, Mindestorder 5.000 €, max. 6 Orders pro Lauf, max. 2 Titel je Branche, Mindesthaltedauer 3 Tage (Notfall-Stopps ausgenommen).
+- Kurse in Euro (fehlt ein Wechselkurs, wird der Titel nicht gehandelt); Kursdaten werden von offensichtlichen Fehlern bereinigt; Titel mit einer Tagesbewegung über 50 % in den letzten 300 Handelstagen werden nicht gehandelt.
 - Die KI-Aufrufe laufen ohne Werkzeuge (Entscheidung) bzw. nur mit Websuche (Recherche), in einem leeren Ordner, ohne API-Key und **ohne MCP-Server**, außer den einzeln freigegebenen Nur-Lese-Werkzeugen (siehe oben).
 - Zugangsdaten nur im Dashboard-Ordner `state/` bzw. als GitHub-Secrets, nie im Repo.
 
@@ -343,4 +453,4 @@ Alternative ohne Dashboard: GitHub Actions (`.github/workflows/trade.yml`, Secre
 `bot/run.py` Ablauf · `bot/signals.py` Kennzahlen · `bot/fundamentals.py` Fundamentaldaten · `bot/research.py` Web-Recherche ·
 `bot/brain.py` Claude-Entscheidung mit Schutzgeländer · `bot/journal.py` Gedächtnis · `bot/rules.py` Regelstrategie ·
 `bot/lab.py` Test in Planspiel-Jahren · `bot/backtest.py` Backtest-Grundlage · `bot/universes.py` Testtitel · `bot/macro.py` Zinsen und Konjunktur · `bot/statements.py` Bilanzen und Insider · `bot/social.py` Stimmung (StockTwits, Reddit) · `bot/edgar.py` Insider-Geschäfte (SEC) · `bot/analysts.py` Analystenschätzungen · `bot/quiver.py` Quiver (optional) · `bot/track.py` Prognose-Bilanz · `bot/mcp.py` Nur-Lese-MCP (optional) · `bot/kronos_signal.py` Kronos (optional) · `bot/risk.py` Risikoregeln · `bot/executor.py` Trockenlauf und Plattform ·
-`bot/universe_tool.py` Universum · `bot/selftest.py` Prüfung · `.github/workflows/trade.yml` Zeitplan (Werktags 3× UTC).
+`bot/universe_tool.py` Universum · `bot/official.py` amtliche Wertpapierliste · `bot/fx.py` Euro-Umrechnung · `scripts/` Experimente zum Nachrechnen (ML, Chronos, Gewichtung) und die MCP-Prüfung · `bot/selftest.py` Prüfung · `.github/workflows/trade.yml` Zeitplan (Werktags 3× UTC).

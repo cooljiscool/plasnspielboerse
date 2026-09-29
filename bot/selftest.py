@@ -3,6 +3,7 @@ Prüft Universum, Marktdaten, Claude-Zugang und (bei PSB_USER/PSB_PASSWORD) Logi
 Die optionalen Zusatzdaten (Analysten, Reddit, SEC, Quiver, MCP) werden mitgeprüft; ihr Ausfall zeigt [WARN] und lässt den Test nicht scheitern, der Bot handelt auch ohne sie."""
 import json
 import os
+import re
 import sys
 
 from . import config, market
@@ -16,6 +17,15 @@ def check(name, fn, optional=False):
     except Exception as e:  # noqa: BLE001
         print(f"[{'WARN' if optional else 'FAIL'}] {name}: {e}")
         return optional
+
+
+def official_check(universe: dict) -> str:
+    """Stammt data/universe.json aus der amtlichen Planspiel-Liste (Felder markt und currency, echte ISIN)? Sonst Hinweis, wie man sie lädt."""
+    rows = list(universe.values())
+    if not rows or not all(u.get("markt") and u.get("currency") for u in rows):
+        raise RuntimeError("Das Universum ist nicht die amtliche Planspiel-Liste (Tab Steuerung: „Wertpapierliste des Planspiels laden“ oder python -m bot.universe_tool official)")
+    isin = sum(bool(re.fullmatch(r"[A-Z]{2}[A-Z0-9]{9}[0-9]", u["isin"])) for u in rows)
+    return f"{isin} von {len(rows)} mit echter ISIN, {sum(bool(u.get('stars')) for u in rows)} mit Nachhaltigkeits-Kennzeichen, Kurse in Euro umgerechnet ({', '.join(sorted({u['currency'] for u in rows}))})"
 
 
 def extras(check):
@@ -78,6 +88,7 @@ def main():
         return f"{n}/{len(universe)} mit Kurs"
 
     ok = [check("Universum", uni), check("Marktdaten", kurse)]
+    check("Amtliche Wertpapierliste", lambda: official_check(universe), optional=True)
 
     def entscheider():
         from . import brain

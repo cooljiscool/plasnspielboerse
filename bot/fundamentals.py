@@ -14,9 +14,11 @@ def _fetch(sym: str) -> dict:
 
     t = yf.Ticker(sym)
     info = t.info or {}
+    price, target = info.get("currentPrice") or info.get("regularMarketPrice"), info.get("targetMeanPrice")
     out = {"sector": info.get("sector"), "pe": info.get("trailingPE"), "fwd_pe": info.get("forwardPE"),
            "rev_growth": info.get("revenueGrowth"), "margin": info.get("profitMargins"),
-           "analyst": info.get("recommendationMean"), "target": info.get("targetMeanPrice")}
+           "analyst": info.get("recommendationMean"),
+           "target_upside": target / price - 1 if target and price else None}   # Kursziel und Kurs in derselben (Yahoo-)Währung: unabhängig von der Euro-Umrechnung der Kurse
     try:
         for d in (t.calendar or {}).get("Earnings Date") or []:
             d = d if isinstance(d, date) else datetime.fromisoformat(str(d)).date()
@@ -52,9 +54,6 @@ def get(universe: dict, snap: dict, isins: list, today: date) -> dict:
         f = dict(items.get(isin, {}))
         if f.get("earnings"):
             f["days_to_earnings"] = (date.fromisoformat(f.pop("earnings")) - today).days
-        price = snap.get(isin, {}).get("price")
-        if f.get("target") and price:
-            f["target_upside"] = round(f.pop("target") / price - 1, 3)
-        f.pop("target", None)
+        f.pop("target", None)   # alter Zwischenspeicher: Kursziel in Heimatwährung, gegen den Euro-Kurs wertlos
         out[isin] = f
     return out

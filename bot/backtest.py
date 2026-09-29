@@ -76,7 +76,8 @@ class Data:
 
     def _build(self, close, high, low, opn, symbols):
         # Feiertage einzelner Börsen füllen (bis 5 Tage), sonst sind gleitende Durchschnitte und Schwankungen lückenhaft
-        close, high, low, opn = (x.sort_index().ffill(limit=5) for x in (close, high, low, opn))
+        close, high, low, opn = (x.sort_index() for x in (close, high, low, opn))
+        close, high, low, opn = (x.ffill(limit=5) for x in signals.clean_prices(close, high, low, opn))   # Datenfehler raus, Lücken füllen
         idx_syms = {k: s for k, s in market.INDEX.items() if s in close.columns}
         self.cols = [s for s in symbols if s in close.columns and close[s].notna().sum() > WARMUP + WINDOW]
         if not self.cols:

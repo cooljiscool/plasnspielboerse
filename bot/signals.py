@@ -23,6 +23,25 @@ def _atr_pct(high, low, close, n: int = 14) -> pd.DataFrame:
     return tr.ewm(alpha=1 / n, adjust=False, min_periods=n).mean() / close
 
 
+def clean_prices(close: pd.DataFrame, high: pd.DataFrame, low: pd.DataFrame, opn: pd.DataFrame, spike: float = 0.5, back: float = 0.3):
+    """Entfernt offensichtliche Datenfehler der Kurshistorie, bevor Kennzahlen berechnet werden (Yahoo hat vor allem bei Nebenwerten und in frühen Jahren Ausreißer):
+    nicht positive Kurse, und Tage mit einer Bewegung über `spike` (50 %), die am Folgetag um mehr als `back` (30 %) zurückgenommen wird (Kursspitze nach oben oder unten).
+    Solche Tage werden leer gesetzt; das anschließende Auffüllen übernimmt den letzten guten Kurs. Echte Sprünge ohne Gegenbewegung (Übernahmeangebot,
+    Gewinnmeldung) bleiben. Gibt (close, high, low, open) zurück, die Eingaben bleiben unverändert."""
+    valid = close.where(close > 0)
+    r = valid / valid.shift(1) - 1
+    nxt = r.shift(-1)
+    glitch = ((r.abs() > spike) & (((r > 0) & (nxt < -back)) | ((r < 0) & (nxt > back)))) | (close <= 0)
+    return tuple(x.where(~glitch) for x in (close, high, low, opn))
+
+
+def max_jump(close: pd.DataFrame, days: int = 300) -> pd.Series:
+    """Größte Tagesbewegung (Betrag) je Titel in den letzten `days` Handelstagen: Wer über 50 % springt, hat ein Ereignis (Übernahme, Wertpapierspaltung ohne Anpassung, Datenfehler)
+    und wird live nicht gehandelt."""
+    r = close.tail(days + 1)
+    return (r / r.shift(1) - 1).abs().max()
+
+
 class Frames:
     """Alle Kennzahlen als Arrays (Zeilen = Handelstage, Spalten = Titel)."""
 

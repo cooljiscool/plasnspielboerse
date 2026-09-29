@@ -92,8 +92,8 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
         elif action == "stop":  # Notaus: Zeitplan aus und laufenden Lauf beenden
             store.save_settings(enabled=False)
             runner.kill()
-        elif action in ("run", "selftest"):
-            if not runner.start("run" if action == "run" else "selftest"):
+        elif action in ("run", "selftest", "universe"):
+            if not runner.start(action):
                 return jsonify(error="es läuft bereits ein Vorgang"), 409
         else:
             return jsonify(error="unbekannte Aktion"), 400

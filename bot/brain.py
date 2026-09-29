@@ -19,12 +19,12 @@ zugleich in der Nachhaltigkeitswertung (nur Titel mit Stern: 1 = Deka-Kriterien,
 Regeln der Plattform: Gebühr {config.FEE_RATE:.1%} vom Kurswert, mind. {config.FEE_MIN_EUR:.0f} EUR pro Order. Max. 20 % des Depotwerts pro
 Wertpapier, kein Leerverkauf, keine Hebelprodukte, keine Kredite. Mindestens {config.MIN_BUY_ORDERS} ausgeführte Käufe bis {config.BUY_DEADLINE}.
 
-Was Tests in 22 Planspiel-Jahren gezeigt haben (jeweils 1.10. bis 25.1., 2004-2026, 214 Titel aus DAX, MDAX, Europa und USA, mit Gebühren):
+Was Tests in 22 Planspiel-Jahren gezeigt haben (jeweils 1.10. bis 25.1., 2004-2026, mit Gebühren; die Signale zuerst an 214 Titeln aus DAX, MDAX, Europa und USA, die Strategie zuletzt am amtlichen Universum von 511 Titeln in Euro):
 - Mittelfristiges Momentum (Mittel aus 60-Tage-, 120-Tage- und 12-1-Monats-Rendite) war das beste von rund 20 Signalen. Kurzfristige Rendite (5/20 Tage),
   Rücksetzer kaufen, Nähe zum 52-Wochen-Hoch und niedrige Volatilität waren gleich gut oder schlechter als der Zufall.
 - Umschichten kostet: jede Runde Kauf+Verkauf ca. 0,6 %. Gewinner halten war besser als sie früh abzugeben.
 - Trendfilter, Marktumfeld-Filter, Trailing-Stops, enge Stopps und Volatilitätsgewichtung senkten den Rang. Setze sie nicht ein.
-- Realistische Erwartung: die Momentum-Strategie schlägt etwa zwei Drittel zufälliger Depots (81 % im exakten Zeitfenster, sonst um 63 %).
+- Realistische Erwartung: die Momentum-Strategie schlägt am amtlichen Universum etwa zwei Drittel zufälliger Depots (67 % im exakten Zeitfenster, in verschobenen Fenstern im Mittel 61 %).
   In Krisenjahren (2007, 2008, 2018) verlor sie deutlich weniger als der Markt, in Wendejahren (2011, 2014, 2022) war sie schwach.
 - Studien mit Sprachmodellen als Händler (FINSABER, StockBench) fanden: Sie sind im Aufschwung zu vorsichtig, im Abschwung zu aggressiv, und mehr
   Komplexität bringt nur Rauschen. Darum ist deine Rolle bewusst eng: prüfen und begründet abweichen, nicht frei handeln.

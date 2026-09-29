@@ -93,6 +93,7 @@ svg{width:100%;height:auto;display:block}
     <button class="danger" id="btnStop">■ Stopp<br><small>Notaus</small></button>
     <button id="btnRun">Jetzt ausführen</button>
     <button id="btnTest">Selbsttest</button>
+    <button id="btnUni" style="grid-column:1/-1">Wertpapierliste des Planspiels laden<br><small>amtliche Liste von planspiel-boerse.de, dauert 1 bis 2 Minuten</small></button>
   </div>
   <h2>Modus</h2>
   <div class="card">
@@ -292,6 +293,7 @@ async function refreshAll() {
 $('btnStart').onclick = act(async () => { S = await api('/api/control', {action: 'start'}); renderStatus(); }, 'Zeitplan gestartet');
 $('btnStop').onclick = act(async () => { if (!confirm('Alles stoppen? Ein laufender Vorgang wird abgebrochen.')) return; S = await api('/api/control', {action: 'stop'}); renderStatus(); }, 'Gestoppt');
 $('btnRun').onclick = act(async () => { if (S.live && !confirm('LIVE: Jetzt echte Orders erzeugen?')) return; S = await api('/api/control', {action: 'run'}); renderStatus(); }, 'Lauf gestartet');
+$('btnUni').onclick = act(async () => { if (!confirm('Die Wertpapierliste (data/universe.json) wird durch die aktuelle amtliche Liste ersetzt. Fortfahren?')) return; S = await api('/api/control', {action: 'universe'}); renderStatus(); }, 'Wertpapierliste wird geladen');
 $('btnTest').onclick = act(async () => { S = await api('/api/control', {action: 'selftest'}); renderStatus(); }, 'Selbsttest gestartet');
 $('btnLive').onclick = act(async () => {
   if (S.live) { S = await api('/api/live', {live: false}); }

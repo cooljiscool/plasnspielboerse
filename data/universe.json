@@ -1,1714 +1,7367 @@
 [
   {
-    "isin": "SAP.DE",
-    "name": "SAP SE",
-    "yf": "SAP.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "SAP"
-  },
-  {
-    "isin": "SIE.DE",
-    "name": "Siemens Aktiengesellschaft",
-    "yf": "SIE.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Siemens"
-  },
-  {
-    "isin": "ALV.DE",
-    "name": "Allianz SE",
-    "yf": "ALV.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Allianz"
-  },
-  {
-    "isin": "DTE.DE",
-    "name": "Deutsche Telekom AG",
-    "yf": "DTE.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Deutsche Telekom"
-  },
-  {
-    "isin": "AIR.DE",
-    "name": "Airbus SE",
-    "yf": "AIR.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Airbus"
-  },
-  {
-    "isin": "MUV2.DE",
-    "name": "Münchener Rückversicherungs-Gesellschaft Aktiengesellschaft in München",
-    "yf": "MUV2.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Münchener Rückversicherungs-Gesellschaft"
-  },
-  {
-    "isin": "DBK.DE",
+    "isin": "DE0005140008",
     "name": "Deutsche Bank Aktiengesellschaft",
+    "search": "DE0005140008",
     "yf": "DBK.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "dax",
-    "search": "Deutsche Bank"
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Deutsche Bank Aktiengesellschaft"
   },
   {
-    "isin": "BAS.DE",
-    "name": "BASF SE",
-    "yf": "BAS.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "BASF"
-  },
-  {
-    "isin": "BMW.DE",
+    "isin": "DE0005190003",
     "name": "Bayerische Motoren Werke Aktiengesellschaft",
+    "search": "DE0005190003",
     "yf": "BMW.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "dax",
-    "search": "Bayerische Motoren"
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Bayerische Motoren Werke Aktiengesellschaft"
   },
   {
-    "isin": "MBG.DE",
-    "name": "Mercedes-Benz Group AG",
-    "yf": "MBG.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Mercedes-Benz"
-  },
-  {
-    "isin": "VOW3.DE",
-    "name": "Volkswagen AG",
-    "yf": "VOW3.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Volkswagen"
-  },
-  {
-    "isin": "ADS.DE",
-    "name": "adidas AG",
-    "yf": "ADS.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "adidas"
-  },
-  {
-    "isin": "IFX.DE",
-    "name": "Infineon Technologies AG",
-    "yf": "IFX.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Infineon Technologies"
-  },
-  {
-    "isin": "RWE.DE",
-    "name": "RWE Aktiengesellschaft",
-    "yf": "RWE.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "RWE"
-  },
-  {
-    "isin": "EOAN.DE",
-    "name": "E.ON SE",
-    "yf": "EOAN.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "E.ON"
-  },
-  {
-    "isin": "HEI.DE",
-    "name": "Heidelberg Materials AG",
-    "yf": "HEI.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Heidelberg Materials"
-  },
-  {
-    "isin": "BAYN.DE",
-    "name": "Bayer Aktiengesellschaft",
-    "yf": "BAYN.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Bayer"
-  },
-  {
-    "isin": "DHL.DE",
-    "name": "DHL AG",
-    "yf": "DHL.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "DHL"
-  },
-  {
-    "isin": "DB1.DE",
-    "name": "Deutsche Börse AG",
-    "yf": "DB1.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Deutsche Börse"
-  },
-  {
-    "isin": "FRE.DE",
-    "name": "Fresenius SE & Co. KGaA",
-    "yf": "FRE.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Fresenius"
-  },
-  {
-    "isin": "MRK.DE",
-    "name": "Merck KGaA",
-    "yf": "MRK.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Merck"
-  },
-  {
-    "isin": "SHL.DE",
-    "name": "Siemens Healthineers AG",
-    "yf": "SHL.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Siemens Healthineers"
-  },
-  {
-    "isin": "SY1.DE",
-    "name": "Symrise AG",
-    "yf": "SY1.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Symrise"
-  },
-  {
-    "isin": "ZAL.DE",
-    "name": "Zalando SE",
-    "yf": "ZAL.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Zalando"
-  },
-  {
-    "isin": "CBK.DE",
-    "name": "Commerzbank AG",
-    "yf": "CBK.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Commerzbank"
-  },
-  {
-    "isin": "HNR1.DE",
-    "name": "Hannover Rück SE",
-    "yf": "HNR1.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Hannover Rück"
-  },
-  {
-    "isin": "BEI.DE",
+    "isin": "DE0005200000",
     "name": "Beiersdorf Aktiengesellschaft",
+    "search": "DE0005200000",
     "yf": "BEI.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "dax",
-    "search": "Beiersdorf"
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Beiersdorf Aktiengesellschaft"
   },
   {
-    "isin": "CON.DE",
+    "isin": "DE0005439004",
     "name": "Continental Aktiengesellschaft",
+    "search": "DE0005439004",
     "yf": "CON.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "dax",
-    "search": "Continental"
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Continental Aktiengesellschaft"
   },
   {
-    "isin": "PAH3.DE",
-    "name": "Porsche Automobil Holding SE",
-    "yf": "PAH3.DE",
+    "isin": "DE0005552004",
+    "name": "Deutsche Post AG",
+    "search": "DE0005552004",
+    "yf": "DHL.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "dax",
-    "search": "Porsche Automobil"
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Deutsche Post AG"
   },
   {
-    "isin": "QIA.DE",
-    "name": "Qiagen N.V.",
-    "yf": "QIA.DE",
+    "isin": "DE0005557508",
+    "name": "Deutsche Telekom AG",
+    "search": "DE0005557508",
+    "yf": "DTE.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "dax",
-    "search": "Qiagen"
+    "indices": [
+      "dax",
+      "tecdax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Deutsche Telekom AG"
   },
   {
-    "isin": "RHM.DE",
-    "name": "Rheinmetall AG",
-    "yf": "RHM.DE",
+    "isin": "DE0005785604",
+    "name": "Fresenius SE & Co. KGaA",
+    "search": "DE0005785604",
+    "yf": "FRE.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "dax",
-    "search": "Rheinmetall"
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Fresenius SE & Co. KGaA"
   },
   {
-    "isin": "MTX.DE",
-    "name": "MTU Aero Engines AG",
-    "yf": "MTX.DE",
+    "isin": "DE0005785802",
+    "name": "Fresenius Medical Care AG",
+    "search": "DE0005785802",
+    "yf": "FME.DE",
+    "currency": "EUR",
+    "stars": 1,
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "gci"
+    ],
+    "land": null,
+    "liste": "Fresenius Medical Care AG"
+  },
+  {
+    "isin": "DE0005810055",
+    "name": "Deutsche Börse AG",
+    "search": "DE0005810055",
+    "yf": "DB1.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "dax",
-    "search": "MTU Aero"
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Deutsche Börse AG"
   },
   {
-    "isin": "ENR.DE",
-    "name": "Siemens Energy AG",
-    "yf": "ENR.DE",
+    "isin": "DE0006047004",
+    "name": "Heidelberg Materials AG",
+    "search": "DE0006047004",
+    "yf": "HEI.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "dax",
-    "search": "Siemens Energy"
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Heidelberg Materials AG"
   },
   {
-    "isin": "VNA.DE",
-    "name": "Vonovia SE",
-    "yf": "VNA.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Vonovia"
-  },
-  {
-    "isin": "P911.DE",
-    "name": "Dr. Ing. h.c. F. Porsche AG",
-    "yf": "P911.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Dr. Ing."
-  },
-  {
-    "isin": "DTG.DE",
-    "name": "Daimler Truck Holding AG",
-    "yf": "DTG.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Daimler Truck"
-  },
-  {
-    "isin": "BNR.DE",
-    "name": "Brenntag SE",
-    "yf": "BNR.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Brenntag"
-  },
-  {
-    "isin": "HEN3.DE",
+    "isin": "DE0006048432",
     "name": "Henkel AG & Co. KGaA",
+    "search": "DE0006048432",
     "yf": "HEN3.DE",
-    "stars": 0,
+    "currency": "EUR",
+    "stars": 1,
     "markt": "dax",
-    "search": "Henkel"
+    "indices": [
+      "dax",
+      "gci"
+    ],
+    "land": null,
+    "liste": "Henkel AG & Co. KGaA"
   },
   {
-    "isin": "SRT3.DE",
-    "name": "Sartorius Aktiengesellschaft",
-    "yf": "SRT3.DE",
-    "stars": 0,
-    "markt": "dax",
-    "search": "Sartorius"
-  },
-  {
-    "isin": "1U1.DE",
-    "name": "1&1 AG",
-    "yf": "1U1.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "1&1"
-  },
-  {
-    "isin": "AFX.DE",
-    "name": "Carl Zeiss Meditec AG",
-    "yf": "AFX.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Carl Zeiss"
-  },
-  {
-    "isin": "AG1.DE",
-    "name": "AUTO1 Group SE",
-    "yf": "AG1.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "AUTO1"
-  },
-  {
-    "isin": "BC8.DE",
-    "name": "Bechtle AG",
-    "yf": "BC8.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Bechtle"
-  },
-  {
-    "isin": "BOSS.DE",
-    "name": "Hugo Boss AG",
-    "yf": "BOSS.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Hugo Boss"
-  },
-  {
-    "isin": "EVD.DE",
-    "name": "CTS Eventim AG & Co. KGaA",
-    "yf": "EVD.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "CTS Eventim"
-  },
-  {
-    "isin": "EVK.DE",
-    "name": "Evonik Industries AG",
-    "yf": "EVK.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Evonik Industries"
-  },
-  {
-    "isin": "FIE.DE",
-    "name": "Fielmann Group AG",
-    "yf": "FIE.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Fielmann"
-  },
-  {
-    "isin": "FNTN.DE",
-    "name": "freenet AG",
-    "yf": "FNTN.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "freenet"
-  },
-  {
-    "isin": "FPE3.DE",
-    "name": "Fuchs SE",
-    "yf": "FPE3.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Fuchs"
-  },
-  {
-    "isin": "G1A.DE",
-    "name": "GEA Group Aktiengesellschaft",
-    "yf": "G1A.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "GEA"
-  },
-  {
-    "isin": "GBF.DE",
-    "name": "Bilfinger SE",
-    "yf": "GBF.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Bilfinger"
-  },
-  {
-    "isin": "GXI.DE",
-    "name": "Gerresheimer AG",
-    "yf": "GXI.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Gerresheimer"
-  },
-  {
-    "isin": "HAG.DE",
-    "name": "Hensoldt AG",
-    "yf": "HAG.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Hensoldt"
-  },
-  {
-    "isin": "HOT.DE",
+    "isin": "DE0006070006",
     "name": "HOCHTIEF Aktiengesellschaft",
+    "search": "DE0006070006",
     "yf": "HOT.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "HOCHTIEF"
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "HOCHTIEF Aktiengesellschaft"
   },
   {
-    "isin": "JUN3.DE",
-    "name": "Jungheinrich Aktiengesellschaft",
-    "yf": "JUN3.DE",
+    "isin": "DE0006231004",
+    "name": "Infineon Technologies AG",
+    "search": "DE0006231004",
+    "yf": "IFX.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "Jungheinrich"
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "tecdax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Infineon Technologies AG"
   },
   {
-    "isin": "KBX.DE",
-    "name": "Knorr-Bremse AG",
-    "yf": "KBX.DE",
+    "isin": "DE0006599905",
+    "name": "Merck KGaA",
+    "search": "DE0006599905",
+    "yf": "MRK.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "Knorr-Bremse"
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Merck KGaA"
   },
   {
-    "isin": "KGX.DE",
-    "name": "KION GROUP AG",
-    "yf": "KGX.DE",
+    "isin": "DE0006602006",
+    "name": "GEA Group Aktiengesellschaft",
+    "search": "DE0006602006",
+    "yf": "G1A.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "KION"
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "GEA Group Aktiengesellschaft"
   },
   {
-    "isin": "LEG.DE",
-    "name": "LEG Immobilien SE",
-    "yf": "LEG.DE",
+    "isin": "DE0007030009",
+    "name": "Rheinmetall AG",
+    "search": "DE0007030009",
+    "yf": "RHM.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "LEG Immobilien"
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Rheinmetall AG"
   },
   {
-    "isin": "LHA.DE",
-    "name": "Deutsche Lufthansa AG",
-    "yf": "LHA.DE",
+    "isin": "DE0007037129",
+    "name": "RWE Aktiengesellschaft",
+    "search": "DE0007037129",
+    "yf": "RWE.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "Deutsche Lufthansa"
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "RWE Aktiengesellschaft"
   },
   {
-    "isin": "LXS.DE",
-    "name": "LANXESS Aktiengesellschaft",
-    "yf": "LXS.DE",
+    "isin": "DE0007100000",
+    "name": "Mercedes-Benz Group AG",
+    "search": "DE0007100000",
+    "yf": "MBG.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "LANXESS"
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Mercedes-Benz Group AG"
   },
   {
-    "isin": "NDX1.DE",
-    "name": "Nordex SE",
-    "yf": "NDX1.DE",
+    "isin": "DE0007164600",
+    "name": "SAP SE",
+    "search": "DE0007164600",
+    "yf": "SAP.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "Nordex"
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "tecdax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "SAP SE"
   },
   {
-    "isin": "NEM.DE",
-    "name": "Nemetschek SE",
-    "yf": "NEM.DE",
+    "isin": "DE0007236101",
+    "name": "Siemens Aktiengesellschaft",
+    "search": "DE0007236101",
+    "yf": "SIE.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "Nemetschek"
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Siemens Aktiengesellschaft"
   },
   {
-    "isin": "PSM.DE",
-    "name": "ProSiebenSat.1 Media SE",
-    "yf": "PSM.DE",
+    "isin": "DE0007664039",
+    "name": "Volkswagen AG",
+    "search": "DE0007664039",
+    "yf": "VOW3.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "ProSiebenSat.1 Media"
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Volkswagen AG"
   },
   {
-    "isin": "PUM.DE",
-    "name": "PUMA SE",
-    "yf": "PUM.DE",
+    "isin": "DE0008402215",
+    "name": "Hannover Rück SE",
+    "search": "DE0008402215",
+    "yf": "HNR1.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "PUMA"
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Hannover Rück SE"
   },
   {
-    "isin": "RAA.DE",
-    "name": "RATIONAL Aktiengesellschaft",
-    "yf": "RAA.DE",
+    "isin": "DE0008404005",
+    "name": "Allianz SE",
+    "search": "DE0008404005",
+    "yf": "ALV.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "RATIONAL"
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Allianz SE"
   },
   {
-    "isin": "RHK.DE",
-    "name": "RHÖN-KLINIKUM Aktiengesellschaft",
-    "yf": "RHK.DE",
+    "isin": "DE0008430026",
+    "name": "Münchener Rückversicherungs-Gesellschaft Aktiengesellschaft in München",
+    "search": "DE0008430026",
+    "yf": "MUV2.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "RHÖN-KLINIKUM"
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Münchener Rückversicherungs-Gesellschaft Aktiengesellschaft in München"
   },
   {
-    "isin": "SDF.DE",
-    "name": "K+S Aktiengesellschaft",
-    "yf": "SDF.DE",
+    "isin": "DE000A0D9PT0",
+    "name": "MTU Aero Engines AG",
+    "search": "DE000A0D9PT0",
+    "yf": "MTX.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "K+S"
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "MTU Aero Engines AG"
   },
   {
-    "isin": "SGL.DE",
-    "name": "SGL Carbon SE",
-    "yf": "SGL.DE",
+    "isin": "DE000A12DM80",
+    "name": "Scout24 SE",
+    "search": "DE000A12DM80",
+    "yf": "G24.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "SGL Carbon"
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Scout24 SE"
   },
   {
-    "isin": "SIX2.DE",
-    "name": "Sixt SE",
-    "yf": "SIX2.DE",
+    "isin": "DE000A1DAHH0",
+    "name": "Brenntag SE",
+    "search": "DE000A1DAHH0",
+    "yf": "BNR.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "Sixt"
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Brenntag SE"
   },
   {
-    "isin": "SZG.DE",
-    "name": "Salzgitter AG",
-    "yf": "SZG.DE",
+    "isin": "DE000A1EWWW0",
+    "name": "adidas AG",
+    "search": "DE000A1EWWW0",
+    "yf": "ADS.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "Salzgitter"
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "adidas AG"
   },
   {
-    "isin": "TKA.DE",
-    "name": "thyssenkrupp AG",
-    "yf": "TKA.DE",
+    "isin": "DE000A1ML7J1",
+    "name": "Vonovia SE",
+    "search": "DE000A1ML7J1",
+    "yf": "VNA.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "thyssenkrupp"
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Vonovia SE"
   },
   {
-    "isin": "TLX.DE",
-    "name": "Talanx AG",
-    "yf": "TLX.DE",
+    "isin": "DE000BASF111",
+    "name": "BASF SE",
+    "search": "DE000BASF111",
+    "yf": "BAS.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "Talanx"
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "BASF SE"
   },
   {
-    "isin": "TUI1.DE",
-    "name": "TUI AG",
-    "yf": "TUI1.DE",
+    "isin": "DE000BAY0017",
+    "name": "Bayer Aktiengesellschaft",
+    "search": "DE000BAY0017",
+    "yf": "BAYN.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "mdax",
-    "search": "TUI"
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Bayer Aktiengesellschaft"
   },
   {
-    "isin": "UTDI.DE",
+    "isin": "DE000CBK1001",
+    "name": "Commerzbank AG",
+    "search": "DE000CBK1001",
+    "yf": "CBK.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Commerzbank AG"
+  },
+  {
+    "isin": "DE000DTR0CK8",
+    "name": "Daimler Truck Holding AG",
+    "search": "DE000DTR0CK8",
+    "yf": "DTG.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Daimler Truck Holding AG"
+  },
+  {
+    "isin": "DE000ENAG999",
+    "name": "E.ON SE",
+    "search": "DE000ENAG999",
+    "yf": "EOAN.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "E.ON SE"
+  },
+  {
+    "isin": "DE000ENER6Y0",
+    "name": "Siemens Energy AG",
+    "search": "DE000ENER6Y0",
+    "yf": "ENR.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Siemens Energy AG"
+  },
+  {
+    "isin": "DE000SHL1006",
+    "name": "Siemens Healthineers AG",
+    "search": "DE000SHL1006",
+    "yf": "SHL.DE",
+    "currency": "EUR",
+    "stars": 1,
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "tecdax",
+      "gci"
+    ],
+    "land": null,
+    "liste": "Siemens Healthineers AG"
+  },
+  {
+    "isin": "DE000SYM9999",
+    "name": "Symrise AG",
+    "search": "DE000SYM9999",
+    "yf": "SY1.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Symrise AG"
+  },
+  {
+    "isin": "DE000ZAL1111",
+    "name": "Zalando SE",
+    "search": "DE000ZAL1111",
+    "yf": "ZAL.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "dax",
+    "indices": [
+      "dax"
+    ],
+    "land": null,
+    "liste": "Zalando SE"
+  },
+  {
+    "isin": "NL0000235190",
+    "name": "Airbus SE",
+    "search": "NL0000235190",
+    "yf": "AIR.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Niederlande",
+    "liste": "Airbus SE"
+  },
+  {
+    "isin": "NL0012169213",
+    "name": "Qiagen NV",
+    "search": "NL0012169213",
+    "yf": "QIA.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "dax",
+    "indices": [
+      "dax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Qiagen NV"
+  },
+  {
+    "isin": "DE0005089031",
     "name": "United Internet AG",
+    "search": "DE0005089031",
     "yf": "UTDI.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "United Internet"
+    "indices": [
+      "mdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "United Internet AG"
   },
   {
-    "isin": "WCH.DE",
-    "name": "Wacker Chemie AG",
-    "yf": "WCH.DE",
+    "isin": "DE0005158703",
+    "name": "Bechtle AG",
+    "search": "DE0005158703",
+    "yf": "BC8.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "Wacker Chemie"
+    "indices": [
+      "mdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Bechtle AG"
   },
   {
-    "isin": "WAF.DE",
-    "name": "Siltronic AG",
-    "yf": "WAF.DE",
+    "isin": "DE0005470306",
+    "name": "CTS Eventim AG & Co. KGaA",
+    "search": "DE0005470306",
+    "yf": "EVD.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "Siltronic"
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "CTS Eventim AG & Co. KGaA"
   },
   {
-    "isin": "AT1.DE",
-    "name": "Aroundtown SA",
-    "yf": "AT1.DE",
+    "isin": "DE0005470405",
+    "name": "LANXESS Aktiengesellschaft",
+    "search": "DE0005470405",
+    "yf": "LXS.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "Aroundtown"
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "LANXESS Aktiengesellschaft"
   },
   {
-    "isin": "DUE.DE",
-    "name": "Dürr Aktiengesellschaft",
-    "yf": "DUE.DE",
+    "isin": "DE0005677108",
+    "name": "Elmos Semiconductor SE",
+    "search": "DE0005677108",
+    "yf": "ELG.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "Dürr"
+    "indices": [
+      "mdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Elmos Semiconductor SE"
   },
   {
-    "isin": "HFG.DE",
-    "name": "HelloFresh SE",
-    "yf": "HFG.DE",
+    "isin": "DE0005773303",
+    "name": "Fraport AG",
+    "search": "DE0005773303",
+    "yf": "FRA.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "HelloFresh"
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Fraport AG"
   },
   {
-    "isin": "NDA.DE",
+    "isin": "DE0005909006",
+    "name": "Bilfinger SE",
+    "search": "DE0005909006",
+    "yf": "GBF.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Bilfinger SE"
+  },
+  {
+    "isin": "DE0006202005",
+    "name": "Salzgitter AG",
+    "search": "DE0006202005",
+    "yf": "SZG.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Salzgitter AG"
+  },
+  {
+    "isin": "DE0006305006",
+    "name": "DEUTZ Aktiengesellschaft",
+    "search": "DE0006305006",
+    "yf": "DEZ.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "DEUTZ Aktiengesellschaft"
+  },
+  {
+    "isin": "DE0006335003",
+    "name": "Krones AG",
+    "search": "DE0006335003",
+    "yf": "KRN.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Krones AG"
+  },
+  {
+    "isin": "DE0006452907",
+    "name": "Nemetschek SE",
+    "search": "DE0006452907",
+    "yf": "NEM.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "mdax",
+    "indices": [
+      "mdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Nemetschek SE"
+  },
+  {
+    "isin": "DE0006766504",
     "name": "Aurubis AG",
+    "search": "DE0006766504",
     "yf": "NDA.DE",
-    "stars": 0,
+    "currency": "EUR",
+    "stars": 1,
     "markt": "mdax",
-    "search": "Aurubis"
+    "indices": [
+      "mdax",
+      "gci"
+    ],
+    "land": null,
+    "liste": "Aurubis AG"
   },
   {
-    "isin": "TEG.DE",
+    "isin": "DE0006969603",
+    "name": "PUMA SE",
+    "search": "DE0006969603",
+    "yf": "PUM.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "PUMA SE"
+  },
+  {
+    "isin": "DE0007010803",
+    "name": "RATIONAL Aktiengesellschaft",
+    "search": "DE0007010803",
+    "yf": "RAA.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "RATIONAL Aktiengesellschaft"
+  },
+  {
+    "isin": "DE0007165631",
+    "name": "Sartorius Aktiengesellschaft",
+    "search": "DE0007165631",
+    "yf": "SRT3.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "mdax",
+    "indices": [
+      "mdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Sartorius Aktiengesellschaft"
+  },
+  {
+    "isin": "DE0007500001",
+    "name": "thyssenkrupp AG",
+    "search": "DE0007500001",
+    "yf": "TKA.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "thyssenkrupp AG"
+  },
+  {
+    "isin": "DE0008232125",
+    "name": "Deutsche Lufthansa AG",
+    "search": "DE0008232125",
+    "yf": "LHA.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Deutsche Lufthansa AG"
+  },
+  {
+    "isin": "DE0008303504",
     "name": "TAG Immobilien AG",
+    "search": "DE0008303504",
     "yf": "TEG.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "TAG Immobilien"
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "TAG Immobilien AG"
   },
   {
-    "isin": "VBK.DE",
-    "name": "Verbio SE",
-    "yf": "VBK.DE",
+    "isin": "DE000A0D6554",
+    "name": "Nordex SE",
+    "search": "DE000A0D6554",
+    "yf": "NDX1.DE",
+    "currency": "EUR",
+    "stars": 1,
+    "markt": "mdax",
+    "indices": [
+      "mdax",
+      "tecdax",
+      "gci"
+    ],
+    "land": null,
+    "liste": "Nordex SE"
+  },
+  {
+    "isin": "DE000A0LD6E6",
+    "name": "Gerresheimer AG",
+    "search": "DE000A0LD6E6",
+    "yf": "GXI.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "Verbio"
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Gerresheimer AG"
   },
   {
-    "isin": "GYC.DE",
-    "name": "Grand City Properties S.A.",
-    "yf": "GYC.DE",
+    "isin": "DE000A0WMPJ6",
+    "name": "AIXTRON SE",
+    "search": "DE000A0WMPJ6",
+    "yf": "AIXA.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "Grand City"
+    "indices": [
+      "mdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "AIXTRON SE"
   },
   {
-    "isin": "DWS.DE",
-    "name": "DWS Group GmbH & Co. KGaA",
-    "yf": "DWS.DE",
+    "isin": "DE000A0Z2ZZ5",
+    "name": "freenet AG",
+    "search": "DE000A0Z2ZZ5",
+    "yf": "FNTN.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "DWS"
+    "indices": [
+      "mdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "freenet AG"
   },
   {
-    "isin": "COK.DE",
-    "name": "Cancom SE",
-    "yf": "COK.DE",
+    "isin": "DE000A13SX22",
+    "name": "HELLA GmbH & Co. KGaA",
+    "search": "DE000A13SX22",
+    "yf": "HLE.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "Cancom"
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "HELLA GmbH & Co. KGaA"
   },
   {
-    "isin": "EUZ.DE",
-    "name": "Eckert & Ziegler SE",
-    "yf": "EUZ.DE",
+    "isin": "DE000A1K0235",
+    "name": "SUSS MicroTec SE",
+    "search": "DE000A1K0235",
+    "yf": "SMHN.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "Eckert Ziegler"
+    "indices": [
+      "mdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "SUSS MicroTec SE"
   },
   {
-    "isin": "SAX.DE",
-    "name": "Ströer SE & Co. KGaA",
-    "yf": "SAX.DE",
+    "isin": "DE000A1PHFF7",
+    "name": "Hugo Boss AG",
+    "search": "DE000A1PHFF7",
+    "yf": "BOSS.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "Ströer"
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Hugo Boss AG"
   },
   {
-    "isin": "STM.DE",
-    "name": "Stabilus SE",
-    "yf": "STM.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Stabilus"
-  },
-  {
-    "isin": "WUW.DE",
-    "name": "Wüstenrot & Württembergische AG",
-    "yf": "WUW.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Wüstenrot Württembergische"
-  },
-  {
-    "isin": "ADV.DE",
-    "name": "Adtran Networks SE",
-    "yf": "ADV.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Adtran Networks"
-  },
-  {
-    "isin": "PBB.DE",
-    "name": "Deutsche Pfandbriefbank AG",
-    "yf": "PBB.DE",
-    "stars": 0,
-    "markt": "mdax",
-    "search": "Deutsche Pfandbriefbank"
-  },
-  {
-    "isin": "DHER.DE",
+    "isin": "DE000A2E4K43",
     "name": "Delivery Hero SE",
+    "search": "DE000A2E4K43",
     "yf": "DHER.DE",
+    "currency": "EUR",
     "stars": 0,
     "markt": "mdax",
-    "search": "Delivery Hero"
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Delivery Hero SE"
   },
   {
-    "isin": "AR0725224551",
-    "name": "ASML Holding N.V.",
-    "yf": "ASML.AS",
+    "isin": "DE000A2LQ884",
+    "name": "AUTO1 Group SE",
+    "search": "DE000A2LQ884",
+    "yf": "AG1.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "ASML"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "AUTO1 Group SE"
   },
   {
-    "isin": "HEIA.AS",
-    "name": "Heineken N.V.",
-    "yf": "HEIA.AS",
+    "isin": "DE000A2NB601",
+    "name": "Jenoptik AG",
+    "search": "DE000A2NB601",
+    "yf": "JEN.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Heineken"
+    "markt": "mdax",
+    "indices": [
+      "mdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Jenoptik AG"
   },
   {
-    "isin": "CA44989Q1054",
-    "name": "ING Groep N.V.",
-    "yf": "INGA.AS",
+    "isin": "DE000A3E00M1",
+    "name": "IONOS Group SE",
+    "search": "DE000A3E00M1",
+    "yf": "IOS.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "ING Groep"
+    "markt": "mdax",
+    "indices": [
+      "mdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "IONOS Group SE"
   },
   {
-    "isin": "PHIA.AS",
-    "name": "Koninklijke Philips N.V.",
-    "yf": "PHIA.AS",
+    "isin": "DE000A3E5D64",
+    "name": "Fuchs SE",
+    "search": "DE000A3E5D64",
+    "yf": "FPE3.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Koninklijke Philips"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Fuchs SE"
   },
   {
-    "isin": "AD.AS",
-    "name": "Koninklijke Ahold Delhaize N.V.",
-    "yf": "AD.AS",
+    "isin": "DE000AUM0V10",
+    "name": "Aumovio SE",
+    "search": "DE000AUM0V10",
+    "yf": "AMV0.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Koninklijke Ahold"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Aumovio SE"
   },
   {
-    "isin": "CA50244Q1037",
-    "name": "LVMH Moët Hennessy - Louis Vuitton, Société Européenne",
-    "yf": "MC.PA",
+    "isin": "DE000DWS1007",
+    "name": "DWS Group GmbH & Co. KGaA",
+    "search": "DE000DWS1007",
+    "yf": "DWS.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "LVMH Moët"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "DWS Group GmbH & Co. KGaA"
   },
   {
-    "isin": "FR0011149590",
-    "name": "L'Oréal S.A.",
-    "yf": "OR.PA",
+    "isin": "DE000EVNK013",
+    "name": "Evonik Industries AG",
+    "search": "DE000EVNK013",
+    "yf": "EVK.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "L'Oréal"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Evonik Industries AG"
   },
   {
-    "isin": "FR001400UEY9",
-    "name": "Sanofi",
-    "yf": "SAN.PA",
+    "isin": "DE000FTG1111",
+    "name": "flatexDEGIRO SE",
+    "search": "DE000FTG1111",
+    "yf": "FTK.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Sanofi"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "flatexDEGIRO SE"
   },
   {
-    "isin": "FR0000053951",
-    "name": "L'Air Liquide S.A.",
-    "yf": "AI.PA",
+    "isin": "DE000HAG0005",
+    "name": "Hensoldt AG",
+    "search": "DE000HAG0005",
+    "yf": "HAG.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "L'Air Liquide"
+    "markt": "mdax",
+    "indices": [
+      "mdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Hensoldt AG"
   },
   {
-    "isin": "CA80687R1029",
-    "name": "Schneider Electric S.E.",
-    "yf": "SU.PA",
+    "isin": "DE000KBX1006",
+    "name": "Knorr-Bremse AG",
+    "search": "DE000KBX1006",
+    "yf": "KBX.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Schneider Electric"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Knorr-Bremse AG"
   },
   {
-    "isin": "BNP.PA",
-    "name": "BNP Paribas SA",
-    "yf": "BNP.PA",
+    "isin": "DE000KGX8881",
+    "name": "KION GROUP AG",
+    "search": "DE000KGX8881",
+    "yf": "KGX.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "BNP Paribas"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "KION GROUP AG"
   },
   {
-    "isin": "NETTOTALOIL1",
-    "name": "TotalEnergies SE",
-    "yf": "TTE.PA",
+    "isin": "DE000KSAG888",
+    "name": "K+S Aktiengesellschaft",
+    "search": "DE000KSAG888",
+    "yf": "SDF.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "TotalEnergies"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "K+S Aktiengesellschaft"
   },
   {
-    "isin": "GRS118003003",
-    "name": "Safran SA",
-    "yf": "SAF.PA",
+    "isin": "DE000LEG1110",
+    "name": "LEG Immobilien SE",
+    "search": "DE000LEG1110",
+    "yf": "LEG.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Safran"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "LEG Immobilien SE"
   },
   {
-    "isin": "RMS.PA",
-    "name": "Hermès International Société en commandite par actions",
-    "yf": "RMS.PA",
+    "isin": "DE000PAG9113",
+    "name": "Dr. Ing. h.c. F. Porsche AG",
+    "search": "DE000PAG9113",
+    "yf": "P911.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Hermès International"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Dr. Ing. h.c. F. Porsche AG"
   },
   {
-    "isin": "JP3270790003",
-    "name": "Kering SA",
-    "yf": "KER.PA",
+    "isin": "DE000PAH0038",
+    "name": "Porsche Automobil Holding SE",
+    "search": "DE000PAH0038",
+    "yf": "PAH3.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Kering"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Porsche Automobil Holding SE"
   },
   {
-    "isin": "FR001400UEZ6",
-    "name": "AXA SA",
-    "yf": "CS.PA",
+    "isin": "DE000RENK730",
+    "name": "RENK Group AG",
+    "search": "DE000RENK730",
+    "yf": "R3NK.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "AXA"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "RENK Group AG"
   },
   {
-    "isin": "FI4000185533",
-    "name": "Vinci SA",
-    "yf": "DG.PA",
+    "isin": "DE000TKMS001",
+    "name": "TKMS AG & Co KGaA",
+    "search": "DE000TKMS001",
+    "yf": "TKMS.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Vinci"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "TKMS AG & Co KGaA"
   },
   {
-    "isin": "CA83360C1032",
-    "name": "Société Générale Société anonyme",
-    "yf": "GLE.PA",
+    "isin": "DE000TLX1005",
+    "name": "Talanx AG",
+    "search": "DE000TLX1005",
+    "yf": "TLX.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Société Générale"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Talanx AG"
   },
   {
-    "isin": "FR0000044323",
-    "name": "Crédit Agricole S.A.",
-    "yf": "ACA.PA",
+    "isin": "DE000TRAT0N7",
+    "name": "Traton SE",
+    "search": "DE000TRAT0N7",
+    "yf": "8TRA.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Crédit Agricole"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Traton SE"
   },
   {
-    "isin": "FR001400EFS2",
-    "name": "EssilorLuxottica Société anonyme",
-    "yf": "EL.PA",
+    "isin": "DE000TUAG505",
+    "name": "TUI AG",
+    "search": "DE000TUAG505",
+    "yf": "TUI1.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "EssilorLuxottica Société"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "TUI AG"
   },
   {
-    "isin": "CAP.PA",
-    "name": "Capgemini SE",
-    "yf": "CAP.PA",
+    "isin": "DE000WAF3001",
+    "name": "Siltronic AG",
+    "search": "DE000WAF3001",
+    "yf": "WAF.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Capgemini"
+    "markt": "mdax",
+    "indices": [
+      "mdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Siltronic AG"
   },
   {
-    "isin": "VIE.PA",
-    "name": "Veolia Environnement SA",
-    "yf": "VIE.PA",
+    "isin": "DE000WCH8881",
+    "name": "Wacker Chemie AG",
+    "search": "DE000WCH8881",
+    "yf": "WCH.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Veolia Environnement"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Wacker Chemie AG"
   },
   {
-    "isin": "ML.PA",
-    "name": "Compagnie Générale des Établissements Michelin Société en commandite par actions",
-    "yf": "ML.PA",
+    "isin": "LU0061462528",
+    "name": "RTL Group S.A.",
+    "search": "LU0061462528",
+    "yf": "RRTL.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Compagnie Générale"
+    "markt": "mdax",
+    "indices": [
+      "mdax",
+      "luxx"
+    ],
+    "land": null,
+    "liste": "RTL Group S.A."
   },
   {
-    "isin": "CL0002266774",
-    "name": "Enel SpA",
-    "yf": "ENEL.MI",
+    "isin": "LU1673108939",
+    "name": "Aroundtown SA",
+    "search": "LU1673108939",
+    "yf": "AT1.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Enel"
+    "markt": "mdax",
+    "indices": [
+      "mdax"
+    ],
+    "land": null,
+    "liste": "Aroundtown SA"
   },
   {
-    "isin": "NET000PLEN01",
-    "name": "Eni S.p.A.",
-    "yf": "ENI.MI",
+    "isin": "AT0000A0E9W5",
+    "name": "Kontron AG",
+    "search": "AT0000A0E9W5",
+    "yf": "KTN.VI",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Eni"
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Kontron AG"
   },
   {
-    "isin": "ISP.MI",
-    "name": "Intesa Sanpaolo S.p.A.",
-    "yf": "ISP.MI",
+    "isin": "AT100ASTA001",
+    "name": "ASTA Energy Solutions AG",
+    "search": "AT100ASTA001",
+    "yf": "1AST.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Intesa Sanpaolo"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "ASTA Energy Solutions AG"
   },
   {
-    "isin": "UCG.MI",
-    "name": "UniCredit S.p.A.",
-    "yf": "UCG.MI",
+    "isin": "BG1100003166",
+    "name": "Shelly Group SE",
+    "search": "BG1100003166",
+    "yf": "SLYG.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "UniCredit"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Shelly Group SE"
   },
   {
-    "isin": "CH0198963503",
-    "name": "Assicurazioni Generali S.p.A.",
-    "yf": "G.MI",
+    "isin": "DE0005102008",
+    "name": "Basler Aktiengesellschaft",
+    "search": "DE0005102008",
+    "yf": "BSL.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Assicurazioni Generali"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Basler Aktiengesellschaft"
   },
   {
-    "isin": "GB00BN0VZ646",
-    "name": "Ferrari N.V.",
-    "yf": "RACE.MI",
+    "isin": "DE0005103006",
+    "name": "Adtran Networks SE",
+    "search": "DE0005103006",
+    "yf": "ADV.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Ferrari"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Adtran Networks SE"
   },
   {
-    "isin": "IBE.MC",
-    "name": "Iberdrola, S.A.",
-    "yf": "IBE.MC",
+    "isin": "DE0005104400",
+    "name": "ATOSS Software SE",
+    "search": "DE0005104400",
+    "yf": "AOF.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Iberdrola"
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "ATOSS Software SE"
   },
   {
-    "isin": "ITX.MC",
-    "name": "Industria de Diseño Textil, S.A.",
-    "yf": "ITX.MC",
+    "isin": "DE0005313506",
+    "name": "Energiekontor AG",
+    "search": "DE0005313506",
+    "yf": "EKT.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Industria de"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Energiekontor AG"
   },
   {
-    "isin": "CA05973U1057",
-    "name": "Banco Santander, S.A.",
-    "yf": "SAN.MC",
+    "isin": "DE0005313704",
+    "name": "Carl Zeiss Meditec AG",
+    "search": "DE0005313704",
+    "yf": "AFX.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Banco Santander"
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Carl Zeiss Meditec AG"
   },
   {
-    "isin": "COB13PA00019",
-    "name": "Banco Bilbao Vizcaya Argentaria, S.A.",
-    "yf": "BBVA.MC",
+    "isin": "DE0005403901",
+    "name": "CEWE Stiftung & Co. KGaA",
+    "search": "DE0005403901",
+    "yf": "CWC.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Banco Bilbao"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "CEWE Stiftung & Co. KGaA"
   },
   {
-    "isin": "REP.MC",
-    "name": "Repsol, S.A.",
-    "yf": "REP.MC",
+    "isin": "DE0005419105",
+    "name": "Cancom SE",
+    "search": "DE0005419105",
+    "yf": "COK.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Repsol"
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Cancom SE"
   },
   {
-    "isin": "TEF.MC",
-    "name": "Telefónica, S.A.",
-    "yf": "TEF.MC",
+    "isin": "DE0005493365",
+    "name": "Hypoport SE",
+    "search": "DE0005493365",
+    "yf": "HYQ.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Telefónica"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Hypoport SE"
   },
   {
-    "isin": "NOKIA.HE",
-    "name": "Nokia Oyj",
-    "yf": "NOKIA.HE",
+    "isin": "DE0005545503",
+    "name": "1&1 AG",
+    "search": "DE0005545503",
+    "yf": "1U1.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Nokia"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "1&1 AG"
   },
   {
-    "isin": "KNEBV.HE",
-    "name": "KONE Oyj",
-    "yf": "KNEBV.HE",
+    "isin": "DE0005550636",
+    "name": "Drägerwerk AG & Co. KGaA",
+    "search": "DE0005550636",
+    "yf": "DRW3.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "KONE"
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Drägerwerk AG & Co. KGaA"
   },
   {
-    "isin": "ABI.BR",
-    "name": "Anheuser-Busch InBev SA/NV",
-    "yf": "ABI.BR",
+    "isin": "DE0005565204",
+    "name": "Dürr Aktiengesellschaft",
+    "search": "DE0005565204",
+    "yf": "DUE.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Anheuser-Busch InBev"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Dürr Aktiengesellschaft"
   },
   {
-    "isin": "DE000A3DXGY5",
-    "name": "UCB SA",
-    "yf": "UCB.BR",
+    "isin": "DE0005659700",
+    "name": "Eckert & Ziegler SE",
+    "search": "DE0005659700",
+    "yf": "EUZ.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "UCB"
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Eckert & Ziegler SE"
   },
   {
-    "isin": "SOLB.BR",
-    "name": "Solvay SA",
-    "yf": "SOLB.BR",
+    "isin": "DE0005664809",
+    "name": "Evotec SE",
+    "search": "DE0005664809",
+    "yf": "EVT.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Solvay"
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Evotec SE"
   },
   {
-    "isin": "EBS.VI",
-    "name": "Erste Group Bank AG",
-    "yf": "EBS.VI",
+    "isin": "DE0005759807",
+    "name": "init innovation in traffic systems SE",
+    "search": "DE0005759807",
+    "yf": "IXX.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Erste Bank"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "init innovation in traffic systems SE"
   },
   {
-    "isin": "VOE.VI",
-    "name": "Voestalpine AG",
-    "yf": "VOE.VI",
+    "isin": "DE0005772206",
+    "name": "Fielmann Group AG",
+    "search": "DE0005772206",
+    "yf": "FIE.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Voestalpine"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Fielmann Group AG"
   },
   {
-    "isin": "OMV.VI",
-    "name": "OMV Aktiengesellschaft",
-    "yf": "OMV.VI",
+    "isin": "DE0005800601",
+    "name": "GFT Technologies SE",
+    "search": "DE0005800601",
+    "yf": "GFT.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "OMV"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "GFT Technologies SE"
   },
   {
-    "isin": "BG1100069068",
-    "name": "ERG S.p.A.",
-    "yf": "ERG.MI",
+    "isin": "DE0005936124",
+    "name": "OHB SE",
+    "search": "DE0005936124",
+    "yf": "OHB.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "ERG"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "OHB SE"
   },
   {
-    "isin": "PRY.MI",
-    "name": "Prysmian S.p.A.",
-    "yf": "PRY.MI",
+    "isin": "DE0006083405",
+    "name": "HORNBACH Holding AG & Co. KGaA",
+    "search": "DE0006083405",
+    "yf": "HBH.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Prysmian"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "HORNBACH Holding AG & Co. KGaA"
   },
   {
-    "isin": "AR0940941575",
-    "name": "Stellantis N.V.",
-    "yf": "STLAM.MI",
+    "isin": "DE0006200108",
+    "name": "INDUS Holding AG",
+    "search": "DE0006200108",
+    "yf": "INH.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Stellantis"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "INDUS Holding AG"
   },
   {
-    "isin": "MB.MI",
-    "name": "Mediobanca Banca di Credito Finanziario S.p.A.",
-    "yf": "MB.MI",
+    "isin": "DE0006219934",
+    "name": "Jungheinrich AG",
+    "search": "DE0006219934",
+    "yf": "JUN3.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "europa",
-    "search": "Mediobanca Banca"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Jungheinrich AG"
   },
   {
-    "isin": "US0378331005",
-    "name": "Apple Inc.",
-    "yf": "AAPL",
+    "isin": "DE0006292030",
+    "name": "KSB SE & Co. KGaA",
+    "search": "DE0006292030",
+    "yf": "KSB3.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "us",
-    "search": "Apple"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "KSB SE & Co. KGaA"
   },
   {
-    "isin": "MSFT",
-    "name": "Microsoft Corporation",
-    "yf": "MSFT",
+    "isin": "DE0006450000",
+    "name": "LPKF Laser & Electronics SE",
+    "search": "DE0006450000",
+    "yf": "LPK.DE",
+    "currency": "EUR",
     "stars": 0,
-    "markt": "us",
-    "search": "Microsoft"
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "LPKF Laser & Electronics SE"
   },
   {
-    "isin": "AMZN",
+    "isin": "DE0006569908",
+    "name": "MLP SE",
+    "search": "DE0006569908",
+    "yf": "MLP.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "MLP SE"
+  },
+  {
+    "isin": "DE0007074007",
+    "name": "KWS SAAT SE & Co. KGaA",
+    "search": "DE0007074007",
+    "yf": "KWS.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "KWS SAAT SE & Co. KGaA"
+  },
+  {
+    "isin": "DE0007231326",
+    "name": "Sixt SE",
+    "search": "DE0007231326",
+    "yf": "SIX2.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Sixt SE"
+  },
+  {
+    "isin": "DE0007274136",
+    "name": "Sto SE & Co. KGaA",
+    "search": "DE0007274136",
+    "yf": "STO3.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Sto SE & Co. KGaA"
+  },
+  {
+    "isin": "DE0007276503",
+    "name": "secunet Security Networks Aktiengesellschaft",
+    "search": "DE0007276503",
+    "yf": "YSN.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "secunet Security Networks Aktiengesellschaft"
+  },
+  {
+    "isin": "DE0007297004",
+    "name": "Südzucker AG",
+    "search": "DE0007297004",
+    "yf": "SZU.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Südzucker AG"
+  },
+  {
+    "isin": "DE0007314007",
+    "name": "Heidelberger Druckmaschinen Aktiengesellschaft",
+    "search": "DE0007314007",
+    "yf": "HDD.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Heidelberger Druckmaschinen Aktiengesellschaft"
+  },
+  {
+    "isin": "DE0007461006",
+    "name": "PVA TePla AG",
+    "search": "DE0007461006",
+    "yf": "TPE.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "PVA TePla AG"
+  },
+  {
+    "isin": "DE0007480204",
+    "name": "Deutsche EuroShop AG",
+    "search": "DE0007480204",
+    "yf": "DEQ.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Deutsche EuroShop AG"
+  },
+  {
+    "isin": "DE0007493991",
+    "name": "Ströer SE & Co. KGaA",
+    "search": "DE0007493991",
+    "yf": "SAX.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Ströer SE & Co. KGaA"
+  },
+  {
+    "isin": "DE0007568578",
+    "name": "SFC Energy AG",
+    "search": "DE0007568578",
+    "yf": "F3C.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "SFC Energy AG"
+  },
+  {
+    "isin": "DE0007667107",
+    "name": "Vossloh AG",
+    "search": "DE0007667107",
+    "yf": "VOS.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Vossloh AG"
+  },
+  {
+    "isin": "DE0008019001",
+    "name": "Deutsche Pfandbriefbank AG",
+    "search": "DE0008019001",
+    "yf": "PBB.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Deutsche Pfandbriefbank AG"
+  },
+  {
+    "isin": "DE0008051004",
+    "name": "Wüstenrot & Württembergische AG",
+    "search": "DE0008051004",
+    "yf": "WUW.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Wüstenrot & Württembergische AG"
+  },
+  {
+    "isin": "DE000A0DJ6J9",
+    "name": "SMA Solar Technology AG",
+    "search": "DE000A0DJ6J9",
+    "yf": "S92.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "SMA Solar Technology AG"
+  },
+  {
+    "isin": "DE000A0ETBQ4",
+    "name": "MBB SE",
+    "search": "DE000A0ETBQ4",
+    "yf": "MBB.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "MBB SE"
+  },
+  {
+    "isin": "DE000A0JBPG2",
+    "name": "PNE AG",
+    "search": "DE000A0JBPG2",
+    "yf": "PNE3.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "PNE AG"
+  },
+  {
+    "isin": "DE000A0JL9W6",
+    "name": "Verbio SE",
+    "search": "DE000A0JL9W6",
+    "yf": "VBK.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Verbio SE"
+  },
+  {
+    "isin": "DE000A161408",
+    "name": "HelloFresh SE",
+    "search": "DE000A161408",
+    "yf": "HFG.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "HelloFresh SE"
+  },
+  {
+    "isin": "DE000A161N30",
+    "name": "Grenke AG",
+    "search": "DE000A161N30",
+    "yf": "GLJ.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Grenke AG"
+  },
+  {
+    "isin": "DE000A1H8BV3",
+    "name": "NORMA Group SE",
+    "search": "DE000A1H8BV3",
+    "yf": "NOEJ.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "NORMA Group SE"
+  },
+  {
+    "isin": "DE000A1MMCC8",
+    "name": "Medios AG",
+    "search": "DE000A1MMCC8",
+    "yf": "ILM1.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Medios AG"
+  },
+  {
+    "isin": "DE000A1TNUT7",
+    "name": "Deutsche Beteiligungs AG",
+    "search": "DE000A1TNUT7",
+    "yf": "DBAN.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Deutsche Beteiligungs AG"
+  },
+  {
+    "isin": "DE000A255F11",
+    "name": "Friedrich Vorwerk Group SE",
+    "search": "DE000A255F11",
+    "yf": "VH2.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Friedrich Vorwerk Group SE"
+  },
+  {
+    "isin": "DE000A2GS5D8",
+    "name": "Dermapharm Holding SE",
+    "search": "DE000A2GS5D8",
+    "yf": "DMP.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Dermapharm Holding SE"
+  },
+  {
+    "isin": "DE000A2NB650",
+    "name": "Mutares SE & Co. KGaA",
+    "search": "DE000A2NB650",
+    "yf": "MUX.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Mutares SE & Co. KGaA"
+  },
+  {
+    "isin": "DE000A2YN900",
+    "name": "TeamViewer SE",
+    "search": "DE000A2YN900",
+    "yf": "TMV.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "TeamViewer SE"
+  },
+  {
+    "isin": "DE000A2YNT30",
+    "name": "AlzChem Group AG",
+    "search": "DE000A2YNT30",
+    "yf": "ACT0.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "AlzChem Group AG"
+  },
+  {
+    "isin": "DE000A3ENQ51",
+    "name": "SCHOTT Pharma AG & Co. KGaA",
+    "search": "DE000A3ENQ51",
+    "yf": "1SXP.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "SCHOTT Pharma AG & Co. KGaA"
+  },
+  {
+    "isin": "DE000A3H2200",
+    "name": "Nagarro SE",
+    "search": "DE000A3H2200",
+    "yf": "NA9.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Nagarro SE"
+  },
+  {
+    "isin": "DE000A3H2333",
+    "name": "Hamborner REIT AG",
+    "search": "DE000A3H2333",
+    "yf": "HABA.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Hamborner REIT AG"
+  },
+  {
+    "isin": "DE000A40ESU3",
+    "name": "Einhell Germany AG",
+    "search": "DE000A40ESU3",
+    "yf": "EIN.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Einhell Germany AG"
+  },
+  {
+    "isin": "DE000BCK2223",
+    "name": "Ottobock SE & Co. KGaA",
+    "search": "DE000BCK2223",
+    "yf": "OBCK.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "tecdax"
+    ],
+    "land": null,
+    "liste": "Ottobock SE & Co. KGaA"
+  },
+  {
+    "isin": "DE000BEAU1Y4",
+    "name": "Douglas AG",
+    "search": "DE000BEAU1Y4",
+    "yf": "DOU.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Douglas AG"
+  },
+  {
+    "isin": "DE000JST4000",
+    "name": "JOST Werke SE",
+    "search": "DE000JST4000",
+    "yf": "JST.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "JOST Werke SE"
+  },
+  {
+    "isin": "DE000PAT1AG3",
+    "name": "PATRIZIA SE",
+    "search": "DE000PAT1AG3",
+    "yf": "PAT.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "PATRIZIA SE"
+  },
+  {
+    "isin": "DE000SAFH001",
+    "name": "SAF-Holland SE",
+    "search": "DE000SAFH001",
+    "yf": "SFQ.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "SAF-Holland SE"
+  },
+  {
+    "isin": "DE000SPG1003",
+    "name": "Springer Nature AG & Co. KGaA",
+    "search": "DE000SPG1003",
+    "yf": "SPG.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Springer Nature AG & Co. KGaA"
+  },
+  {
+    "isin": "DE000STAB1L8",
+    "name": "Stabilus SE",
+    "search": "DE000STAB1L8",
+    "yf": "STM.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Stabilus SE"
+  },
+  {
+    "isin": "DE000VNC0014",
+    "name": "Vincorion SE",
+    "search": "DE000VNC0014",
+    "yf": "V1NC.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Vincorion SE"
+  },
+  {
+    "isin": "DE000WACK012",
+    "name": "Wacker Neuson SE",
+    "search": "DE000WACK012",
+    "yf": "WAC.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Wacker Neuson SE"
+  },
+  {
+    "isin": "LU0775917882",
+    "name": "Grand City Properties S.A.",
+    "search": "LU0775917882",
+    "yf": "GYC.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Grand City Properties S.A."
+  },
+  {
+    "isin": "LU1704650164",
+    "name": "Befesa S.A.",
+    "search": "LU1704650164",
+    "yf": "BFSA.DE",
+    "currency": "EUR",
+    "stars": 1,
+    "markt": "sdax",
+    "indices": [
+      "sdax",
+      "gci"
+    ],
+    "land": null,
+    "liste": "Befesa S.A."
+  },
+  {
+    "isin": "LU2333563281",
+    "name": "tonies SE",
+    "search": "LU2333563281",
+    "yf": "TNIE.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "tonies SE"
+  },
+  {
+    "isin": "NL0012044747",
+    "name": "Redcare Pharmacy NV",
+    "search": "NL0012044747",
+    "yf": "RDC.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "sdax",
+    "indices": [
+      "sdax"
+    ],
+    "land": null,
+    "liste": "Redcare Pharmacy NV"
+  },
+  {
+    "isin": "US0231351067",
     "name": "Amazon.com, Inc.",
+    "search": "US0231351067",
     "yf": "AMZN",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Amazon.com"
+    "indices": [
+      "dow",
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Amazon.com, Inc."
   },
   {
-    "isin": "CA02080M1005",
-    "name": "Alphabet Inc.",
-    "yf": "GOOGL",
+    "isin": "US0258161092",
+    "name": "American Express Company",
+    "search": "US0258161092",
+    "yf": "AXP",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Alphabet"
-  },
-  {
-    "isin": "US30303M1027",
-    "name": "Meta Platforms, Inc.",
-    "yf": "META",
-    "stars": 0,
-    "markt": "us",
-    "search": "Meta Platforms"
-  },
-  {
-    "isin": "NVDA",
-    "name": "NVIDIA Corporation",
-    "yf": "NVDA",
-    "stars": 0,
-    "markt": "us",
-    "search": "NVIDIA"
-  },
-  {
-    "isin": "CA11134P1009",
-    "name": "Broadcom Inc.",
-    "yf": "AVGO",
-    "stars": 0,
-    "markt": "us",
-    "search": "Broadcom"
-  },
-  {
-    "isin": "COST",
-    "name": "Costco Wholesale Corporation",
-    "yf": "COST",
-    "stars": 0,
-    "markt": "us",
-    "search": "Costco Wholesale"
-  },
-  {
-    "isin": "US64110L1061",
-    "name": "Netflix, Inc.",
-    "yf": "NFLX",
-    "stars": 0,
-    "markt": "us",
-    "search": "Netflix"
-  },
-  {
-    "isin": "US00724F1012",
-    "name": "Adobe Inc.",
-    "yf": "ADBE",
-    "stars": 0,
-    "markt": "us",
-    "search": "Adobe"
-  },
-  {
-    "isin": "US7134481081",
-    "name": "PepsiCo, Inc.",
-    "yf": "PEP",
-    "stars": 0,
-    "markt": "us",
-    "search": "PepsiCo"
-  },
-  {
-    "isin": "CSCO",
-    "name": "Cisco Systems, Inc.",
-    "yf": "CSCO",
-    "stars": 0,
-    "markt": "us",
-    "search": "Cisco Systems"
-  },
-  {
-    "isin": "TMUS",
-    "name": "T-Mobile US, Inc.",
-    "yf": "TMUS",
-    "stars": 0,
-    "markt": "us",
-    "search": "T-Mobile US"
-  },
-  {
-    "isin": "US0079031078",
-    "name": "Advanced Micro Devices, Inc.",
-    "yf": "AMD",
-    "stars": 0,
-    "markt": "us",
-    "search": "Advanced Micro"
-  },
-  {
-    "isin": "INTC",
-    "name": "Intel Corporation",
-    "yf": "INTC",
-    "stars": 0,
-    "markt": "us",
-    "search": "Intel"
-  },
-  {
-    "isin": "QCOM",
-    "name": "QUALCOMM Incorporated",
-    "yf": "QCOM",
-    "stars": 0,
-    "markt": "us",
-    "search": "QUALCOMM Incorporated"
-  },
-  {
-    "isin": "TXN",
-    "name": "Texas Instruments Incorporated",
-    "yf": "TXN",
-    "stars": 0,
-    "markt": "us",
-    "search": "Texas Instruments"
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "American Express Company"
   },
   {
     "isin": "US0311621009",
     "name": "Amgen Inc.",
+    "search": "US0311621009",
     "yf": "AMGN",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Amgen"
+    "indices": [
+      "dow",
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Amgen Inc."
   },
   {
-    "isin": "HON",
-    "name": "Honeywell International Inc.",
-    "yf": "HON",
+    "isin": "US0378331005",
+    "name": "Apple Inc.",
+    "search": "US0378331005",
+    "yf": "AAPL",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Honeywell International"
+    "indices": [
+      "dow",
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Apple Inc."
   },
   {
-    "isin": "SBUX",
-    "name": "Starbucks Corporation",
-    "yf": "SBUX",
+    "isin": "US0970231058",
+    "name": "The Boeing Company",
+    "search": "US0970231058",
+    "yf": "BA",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Starbucks"
-  },
-  {
-    "isin": "US4612021034",
-    "name": "Intuit Inc.",
-    "yf": "INTU",
-    "stars": 0,
-    "markt": "us",
-    "search": "Intuit"
-  },
-  {
-    "isin": "US0382221051",
-    "name": "Applied Materials, Inc.",
-    "yf": "AMAT",
-    "stars": 0,
-    "markt": "us",
-    "search": "Applied Materials"
-  },
-  {
-    "isin": "US46120E6023",
-    "name": "Intuitive Surgical, Inc.",
-    "yf": "ISRG",
-    "stars": 0,
-    "markt": "us",
-    "search": "Intuitive Surgical"
-  },
-  {
-    "isin": "BKNG",
-    "name": "Booking Holdings Inc.",
-    "yf": "BKNG",
-    "stars": 0,
-    "markt": "us",
-    "search": "Booking"
-  },
-  {
-    "isin": "US3755581036",
-    "name": "Gilead Sciences, Inc.",
-    "yf": "GILD",
-    "stars": 0,
-    "markt": "us",
-    "search": "Gilead Sciences"
-  },
-  {
-    "isin": "MDLZ",
-    "name": "Mondelez International, Inc.",
-    "yf": "MDLZ",
-    "stars": 0,
-    "markt": "us",
-    "search": "Mondelez International"
-  },
-  {
-    "isin": "US0530151036",
-    "name": "Automatic Data Processing, Inc.",
-    "yf": "ADP",
-    "stars": 0,
-    "markt": "us",
-    "search": "Automatic Data"
-  },
-  {
-    "isin": "LRCX",
-    "name": "Lam Research Corporation",
-    "yf": "LRCX",
-    "stars": 0,
-    "markt": "us",
-    "search": "Lam Research"
-  },
-  {
-    "isin": "US75886F1075",
-    "name": "Regeneron Pharmaceuticals, Inc.",
-    "yf": "REGN",
-    "stars": 0,
-    "markt": "us",
-    "search": "Regeneron Pharmaceuticals"
-  },
-  {
-    "isin": "US5951121038",
-    "name": "Micron Technology, Inc.",
-    "yf": "MU",
-    "stars": 0,
-    "markt": "us",
-    "search": "Micron Technology"
-  },
-  {
-    "isin": "JPM",
-    "name": "JPMorgan Chase & Co.",
-    "yf": "JPM",
-    "stars": 0,
-    "markt": "us",
-    "search": "JPMorgan Chase"
-  },
-  {
-    "isin": "US92826C8394",
-    "name": "Visa Inc.",
-    "yf": "V",
-    "stars": 0,
-    "markt": "us",
-    "search": "Visa"
-  },
-  {
-    "isin": "UNH",
-    "name": "UnitedHealth Group Incorporated",
-    "yf": "UNH",
-    "stars": 0,
-    "markt": "us",
-    "search": "UnitedHealth Incorporated"
-  },
-  {
-    "isin": "US4781601046",
-    "name": "Johnson & Johnson",
-    "yf": "JNJ",
-    "stars": 0,
-    "markt": "us",
-    "search": "Johnson Johnson"
-  },
-  {
-    "isin": "CA93267J1012",
-    "name": "Walmart Inc.",
-    "yf": "WMT",
-    "stars": 0,
-    "markt": "us",
-    "search": "Walmart"
-  },
-  {
-    "isin": "PG",
-    "name": "The Procter & Gamble Company",
-    "yf": "PG",
-    "stars": 0,
-    "markt": "us",
-    "search": "Procter Gamble"
-  },
-  {
-    "isin": "HD",
-    "name": "The Home Depot, Inc.",
-    "yf": "HD",
-    "stars": 0,
-    "markt": "us",
-    "search": "Home Depot"
-  },
-  {
-    "isin": "ARDEUT110087",
-    "name": "Chevron Corporation",
-    "yf": "CVX",
-    "stars": 0,
-    "markt": "us",
-    "search": "Chevron"
-  },
-  {
-    "isin": "KO",
-    "name": "The Coca-Cola Company",
-    "yf": "KO",
-    "stars": 0,
-    "markt": "us",
-    "search": "Coca-Cola"
-  },
-  {
-    "isin": "MRK",
-    "name": "Merck & Co., Inc.",
-    "yf": "MRK",
-    "stars": 0,
-    "markt": "us",
-    "search": "Merck"
-  },
-  {
-    "isin": "MCD",
-    "name": "McDonald's Corporation",
-    "yf": "MCD",
-    "stars": 0,
-    "markt": "us",
-    "search": "McDonald's"
-  },
-  {
-    "isin": "DIS",
-    "name": "The Walt Disney Company",
-    "yf": "DIS",
-    "stars": 0,
-    "markt": "us",
-    "search": "Walt Disney"
-  },
-  {
-    "isin": "US4592001014",
-    "name": "International Business Machines Corporation",
-    "yf": "IBM",
-    "stars": 0,
-    "markt": "us",
-    "search": "International Business"
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "The Boeing Company"
   },
   {
     "isin": "US1491231015",
     "name": "Caterpillar Inc.",
+    "search": "US1491231015",
     "yf": "CAT",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Caterpillar"
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "Caterpillar Inc."
   },
   {
-    "isin": "GS",
+    "isin": "US1667641005",
+    "name": "Chevron Corporation",
+    "search": "US1667641005",
+    "yf": "CVX",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "Chevron Corporation"
+  },
+  {
+    "isin": "US17275R1023",
+    "name": "Cisco Systems, Inc.",
+    "search": "US17275R1023",
+    "yf": "CSCO",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow",
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Cisco Systems, Inc."
+  },
+  {
+    "isin": "US1912161007",
+    "name": "The Coca-Cola Company",
+    "search": "US1912161007",
+    "yf": "KO",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "The Coca-Cola Company"
+  },
+  {
+    "isin": "US2546871060",
+    "name": "The Walt Disney Company",
+    "search": "US2546871060",
+    "yf": "DIS",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "The Walt Disney Company"
+  },
+  {
+    "isin": "US38141G1040",
     "name": "The Goldman Sachs Group, Inc.",
+    "search": "US38141G1040",
     "yf": "GS",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Goldman Sachs"
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "The Goldman Sachs Group, Inc."
   },
   {
-    "isin": "AXP",
-    "name": "American Express Company",
-    "yf": "AXP",
+    "isin": "US4370761029",
+    "name": "The Home Depot, Inc.",
+    "search": "US4370761029",
+    "yf": "HD",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "American Express"
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "The Home Depot, Inc."
   },
   {
-    "isin": "MMM",
-    "name": "3M Company",
-    "yf": "MMM",
+    "isin": "US4385161066",
+    "name": "Honeywell International Inc.",
+    "search": "US4385161066",
+    "yf": "HON",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "3M"
+    "indices": [
+      "dow",
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Honeywell International Inc."
   },
   {
-    "isin": "BA",
-    "name": "The Boeing Company",
-    "yf": "BA",
+    "isin": "US4592001014",
+    "name": "International Business Machines Corporation",
+    "search": "US4592001014",
+    "yf": "IBM",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Boeing"
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "International Business Machines Corporation"
+  },
+  {
+    "isin": "US46625H1005",
+    "name": "JPMorgan Chase & Co.",
+    "search": "US46625H1005",
+    "yf": "JPM",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "JPMorgan Chase & Co."
+  },
+  {
+    "isin": "US4781601046",
+    "name": "Johnson & Johnson",
+    "search": "US4781601046",
+    "yf": "JNJ",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "Johnson & Johnson"
+  },
+  {
+    "isin": "US5801351017",
+    "name": "McDonald's Corporation",
+    "search": "US5801351017",
+    "yf": "MCD",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "McDonald's Corporation"
+  },
+  {
+    "isin": "US58933Y1055",
+    "name": "Merck & Co., Inc.",
+    "search": "US58933Y1055",
+    "yf": "MRK",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "Merck & Co., Inc."
+  },
+  {
+    "isin": "US5949181045",
+    "name": "Microsoft Corporation",
+    "search": "US5949181045",
+    "yf": "MSFT",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow",
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Microsoft Corporation"
   },
   {
     "isin": "US6541061031",
     "name": "NIKE, Inc.",
+    "search": "US6541061031",
     "yf": "NKE",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "NIKE"
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "NIKE, Inc."
   },
   {
-    "isin": "CRM",
+    "isin": "US67066G1040",
+    "name": "NVIDIA Corporation",
+    "search": "US67066G1040",
+    "yf": "NVDA",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow",
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "NVIDIA Corporation"
+  },
+  {
+    "isin": "US7427181091",
+    "name": "The Procter & Gamble Company",
+    "search": "US7427181091",
+    "yf": "PG",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "The Procter & Gamble Company"
+  },
+  {
+    "isin": "US79466L3024",
     "name": "Salesforce, Inc.",
+    "search": "US79466L3024",
     "yf": "CRM",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Salesforce"
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "Salesforce, Inc."
   },
   {
-    "isin": "TRV",
+    "isin": "US8243481061",
+    "name": "The Sherwin-Williams Company",
+    "search": "US8243481061",
+    "yf": "SHW",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "The Sherwin-Williams Company"
+  },
+  {
+    "isin": "US88579Y1010",
+    "name": "3M Company",
+    "search": "US88579Y1010",
+    "yf": "MMM",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "3M Company"
+  },
+  {
+    "isin": "US89417E1091",
     "name": "The Travelers Companies, Inc.",
+    "search": "US89417E1091",
     "yf": "TRV",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Travelers Companies"
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "The Travelers Companies, Inc."
   },
   {
-    "isin": "ARDEUT112927",
+    "isin": "US91324P1021",
+    "name": "UnitedHealth Group Incorporated",
+    "search": "US91324P1021",
+    "yf": "UNH",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "UnitedHealth Group Incorporated"
+  },
+  {
+    "isin": "US92343V1044",
     "name": "Verizon Communications Inc.",
+    "search": "US92343V1044",
     "yf": "VZ",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Verizon Communications"
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "Verizon Communications Inc."
   },
   {
-    "isin": "XOM",
-    "name": "ExxonMobil Holdings Corporation",
-    "yf": "XOM",
+    "isin": "US92826C8394",
+    "name": "Visa Inc.",
+    "search": "US92826C8394",
+    "yf": "V",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "ExxonMobil"
+    "indices": [
+      "dow"
+    ],
+    "land": null,
+    "liste": "Visa Inc."
   },
   {
-    "isin": "US7170811035",
-    "name": "Pfizer Inc.",
-    "yf": "PFE",
+    "isin": "US9311421039",
+    "name": "Walmart Inc.",
+    "search": "US9311421039",
+    "yf": "WMT",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Pfizer"
+    "indices": [
+      "dow",
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Walmart Inc."
   },
   {
-    "isin": "ORCL",
-    "name": "Oracle Corporation",
-    "yf": "ORCL",
+    "isin": "CA82509L1076",
+    "name": "Shopify Inc.",
+    "search": "CA82509L1076",
+    "yf": "SHOP",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Oracle"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Shopify Inc."
   },
   {
-    "isin": "US0028241000",
-    "name": "Abbott Laboratories",
-    "yf": "ABT",
+    "isin": "CA8849038085",
+    "name": "Thomson Reuters Corporation",
+    "search": "CA8849038085",
+    "yf": "TRI.TO",
+    "currency": "CAD",
     "stars": 0,
     "markt": "us",
-    "search": "Abbott Laboratories"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Thomson Reuters Corporation"
   },
   {
-    "isin": "US8835561023",
-    "name": "Thermo Fisher Scientific Inc.",
-    "yf": "TMO",
+    "isin": "GB00BDCPN049",
+    "name": "Coca-Cola Europacific Partners PLC",
+    "search": "GB00BDCPN049",
+    "yf": "CCEP.AS",
+    "currency": "EUR",
     "stars": 0,
     "markt": "us",
-    "search": "Thermo Fisher"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Coca-Cola Europacific Partners PLC"
   },
   {
-    "isin": "LLY",
-    "name": "Eli Lilly and Company",
-    "yf": "LLY",
+    "isin": "IE000S9YS762",
+    "name": "Linde plc",
+    "search": "IE000S9YS762",
+    "yf": "LIN",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Eli Lilly"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Linde plc"
   },
   {
-    "isin": "MA",
-    "name": "Mastercard Incorporated",
-    "yf": "MA",
+    "isin": "IE00BKVD2N49",
+    "name": "Seagate Technology Holdings plc",
+    "search": "IE00BKVD2N49",
+    "yf": "STX",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Mastercard Incorporated"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Seagate Technology Holdings plc"
   },
   {
-    "isin": "BAC",
-    "name": "Bank of America Corporation",
-    "yf": "BAC",
+    "isin": "NL0009538784",
+    "name": "NXP Semiconductors N.V.",
+    "search": "NL0009538784",
+    "yf": "NXPI",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Bank of"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "NXP Semiconductors N.V."
   },
   {
-    "isin": "WFC",
-    "name": "Wells Fargo & Company",
-    "yf": "WFC",
+    "isin": "NL0009805522",
+    "name": "Nebius Group N.V.",
+    "search": "NL0009805522",
+    "yf": "NBIS",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Wells Fargo"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Nebius Group N.V."
   },
   {
-    "isin": "US1729674242",
-    "name": "Citigroup Inc.",
-    "yf": "C",
+    "isin": "NL0015001FS8",
+    "name": "Ferrovial N.V.",
+    "search": "NL0015001FS8",
+    "yf": "FER",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Citigroup"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Ferrovial N.V."
   },
   {
-    "isin": "US00206R1023",
-    "name": "AT&T Inc.",
-    "yf": "T",
+    "isin": "US00724F1012",
+    "name": "Adobe Inc.",
+    "search": "US00724F1012",
+    "yf": "ADBE",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "AT&T"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Adobe Inc."
   },
   {
-    "isin": "CMCSA",
+    "isin": "US0079031078",
+    "name": "Advanced Micro Devices, Inc.",
+    "search": "US0079031078",
+    "yf": "AMD",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Advanced Micro Devices, Inc."
+  },
+  {
+    "isin": "US0090661010",
+    "name": "Airbnb, Inc.",
+    "search": "US0090661010",
+    "yf": "ABNB",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Airbnb, Inc."
+  },
+  {
+    "isin": "US02043Q1076",
+    "name": "Alnylam Pharmaceuticals, Inc.",
+    "search": "US02043Q1076",
+    "yf": "ALNY",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Alnylam Pharmaceuticals, Inc."
+  },
+  {
+    "isin": "US02079K1079",
+    "name": "ALPHABET INC.CL C DL-,001",
+    "search": "US02079K1079",
+    "yf": "GOOG",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "ALPHABET INC.CL C DL-,001"
+  },
+  {
+    "isin": "US02079K3059",
+    "name": "ALPHABET INC.CL.A DL-,001",
+    "search": "US02079K3059",
+    "yf": "GOOGL",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "ALPHABET INC.CL.A DL-,001"
+  },
+  {
+    "isin": "US0255371017",
+    "name": "American Electric Power Company, Inc.",
+    "search": "US0255371017",
+    "yf": "AEP",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "American Electric Power Company, Inc."
+  },
+  {
+    "isin": "US0326541051",
+    "name": "Analog Devices, Inc.",
+    "search": "US0326541051",
+    "yf": "ADI",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Analog Devices, Inc."
+  },
+  {
+    "isin": "US0382221051",
+    "name": "Applied Materials, Inc.",
+    "search": "US0382221051",
+    "yf": "AMAT",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Applied Materials, Inc."
+  },
+  {
+    "isin": "US03831W1080",
+    "name": "AppLovin Corporation",
+    "search": "US03831W1080",
+    "yf": "APP",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "AppLovin Corporation"
+  },
+  {
+    "isin": "US0420682058",
+    "name": "Arm Holdings plc",
+    "search": "US0420682058",
+    "yf": "ARM",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Arm Holdings plc"
+  },
+  {
+    "isin": "US04626A1034",
+    "name": "Astera Labs, Inc.",
+    "search": "US04626A1034",
+    "yf": "ALAB",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Astera Labs, Inc."
+  },
+  {
+    "isin": "US0527691069",
+    "name": "Autodesk, Inc.",
+    "search": "US0527691069",
+    "yf": "ADSK",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Autodesk, Inc."
+  },
+  {
+    "isin": "US0530151036",
+    "name": "Automatic Data Processing, Inc.",
+    "search": "US0530151036",
+    "yf": "ADP",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Automatic Data Processing, Inc."
+  },
+  {
+    "isin": "US05464C1018",
+    "name": "Axon Enterprise, Inc.",
+    "search": "US05464C1018",
+    "yf": "AXON",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Axon Enterprise, Inc."
+  },
+  {
+    "isin": "US05722G1004",
+    "name": "Baker Hughes Company",
+    "search": "US05722G1004",
+    "yf": "BKR",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Baker Hughes Company"
+  },
+  {
+    "isin": "US09857L1089",
+    "name": "Booking Holdings Inc.",
+    "search": "US09857L1089",
+    "yf": "BKNG",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Booking Holdings Inc."
+  },
+  {
+    "isin": "US11135F1012",
+    "name": "Broadcom Inc.",
+    "search": "US11135F1012",
+    "yf": "AVGO",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Broadcom Inc."
+  },
+  {
+    "isin": "US1264081035",
+    "name": "CSX Corporation",
+    "search": "US1264081035",
+    "yf": "CSX",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "nasdaq100",
+      "gci"
+    ],
+    "land": null,
+    "liste": "CSX Corporation"
+  },
+  {
+    "isin": "US1273871087",
+    "name": "Cadence Design Systems, Inc.",
+    "search": "US1273871087",
+    "yf": "CDNS",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Cadence Design Systems, Inc."
+  },
+  {
+    "isin": "US1729081059",
+    "name": "Cintas Corporation",
+    "search": "US1729081059",
+    "yf": "CTAS",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Cintas Corporation"
+  },
+  {
+    "isin": "US20030N1019",
     "name": "Comcast Corporation",
+    "search": "US20030N1019",
     "yf": "CMCSA",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Comcast"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Comcast Corporation"
   },
   {
-    "isin": "US20825C1045",
-    "name": "ConocoPhillips",
-    "yf": "COP",
+    "isin": "US21037T1097",
+    "name": "Constellation Energy Corporation",
+    "search": "US21037T1097",
+    "yf": "CEG",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "ConocoPhillips"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Constellation Energy Corporation"
   },
   {
-    "isin": "AN8068571086",
-    "name": "SLB N.V.",
-    "yf": "SLB",
+    "isin": "US2172041061",
+    "name": "Copart, Inc.",
+    "search": "US2172041061",
+    "yf": "CPRT",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "SLB"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Copart, Inc."
   },
   {
-    "isin": "US5486611073",
-    "name": "Lowe's Companies, Inc.",
-    "yf": "LOW",
+    "isin": "US21873S1087",
+    "name": "CoreWeave, Inc.",
+    "search": "US21873S1087",
+    "yf": "CRWV",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Lowe's Companies"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "CoreWeave, Inc."
   },
   {
-    "isin": "TGT",
-    "name": "Target Corporation",
-    "yf": "TGT",
+    "isin": "US22160K1051",
+    "name": "Costco Wholesale Corporation",
+    "search": "US22160K1051",
+    "yf": "COST",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Target"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Costco Wholesale Corporation"
   },
   {
-    "isin": "US9113121068",
-    "name": "United Parcel Service, Inc.",
-    "yf": "UPS",
+    "isin": "US22788C1053",
+    "name": "CrowdStrike Holdings, Inc.",
+    "search": "US22788C1053",
+    "yf": "CRWD",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "United Parcel"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "CrowdStrike Holdings, Inc."
   },
   {
-    "isin": "FDX",
-    "name": "FedEx Corporation",
-    "yf": "FDX",
+    "isin": "US23804L1035",
+    "name": "Datadog, Inc.",
+    "search": "US23804L1035",
+    "yf": "DDOG",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "FedEx"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Datadog, Inc."
   },
   {
-    "isin": "US3696043013",
-    "name": "GE Aerospace",
-    "yf": "GE",
+    "isin": "US2521311074",
+    "name": "DexCom, Inc.",
+    "search": "US2521311074",
+    "yf": "DXCM",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "GE Aerospace"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "DexCom, Inc."
   },
   {
-    "isin": "LMT",
-    "name": "Lockheed Martin Corporation",
-    "yf": "LMT",
+    "isin": "US25278X1090",
+    "name": "Diamondback Energy, Inc.",
+    "search": "US25278X1090",
+    "yf": "FANG",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Lockheed Martin"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Diamondback Energy, Inc."
   },
   {
-    "isin": "US75513E1010",
-    "name": "RTX Corporation",
-    "yf": "RTX",
+    "isin": "US25809K1051",
+    "name": "DoorDash, Inc.",
+    "search": "US25809K1051",
+    "yf": "DASH",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "RTX"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "DoorDash, Inc."
   },
   {
-    "isin": "DE",
-    "name": "Deere & Company",
-    "yf": "DE",
+    "isin": "US30161N1019",
+    "name": "Exelon Corporation",
+    "search": "US30161N1019",
+    "yf": "EXC",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Deere"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Exelon Corporation"
   },
   {
-    "isin": "EMR",
-    "name": "Emerson Electric Co.",
-    "yf": "EMR",
+    "isin": "US30303M1027",
+    "name": "Meta Platforms, Inc.",
+    "search": "US30303M1027",
+    "yf": "META",
+    "currency": "USD",
     "stars": 0,
     "markt": "us",
-    "search": "Emerson Electric"
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Meta Platforms, Inc."
+  },
+  {
+    "isin": "US3119001044",
+    "name": "Fastenal Company",
+    "search": "US3119001044",
+    "yf": "FAST",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Fastenal Company"
+  },
+  {
+    "isin": "US34959E1091",
+    "name": "Fortinet, Inc.",
+    "search": "US34959E1091",
+    "yf": "FTNT",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Fortinet, Inc."
+  },
+  {
+    "isin": "US36266G1076",
+    "name": "GE HealthCare Technologies Inc.",
+    "search": "US36266G1076",
+    "yf": "GEHC",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "GE HealthCare Technologies Inc."
+  },
+  {
+    "isin": "US3755581036",
+    "name": "Gilead Sciences, Inc.",
+    "search": "US3755581036",
+    "yf": "GILD",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Gilead Sciences, Inc."
+  },
+  {
+    "isin": "US45168D1046",
+    "name": "IDEXX Laboratories, Inc.",
+    "search": "US45168D1046",
+    "yf": "IDXX",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "IDEXX Laboratories, Inc."
+  },
+  {
+    "isin": "US4581401001",
+    "name": "Intel Corporation",
+    "search": "US4581401001",
+    "yf": "INTC",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "nasdaq100",
+      "gci"
+    ],
+    "land": null,
+    "liste": "Intel Corporation"
+  },
+  {
+    "isin": "US4612021034",
+    "name": "Intuit Inc.",
+    "search": "US4612021034",
+    "yf": "INTU",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Intuit Inc."
+  },
+  {
+    "isin": "US46120E6023",
+    "name": "Intuitive Surgical, Inc.",
+    "search": "US46120E6023",
+    "yf": "ISRG",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Intuitive Surgical, Inc."
+  },
+  {
+    "isin": "US4824801009",
+    "name": "KLA Corporation",
+    "search": "US4824801009",
+    "yf": "KLAC",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "KLA Corporation"
+  },
+  {
+    "isin": "US49271V1008",
+    "name": "Keurig Dr Pepper Inc.",
+    "search": "US49271V1008",
+    "yf": "KDP",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Keurig Dr Pepper Inc."
+  },
+  {
+    "isin": "US5007541064",
+    "name": "The Kraft Heinz Company",
+    "search": "US5007541064",
+    "yf": "KHC",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "The Kraft Heinz Company"
+  },
+  {
+    "isin": "US5128073062",
+    "name": "Lam Research Corporation",
+    "search": "US5128073062",
+    "yf": "LRCX",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Lam Research Corporation"
+  },
+  {
+    "isin": "US55024U1097",
+    "name": "Lumentum Holdings Inc.",
+    "search": "US55024U1097",
+    "yf": "LITE",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Lumentum Holdings Inc."
+  },
+  {
+    "isin": "US5719032022",
+    "name": "Marriott International, Inc.",
+    "search": "US5719032022",
+    "yf": "MAR",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Marriott International, Inc."
+  },
+  {
+    "isin": "US5738741041",
+    "name": "Marvell Technology, Inc.",
+    "search": "US5738741041",
+    "yf": "MRVL",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Marvell Technology, Inc."
+  },
+  {
+    "isin": "US58733R1023",
+    "name": "MercadoLibre, Inc.",
+    "search": "US58733R1023",
+    "yf": "MELI",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "MercadoLibre, Inc."
+  },
+  {
+    "isin": "US5949724083",
+    "name": "Strategy Inc",
+    "search": "US5949724083",
+    "yf": "MSTR",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Strategy Inc"
+  },
+  {
+    "isin": "US5950171042",
+    "name": "Microchip Technology Incorporated",
+    "search": "US5950171042",
+    "yf": "MCHP",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Microchip Technology Incorporated"
+  },
+  {
+    "isin": "US5951121038",
+    "name": "Micron Technology, Inc.",
+    "search": "US5951121038",
+    "yf": "MU",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Micron Technology, Inc."
+  },
+  {
+    "isin": "US6092071058",
+    "name": "Mondelez International, Inc.",
+    "search": "US6092071058",
+    "yf": "MDLZ",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Mondelez International, Inc."
+  },
+  {
+    "isin": "US6098391054",
+    "name": "Monolithic Power Systems, Inc.",
+    "search": "US6098391054",
+    "yf": "MPWR",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Monolithic Power Systems, Inc."
+  },
+  {
+    "isin": "US61174X1090",
+    "name": "Monster Beverage Corporation",
+    "search": "US61174X1090",
+    "yf": "MNST",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Monster Beverage Corporation"
+  },
+  {
+    "isin": "US64110L1061",
+    "name": "Netflix, Inc.",
+    "search": "US64110L1061",
+    "yf": "NFLX",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Netflix, Inc."
+  },
+  {
+    "isin": "US67103H1077",
+    "name": "O'Reilly Automotive, Inc.",
+    "search": "US67103H1077",
+    "yf": "ORLY",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "O'Reilly Automotive, Inc."
+  },
+  {
+    "isin": "US6795801009",
+    "name": "Old Dominion Freight Line, Inc.",
+    "search": "US6795801009",
+    "yf": "ODFL",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Old Dominion Freight Line, Inc."
+  },
+  {
+    "isin": "US6937181088",
+    "name": "PACCAR Inc",
+    "search": "US6937181088",
+    "yf": "PCAR",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "PACCAR Inc"
+  },
+  {
+    "isin": "US69608A1088",
+    "name": "Palantir Technologies Inc.",
+    "search": "US69608A1088",
+    "yf": "PLTR",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Palantir Technologies Inc."
+  },
+  {
+    "isin": "US6974351057",
+    "name": "Palo Alto Networks, Inc.",
+    "search": "US6974351057",
+    "yf": "PANW",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Palo Alto Networks, Inc."
+  },
+  {
+    "isin": "US7043261079",
+    "name": "Paychex, Inc.",
+    "search": "US7043261079",
+    "yf": "PAYX",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Paychex, Inc."
+  },
+  {
+    "isin": "US70450Y1038",
+    "name": "PayPal Holdings, Inc.",
+    "search": "US70450Y1038",
+    "yf": "PYPL",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "PayPal Holdings, Inc."
+  },
+  {
+    "isin": "US7134481081",
+    "name": "PepsiCo, Inc.",
+    "search": "US7134481081",
+    "yf": "PEP",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "PepsiCo, Inc."
+  },
+  {
+    "isin": "US7223041028",
+    "name": "PINDUODUO INC. SP.ADR/4",
+    "search": "US7223041028",
+    "yf": "PDD",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "PINDUODUO INC. SP.ADR/4"
+  },
+  {
+    "isin": "US7475251036",
+    "name": "QUALCOMM Incorporated",
+    "search": "US7475251036",
+    "yf": "QCOM",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "QUALCOMM Incorporated"
+  },
+  {
+    "isin": "US75886F1075",
+    "name": "Regeneron Pharmaceuticals, Inc.",
+    "search": "US75886F1075",
+    "yf": "REGN",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Regeneron Pharmaceuticals, Inc."
+  },
+  {
+    "isin": "US7731211089",
+    "name": "Rocket Lab Corporation",
+    "search": "US7731211089",
+    "yf": "RKLB",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Rocket Lab Corporation"
+  },
+  {
+    "isin": "US7766961061",
+    "name": "Roper Technologies, Inc.",
+    "search": "US7766961061",
+    "yf": "ROP",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Roper Technologies, Inc."
+  },
+  {
+    "isin": "US7782961038",
+    "name": "Ross Stores, Inc.",
+    "search": "US7782961038",
+    "yf": "ROST",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Ross Stores, Inc."
+  },
+  {
+    "isin": "US80004C2008",
+    "name": "Sandisk Corporation",
+    "search": "US80004C2008",
+    "yf": "SNDK",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Sandisk Corporation"
+  },
+  {
+    "isin": "US8552441094",
+    "name": "Starbucks Corporation",
+    "search": "US8552441094",
+    "yf": "SBUX",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Starbucks Corporation"
+  },
+  {
+    "isin": "US8716071076",
+    "name": "Synopsys, Inc.",
+    "search": "US8716071076",
+    "yf": "SNPS",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Synopsys, Inc."
+  },
+  {
+    "isin": "US8725901040",
+    "name": "T-Mobile US, Inc.",
+    "search": "US8725901040",
+    "yf": "TMUS",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "T-Mobile US, Inc."
+  },
+  {
+    "isin": "US8740541094",
+    "name": "Take-Two Interactive Software, Inc.",
+    "search": "US8740541094",
+    "yf": "TTWO",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Take-Two Interactive Software, Inc."
+  },
+  {
+    "isin": "US8807701029",
+    "name": "Teradyne, Inc.",
+    "search": "US8807701029",
+    "yf": "TER",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Teradyne, Inc."
+  },
+  {
+    "isin": "US88160R1014",
+    "name": "Tesla, Inc.",
+    "search": "US88160R1014",
+    "yf": "TSLA",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Tesla, Inc."
+  },
+  {
+    "isin": "US8825081040",
+    "name": "Texas Instruments Incorporated",
+    "search": "US8825081040",
+    "yf": "TXN",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Texas Instruments Incorporated"
+  },
+  {
+    "isin": "US92532F1003",
+    "name": "Vertex Pharmaceuticals Incorporated",
+    "search": "US92532F1003",
+    "yf": "VRTX",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Vertex Pharmaceuticals Incorporated"
+  },
+  {
+    "isin": "US9344231041",
+    "name": "Warner Bros. Discovery, Inc.",
+    "search": "US9344231041",
+    "yf": "WBD",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Warner Bros. Discovery, Inc."
+  },
+  {
+    "isin": "US9581021055",
+    "name": "Western Digital Corporation",
+    "search": "US9581021055",
+    "yf": "WDC",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Western Digital Corporation"
+  },
+  {
+    "isin": "US98138H1014",
+    "name": "Workday, Inc.",
+    "search": "US98138H1014",
+    "yf": "WDAY",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Workday, Inc."
+  },
+  {
+    "isin": "US98389B1008",
+    "name": "Xcel Energy Inc.",
+    "search": "US98389B1008",
+    "yf": "XEL",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "Xcel Energy Inc."
+  },
+  {
+    "isin": "USN070592100",
+    "name": "ASML Holding N.V.",
+    "search": "USN070592100",
+    "yf": "ASML",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "us",
+    "indices": [
+      "nasdaq100"
+    ],
+    "land": null,
+    "liste": "ASML Holding N.V."
+  },
+  {
+    "isin": "BE0974293251",
+    "name": "Anheuser-Busch InBev SA/NV",
+    "search": "BE0974293251",
+    "yf": "ABI.BR",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Anheuser-Busch InBev SA/NV"
+  },
+  {
+    "isin": "ES0113211835",
+    "name": "Banco Bilbao Vizcaya Argentaria, S.A.",
+    "search": "ES0113211835",
+    "yf": "BBVA.MC",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Banco Bilbao Vizcaya Argentaria, S.A."
+  },
+  {
+    "isin": "ES0113900J37",
+    "name": "Banco Santander, S.A.",
+    "search": "ES0113900J37",
+    "yf": "SAN.MC",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Banco Santander, S.A."
+  },
+  {
+    "isin": "ES0144580Y14",
+    "name": "Iberdrola, S.A.",
+    "search": "ES0144580Y14",
+    "yf": "IBE.MC",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Iberdrola, S.A."
+  },
+  {
+    "isin": "ES0148396007",
+    "name": "Industria de Diseño Textil, S.A.",
+    "search": "ES0148396007",
+    "yf": "ITX.MC",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Industria de Diseño Textil, S.A."
+  },
+  {
+    "isin": "FI4000297767",
+    "name": "Nordea Bank Abp",
+    "search": "FI4000297767",
+    "yf": "NDA-FI.HE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Finnland",
+    "liste": "Nordea Bank Abp"
+  },
+  {
+    "isin": "FR0000052292",
+    "name": "Hermès International Société en commandite par actions",
+    "search": "FR0000052292",
+    "yf": "RMS.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Hermès International Société en commandite par actions"
+  },
+  {
+    "isin": "FR0000073272",
+    "name": "Safran SA",
+    "search": "FR0000073272",
+    "yf": "SAF.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Safran SA"
+  },
+  {
+    "isin": "FR0000120073",
+    "name": "L'Air Liquide S.A.",
+    "search": "FR0000120073",
+    "yf": "AI.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "L'Air Liquide S.A."
+  },
+  {
+    "isin": "FR0000120271",
+    "name": "TotalEnergies SE",
+    "search": "FR0000120271",
+    "yf": "TTE.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "TotalEnergies SE"
+  },
+  {
+    "isin": "FR0000120321",
+    "name": "L'Oréal S.A.",
+    "search": "FR0000120321",
+    "yf": "OR.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "L'Oréal S.A."
+  },
+  {
+    "isin": "FR0000120578",
+    "name": "Sanofi",
+    "search": "FR0000120578",
+    "yf": "SAN.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Sanofi"
+  },
+  {
+    "isin": "FR0000120628",
+    "name": "AXA SA",
+    "search": "FR0000120628",
+    "yf": "CS.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "AXA SA"
+  },
+  {
+    "isin": "FR0000120644",
+    "name": "Danone S.A.",
+    "search": "FR0000120644",
+    "yf": "BN.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Danone S.A."
+  },
+  {
+    "isin": "FR0000121014",
+    "name": "LVMH Moët Hennessy - Louis Vuitton, Société Européenne",
+    "search": "FR0000121014",
+    "yf": "MC.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "LVMH Moët Hennessy - Louis Vuitton, Société Européenne"
+  },
+  {
+    "isin": "FR0000121667",
+    "name": "EssilorLuxottica Société anonyme",
+    "search": "FR0000121667",
+    "yf": "EL.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "EssilorLuxottica Société anonyme"
+  },
+  {
+    "isin": "FR0000121972",
+    "name": "Schneider Electric S.E.",
+    "search": "FR0000121972",
+    "yf": "SU.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Schneider Electric S.E."
+  },
+  {
+    "isin": "FR0000125007",
+    "name": "Compagnie de Saint-Gobain S.A.",
+    "search": "FR0000125007",
+    "yf": "SGO.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Compagnie de Saint-Gobain S.A."
+  },
+  {
+    "isin": "FR0000125486",
+    "name": "Vinci SA",
+    "search": "FR0000125486",
+    "yf": "DG.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Vinci SA"
+  },
+  {
+    "isin": "FR0000131104",
+    "name": "BNP Paribas SA",
+    "search": "FR0000131104",
+    "yf": "BNP.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "BNP Paribas SA"
+  },
+  {
+    "isin": "IT0000072618",
+    "name": "Intesa Sanpaolo S.p.A.",
+    "search": "IT0000072618",
+    "yf": "ISP.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Intesa Sanpaolo S.p.A."
+  },
+  {
+    "isin": "IT0003128367",
+    "name": "Enel SpA",
+    "search": "IT0003128367",
+    "yf": "ENEL.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Enel SpA"
+  },
+  {
+    "isin": "IT0003132476",
+    "name": "Eni S.p.A.",
+    "search": "IT0003132476",
+    "yf": "ENI.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Eni S.p.A."
+  },
+  {
+    "isin": "IT0005239360",
+    "name": "UniCredit S.p.A.",
+    "search": "IT0005239360",
+    "yf": "UCG.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "UniCredit S.p.A."
+  },
+  {
+    "isin": "NL0000395903",
+    "name": "Wolters Kluwer N.V.",
+    "search": "NL0000395903",
+    "yf": "WKL.AS",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Wolters Kluwer N.V."
+  },
+  {
+    "isin": "NL0010273215",
+    "name": "ASML Holding N.V.",
+    "search": "NL0010273215",
+    "yf": "ASML.AS",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "ASML Holding N.V."
+  },
+  {
+    "isin": "NL0010832176",
+    "name": "argenx SE",
+    "search": "NL0010832176",
+    "yf": "ARGX.BR",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "argenx SE"
+  },
+  {
+    "isin": "NL0011585146",
+    "name": "Ferrari Group PLC",
+    "search": "NL0011585146",
+    "yf": "FERGR.AS",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50",
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Niederlande",
+    "liste": "Ferrari Group PLC"
+  },
+  {
+    "isin": "NL0011794037",
+    "name": "Koninklijke Ahold Delhaize N.V.",
+    "search": "NL0011794037",
+    "yf": "AD.AS",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Koninklijke Ahold Delhaize N.V."
+  },
+  {
+    "isin": "NL0011821202",
+    "name": "ING Groep N.V.",
+    "search": "NL0011821202",
+    "yf": "INGA.AS",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "ING Groep N.V."
+  },
+  {
+    "isin": "NL0012969182",
+    "name": "Adyen N.V.",
+    "search": "NL0012969182",
+    "yf": "ADYEN.AS",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Adyen N.V."
+  },
+  {
+    "isin": "NL0013654783",
+    "name": "Prosus N.V.",
+    "search": "NL0013654783",
+    "yf": "PRX.AS",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "eurostoxx50"
+    ],
+    "land": null,
+    "liste": "Prosus N.V."
+  },
+  {
+    "isin": "IT0000062072",
+    "name": "Assicurazioni Generali S.p.A.",
+    "search": "IT0000062072",
+    "yf": "G.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Assicurazioni Generali S.p.A."
+  },
+  {
+    "isin": "IT0000062957",
+    "name": "Mediobanca Banca di Credito Finanziario S.p.A.",
+    "search": "IT0000062957",
+    "yf": "MB.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Mediobanca Banca di Credito Finanziario S.p.A."
+  },
+  {
+    "isin": "IT0000066123",
+    "name": "BPER Banca SpA",
+    "search": "IT0000066123",
+    "yf": "BPE.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "ftsemib"
+    ],
+    "land": null,
+    "liste": "BPER Banca SpA"
+  },
+  {
+    "isin": "IT0000072170",
+    "name": "FinecoBank Banca Fineco S.p.A.",
+    "search": "IT0000072170",
+    "yf": "FBK.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "FinecoBank Banca Fineco S.p.A."
+  },
+  {
+    "isin": "IT0001233417",
+    "name": "A2A S.p.A.",
+    "search": "IT0001233417",
+    "yf": "A2A.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "A2A S.p.A."
+  },
+  {
+    "isin": "IT0001250932",
+    "name": "Hera S.p.A.",
+    "search": "IT0001250932",
+    "yf": "HER.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Hera S.p.A."
+  },
+  {
+    "isin": "IT0001347308",
+    "name": "Buzzi S.p.A.",
+    "search": "IT0001347308",
+    "yf": "BZU.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "ftsemib"
+    ],
+    "land": null,
+    "liste": "Buzzi S.p.A."
+  },
+  {
+    "isin": "IT0003153415",
+    "name": "Snam S.p.A.",
+    "search": "IT0003153415",
+    "yf": "SRG.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Snam S.p.A."
+  },
+  {
+    "isin": "IT0003242622",
+    "name": "Terna S.p.A.",
+    "search": "IT0003242622",
+    "yf": "TRN.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Terna S.p.A."
+  },
+  {
+    "isin": "IT0003261697",
+    "name": "Azimut Holding S.p.A.",
+    "search": "IT0003261697",
+    "yf": "AZM.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "ftsemib"
+    ],
+    "land": null,
+    "liste": "Azimut Holding S.p.A."
+  },
+  {
+    "isin": "IT0003492391",
+    "name": "DiaSorin S.p.A.",
+    "search": "IT0003492391",
+    "yf": "DIA.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "DiaSorin S.p.A."
+  },
+  {
+    "isin": "IT0003796171",
+    "name": "Poste Italiane S.p.A.",
+    "search": "IT0003796171",
+    "yf": "PST.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Poste Italiane S.p.A."
+  },
+  {
+    "isin": "IT0003828271",
+    "name": "Recordati Industria Chimica e Farmaceutica S.p.A.",
+    "search": "IT0003828271",
+    "yf": "REC.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Recordati Industria Chimica e Farmaceutica S.p.A."
+  },
+  {
+    "isin": "IT0003856405",
+    "name": "Leonardo S.p.a.",
+    "search": "IT0003856405",
+    "yf": "LDO.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Leonardo S.p.a."
+  },
+  {
+    "isin": "IT0004056880",
+    "name": "Amplifon S.p.A.",
+    "search": "IT0004056880",
+    "yf": "AMP.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Amplifon S.p.A."
+  },
+  {
+    "isin": "IT0004176001",
+    "name": "Prysmian S.p.A.",
+    "search": "IT0004176001",
+    "yf": "PRY.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Prysmian S.p.A."
+  },
+  {
+    "isin": "IT0004764699",
+    "name": "Brunello Cucinelli S.p.A.",
+    "search": "IT0004764699",
+    "yf": "BC.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "ftsemib"
+    ],
+    "land": null,
+    "liste": "Brunello Cucinelli S.p.A."
+  },
+  {
+    "isin": "IT0004776628",
+    "name": "Banca Mediolanum S.p.A.",
+    "search": "IT0004776628",
+    "yf": "BMED.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "ftsemib"
+    ],
+    "land": null,
+    "liste": "Banca Mediolanum S.p.A."
+  },
+  {
+    "isin": "IT0004810054",
+    "name": "Unipol Assicurazioni S.p.A.",
+    "search": "IT0004810054",
+    "yf": "UNI.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "ftsemib"
+    ],
+    "land": null,
+    "liste": "Unipol Assicurazioni S.p.A."
+  },
+  {
+    "isin": "IT0004965148",
+    "name": "Moncler S.p.A.",
+    "search": "IT0004965148",
+    "yf": "MONC.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Moncler S.p.A."
+  },
+  {
+    "isin": "IT0005090300",
+    "name": "Infrastrutture Wireless Italiane S.p.A.",
+    "search": "IT0005090300",
+    "yf": "INW.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Infrastrutture Wireless Italiane S.p.A."
+  },
+  {
+    "isin": "IT0005211237",
+    "name": "Italgas S.p.A.",
+    "search": "IT0005211237",
+    "yf": "IG.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Italgas S.p.A."
+  },
+  {
+    "isin": "IT0005218380",
+    "name": "Banco BPM S.p.A.",
+    "search": "IT0005218380",
+    "yf": "BAMI.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Banco BPM S.p.A."
+  },
+  {
+    "isin": "IT0005366767",
+    "name": "Nexi S.p.A.",
+    "search": "IT0005366767",
+    "yf": "NEXI.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Italien",
+    "liste": "Nexi S.p.A."
+  },
+  {
+    "isin": "IT0005495657",
+    "name": "Saipem SpA",
+    "search": "IT0005495657",
+    "yf": "SPM.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "ftsemib"
+    ],
+    "land": null,
+    "liste": "Saipem SpA"
+  },
+  {
+    "isin": "NL0000226223",
+    "name": "STMicroelectronics N.V.",
+    "search": "NL0000226223",
+    "yf": "STMPA.PA",
+    "currency": "EUR",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib",
+      "gci"
+    ],
+    "land": "Niederlande",
+    "liste": "STMicroelectronics N.V."
+  },
+  {
+    "isin": "NL00150001Q9",
+    "name": "Stellantis N.V.",
+    "search": "NL00150001Q9",
+    "yf": "STLAP.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Niederlande",
+    "liste": "Stellantis N.V."
+  },
+  {
+    "isin": "NL0015000LU4",
+    "name": "Iveco Group N.V.",
+    "search": "NL0015000LU4",
+    "yf": "R3D.DE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "ftsemib"
+    ],
+    "land": null,
+    "liste": "Iveco Group N.V."
+  },
+  {
+    "isin": "NL0015435975",
+    "name": "Davide Campari-Milano N.V.",
+    "search": "NL0015435975",
+    "yf": "CPR.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "ftsemib"
+    ],
+    "land": "Niederlande",
+    "liste": "Davide Campari-Milano N.V."
+  },
+  {
+    "isin": "AT000000STR1",
+    "name": "Strabag SE",
+    "search": "AT000000STR1",
+    "yf": "STR.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "atx"
+    ],
+    "land": null,
+    "liste": "Strabag SE"
+  },
+  {
+    "isin": "AT0000606306",
+    "name": "Raiffeisen Bank International AG",
+    "search": "AT0000606306",
+    "yf": "RBI.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "atx"
+    ],
+    "land": null,
+    "liste": "Raiffeisen Bank International AG"
+  },
+  {
+    "isin": "AT0000609607",
+    "name": "PORR AG",
+    "search": "AT0000609607",
+    "yf": "POS.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "atx"
+    ],
+    "land": null,
+    "liste": "PORR AG"
+  },
+  {
+    "isin": "AT0000641352",
+    "name": "CA Immobilien Anlagen AG",
+    "search": "AT0000641352",
+    "yf": "CAI.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "atx"
+    ],
+    "land": null,
+    "liste": "CA Immobilien Anlagen AG"
+  },
+  {
+    "isin": "AT0000644505",
+    "name": "Lenzing Aktiengesellschaft",
+    "search": "AT0000644505",
+    "yf": "LNZ.VI",
+    "currency": "EUR",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "atx",
+      "gci"
+    ],
+    "land": null,
+    "liste": "Lenzing Aktiengesellschaft"
+  },
+  {
+    "isin": "AT0000652011",
+    "name": "Erste Group Bank AG",
+    "search": "AT0000652011",
+    "yf": "EBS.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "atx"
+    ],
+    "land": "Österreich",
+    "liste": "Erste Group Bank AG"
+  },
+  {
+    "isin": "AT0000730007",
+    "name": "Andritz AG",
+    "search": "AT0000730007",
+    "yf": "ANDR.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "atx"
+    ],
+    "land": "Österreich",
+    "liste": "Andritz AG"
+  },
+  {
+    "isin": "AT0000741053",
+    "name": "EVN AG",
+    "search": "AT0000741053",
+    "yf": "EVN.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "atx"
+    ],
+    "land": null,
+    "liste": "EVN AG"
+  },
+  {
+    "isin": "AT0000743059",
+    "name": "OMV Aktiengesellschaft",
+    "search": "AT0000743059",
+    "yf": "OMV.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "atx"
+    ],
+    "land": "Österreich",
+    "liste": "OMV Aktiengesellschaft"
+  },
+  {
+    "isin": "AT0000746409",
+    "name": "VERBUND AG",
+    "search": "AT0000746409",
+    "yf": "VER.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "atx"
+    ],
+    "land": "Österreich",
+    "liste": "VERBUND AG"
+  },
+  {
+    "isin": "AT0000758305",
+    "name": "Palfinger AG",
+    "search": "AT0000758305",
+    "yf": "PAL.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "atx"
+    ],
+    "land": null,
+    "liste": "Palfinger AG"
+  },
+  {
+    "isin": "AT0000818802",
+    "name": "DO & CO Aktiengesellschaft",
+    "search": "AT0000818802",
+    "yf": "DOC.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "atx"
+    ],
+    "land": null,
+    "liste": "DO & CO Aktiengesellschaft"
+  },
+  {
+    "isin": "AT0000821103",
+    "name": "UNIQA Insurance Group AG",
+    "search": "AT0000821103",
+    "yf": "UQA.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "atx"
+    ],
+    "land": null,
+    "liste": "UNIQA Insurance Group AG"
+  },
+  {
+    "isin": "AT0000831706",
+    "name": "Wienerberger AG",
+    "search": "AT0000831706",
+    "yf": "WIE.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "atx"
+    ],
+    "land": "Österreich",
+    "liste": "Wienerberger AG"
+  },
+  {
+    "isin": "AT0000908504",
+    "name": "Vienna Insurance Group AG",
+    "search": "AT0000908504",
+    "yf": "VIG.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "atx"
+    ],
+    "land": null,
+    "liste": "Vienna Insurance Group AG"
+  },
+  {
+    "isin": "AT0000937503",
+    "name": "Voestalpine AG",
+    "search": "AT0000937503",
+    "yf": "VOE.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "atx"
+    ],
+    "land": "Österreich",
+    "liste": "Voestalpine AG"
+  },
+  {
+    "isin": "AT0000946652",
+    "name": "SBO AG",
+    "search": "AT0000946652",
+    "yf": "SBO.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "atx"
+    ],
+    "land": null,
+    "liste": "SBO AG"
+  },
+  {
+    "isin": "AT0000969985",
+    "name": "AT & S Austria Technologie & Systemtechnik Aktiengesellschaft",
+    "search": "AT0000969985",
+    "yf": "ATS.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "atx"
+    ],
+    "land": null,
+    "liste": "AT & S Austria Technologie & Systemtechnik Aktiengesellschaft"
+  },
+  {
+    "isin": "AT0000APOST4",
+    "name": "Österreichische Post AG",
+    "search": "AT0000APOST4",
+    "yf": "POST.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "atx"
+    ],
+    "land": null,
+    "liste": "Österreichische Post AG"
+  },
+  {
+    "isin": "AT0000BAWAG2",
+    "name": "BAWAG Group AG",
+    "search": "AT0000BAWAG2",
+    "yf": "BG.VI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "atx"
+    ],
+    "land": "Österreich",
+    "liste": "BAWAG Group AG"
+  },
+  {
+    "isin": "LU0056569402",
+    "name": "Socfinaf S.A.",
+    "search": "LU0056569402",
+    "yf": "SOFAF.LU",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "luxx"
+    ],
+    "land": null,
+    "liste": "Socfinaf S.A."
+  },
+  {
+    "isin": "LU0088087324",
+    "name": "SES S.A.",
+    "search": "LU0088087324",
+    "yf": "SESG.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "luxx"
+    ],
+    "land": "Luxemburg",
+    "liste": "SES S.A."
+  },
+  {
+    "isin": "LU0092047413",
+    "name": "Socfinasia S.A.",
+    "search": "LU0092047413",
+    "yf": "SCFNS.LU",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "luxx"
+    ],
+    "land": null,
+    "liste": "Socfinasia S.A."
+  },
+  {
+    "isin": "LU0383812293",
+    "name": "Reinet Investments S.C.A.",
+    "search": "LU0383812293",
+    "yf": "REINI.LU",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "luxx"
+    ],
+    "land": null,
+    "liste": "Reinet Investments S.C.A."
+  },
+  {
+    "isin": "LU0569974404",
+    "name": "Aperam S.A.",
+    "search": "LU0569974404",
+    "yf": "APAM.AS",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "luxx"
+    ],
+    "land": null,
+    "liste": "Aperam S.A."
+  },
+  {
+    "isin": "LU1068091351",
+    "name": "Brederode SA",
+    "search": "LU1068091351",
+    "yf": "BREB.BR",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "luxx"
+    ],
+    "land": null,
+    "liste": "Brederode SA"
+  },
+  {
+    "isin": "LU1598757687",
+    "name": "ArcelorMittal S.A.",
+    "search": "LU1598757687",
+    "yf": "MT.AS",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "luxx"
+    ],
+    "land": "Luxemburg",
+    "liste": "ArcelorMittal S.A."
+  },
+  {
+    "isin": "LU2605908552",
+    "name": "Luxempart",
+    "search": "LU2605908552",
+    "yf": "LXMPR.LU",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "luxx"
+    ],
+    "land": null,
+    "liste": "Luxempart"
+  },
+  {
+    "isin": "FI0009000202",
+    "name": "Kesko Oyj",
+    "search": "FI0009000202",
+    "yf": "KESKOB.HE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Finnland",
+    "liste": "Kesko Oyj"
+  },
+  {
+    "isin": "FI0009000681",
+    "name": "Nokia Oyj",
+    "search": "FI0009000681",
+    "yf": "NOKIA.HE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Finnland",
+    "liste": "Nokia Oyj"
+  },
+  {
+    "isin": "FI0009013403",
+    "name": "KONE Oyj",
+    "search": "FI0009013403",
+    "yf": "KNEBV.HE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Finnland",
+    "liste": "KONE Oyj"
+  },
+  {
+    "isin": "FI4000074984",
+    "name": "Valmet Oyj",
+    "search": "FI4000074984",
+    "yf": "VALMT.HE",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Finnland",
+    "liste": "Valmet Oyj"
+  },
+  {
+    "isin": "FR0000039299",
+    "name": "Bolloré SE",
+    "search": "FR0000039299",
+    "yf": "BOL.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Bolloré SE"
+  },
+  {
+    "isin": "FR0000044448",
+    "name": "Nexans S.A.",
+    "search": "FR0000044448",
+    "yf": "NEX.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Nexans S.A."
+  },
+  {
+    "isin": "FR0000045072",
+    "name": "Crédit Agricole S.A.",
+    "search": "FR0000045072",
+    "yf": "ACA.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Crédit Agricole S.A."
+  },
+  {
+    "isin": "FR0000050809",
+    "name": "Sopra Steria Group SA",
+    "search": "FR0000050809",
+    "yf": "SOP.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Sopra Steria Group SA"
+  },
+  {
+    "isin": "FR0000051807",
+    "name": "Teleperformance SE",
+    "search": "FR0000051807",
+    "yf": "TEP.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Teleperformance SE"
+  },
+  {
+    "isin": "FR0000054470",
+    "name": "Ubisoft Entertainment SA",
+    "search": "FR0000054470",
+    "yf": "UBI.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Ubisoft Entertainment SA"
+  },
+  {
+    "isin": "FR0000064578",
+    "name": "Covivio",
+    "search": "FR0000064578",
+    "yf": "COV.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Covivio"
+  },
+  {
+    "isin": "FR0000071946",
+    "name": "Alten S.A.",
+    "search": "FR0000071946",
+    "yf": "ATE.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Alten S.A."
+  },
+  {
+    "isin": "FR0000120172",
+    "name": "Carrefour SA",
+    "search": "FR0000120172",
+    "yf": "CA.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Carrefour SA"
+  },
+  {
+    "isin": "FR0000120404",
+    "name": "Accor SA",
+    "search": "FR0000120404",
+    "yf": "AC.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Accor SA"
+  },
+  {
+    "isin": "FR0000120503",
+    "name": "Bouygues SA",
+    "search": "FR0000120503",
+    "yf": "EN.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Bouygues SA"
+  },
+  {
+    "isin": "FR0000120693",
+    "name": "Pernod Ricard SA",
+    "search": "FR0000120693",
+    "yf": "RI.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Pernod Ricard SA"
+  },
+  {
+    "isin": "FR0000121121",
+    "name": "Eurazeo SE",
+    "search": "FR0000121121",
+    "yf": "RF.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Eurazeo SE"
+  },
+  {
+    "isin": "FR0000121147",
+    "name": "Forvia SE",
+    "search": "FR0000121147",
+    "yf": "FRVIA.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Forvia SE"
+  },
+  {
+    "isin": "FR0000121204",
+    "name": "Wendel",
+    "search": "FR0000121204",
+    "yf": "MF.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Wendel"
+  },
+  {
+    "isin": "FR0000121220",
+    "name": "Sodexo S.A.",
+    "search": "FR0000121220",
+    "yf": "SW.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Sodexo S.A."
+  },
+  {
+    "isin": "FR0000121329",
+    "name": "Thales S.A.",
+    "search": "FR0000121329",
+    "yf": "HO.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Thales S.A."
+  },
+  {
+    "isin": "FR0000121485",
+    "name": "Kering SA",
+    "search": "FR0000121485",
+    "yf": "KER.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Kering SA"
+  },
+  {
+    "isin": "FR0000121709",
+    "name": "SEB SA",
+    "search": "FR0000121709",
+    "yf": "SK.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "SEB SA"
+  },
+  {
+    "isin": "FR0000121964",
+    "name": "Klépierre SA",
+    "search": "FR0000121964",
+    "yf": "LI.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Klépierre SA"
+  },
+  {
+    "isin": "FR0000124141",
+    "name": "Veolia Environnement SA",
+    "search": "FR0000124141",
+    "yf": "VIE.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Veolia Environnement SA"
+  },
+  {
+    "isin": "FR0000125338",
+    "name": "Capgemini SE",
+    "search": "FR0000125338",
+    "yf": "CAP.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Capgemini SE"
+  },
+  {
+    "isin": "FR0000127771",
+    "name": "Vivendi SE",
+    "search": "FR0000127771",
+    "yf": "VIV.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Vivendi SE"
+  },
+  {
+    "isin": "FR0000130395",
+    "name": "Rémy Cointreau SA",
+    "search": "FR0000130395",
+    "yf": "RCO.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Rémy Cointreau SA"
+  },
+  {
+    "isin": "FR0000130403",
+    "name": "Christian Dior SE",
+    "search": "FR0000130403",
+    "yf": "CDI.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Christian Dior SE"
+  },
+  {
+    "isin": "FR0000130452",
+    "name": "Eiffage SA",
+    "search": "FR0000130452",
+    "yf": "FGR.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Eiffage SA"
+  },
+  {
+    "isin": "FR0000130577",
+    "name": "Publicis Groupe S.A.",
+    "search": "FR0000130577",
+    "yf": "PUB.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Publicis Groupe S.A."
+  },
+  {
+    "isin": "FR0000130809",
+    "name": "Société Générale Société anonyme",
+    "search": "FR0000130809",
+    "yf": "GLE.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Société Générale Société anonyme"
+  },
+  {
+    "isin": "FR0000131906",
+    "name": "Renault SA",
+    "search": "FR0000131906",
+    "yf": "RNO.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Renault SA"
+  },
+  {
+    "isin": "FR0000133308",
+    "name": "Orange S.A.",
+    "search": "FR0000133308",
+    "yf": "ORA.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Orange S.A."
+  },
+  {
+    "isin": "FR0004125920",
+    "name": "Amundi S.A.",
+    "search": "FR0004125920",
+    "yf": "AMUN.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Amundi S.A."
+  },
+  {
+    "isin": "FR0006174348",
+    "name": "Bureau Veritas SA",
+    "search": "FR0006174348",
+    "yf": "BVI.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Bureau Veritas SA"
+  },
+  {
+    "isin": "FR0010040865",
+    "name": "Gecina",
+    "search": "FR0010040865",
+    "yf": "GFC.PA",
+    "currency": "EUR",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "gci"
+    ],
+    "land": "Frankreich",
+    "liste": "Gecina"
+  },
+  {
+    "isin": "FR0010208488",
+    "name": "Engie SA",
+    "search": "FR0010208488",
+    "yf": "ENGI.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Engie SA"
+  },
+  {
+    "isin": "FR0010220475",
+    "name": "Alstom SA",
+    "search": "FR0010220475",
+    "yf": "ALO.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Alstom SA"
+  },
+  {
+    "isin": "FR0010259150",
+    "name": "Ipsen S.A.",
+    "search": "FR0010259150",
+    "yf": "IPN.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Ipsen S.A."
+  },
+  {
+    "isin": "FR0010307819",
+    "name": "Legrand SA",
+    "search": "FR0010307819",
+    "yf": "LR.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Legrand SA"
+  },
+  {
+    "isin": "FR0010313833",
+    "name": "Arkema S.A.",
+    "search": "FR0010313833",
+    "yf": "AKE.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Arkema S.A."
+  },
+  {
+    "isin": "FR0010340141",
+    "name": "Aeroports de Paris SA",
+    "search": "FR0010340141",
+    "yf": "ADP.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Aeroports de Paris SA"
+  },
+  {
+    "isin": "FR0010411983",
+    "name": "SCOR SE",
+    "search": "FR0010411983",
+    "yf": "SCR.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "SCOR SE"
+  },
+  {
+    "isin": "FR0010451203",
+    "name": "Rexel S.A.",
+    "search": "FR0010451203",
+    "yf": "RXL.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Rexel S.A."
+  },
+  {
+    "isin": "FR0010533075",
+    "name": "Getlink SE",
+    "search": "FR0010533075",
+    "yf": "GET.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Getlink SE"
+  },
+  {
+    "isin": "FR0010908533",
+    "name": "Edenred SE",
+    "search": "FR0010908533",
+    "yf": "EDEN.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Edenred SE"
+  },
+  {
+    "isin": "FR0011726835",
+    "name": "Gaztransport & Technigaz SA",
+    "search": "FR0011726835",
+    "yf": "GTT.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Gaztransport & Technigaz SA"
+  },
+  {
+    "isin": "FR0011981968",
+    "name": "Worldline SA",
+    "search": "FR0011981968",
+    "yf": "WLN.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Worldline SA"
+  },
+  {
+    "isin": "FR0012435121",
+    "name": "Elis SA",
+    "search": "FR0012435121",
+    "yf": "ELIS.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Elis SA"
+  },
+  {
+    "isin": "FR0012757854",
+    "name": "SPIE SA",
+    "search": "FR0012757854",
+    "yf": "SPIE.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "SPIE SA"
+  },
+  {
+    "isin": "FR0013154002",
+    "name": "Sartorius Stedim Biotech S.A.",
+    "search": "FR0013154002",
+    "yf": "DIM.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Sartorius Stedim Biotech S.A."
+  },
+  {
+    "isin": "FR0013176526",
+    "name": "Valeo SE",
+    "search": "FR0013176526",
+    "yf": "FR.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Valeo SE"
+  },
+  {
+    "isin": "FR0013227113",
+    "name": "Soitec SA",
+    "search": "FR0013227113",
+    "yf": "SOI.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Soitec SA"
+  },
+  {
+    "isin": "FR0013269123",
+    "name": "Rubis",
+    "search": "FR0013269123",
+    "yf": "RUI.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Rubis"
+  },
+  {
+    "isin": "FR0013280286",
+    "name": "bioMérieux S.A.",
+    "search": "FR0013280286",
+    "yf": "BIM.PA",
+    "currency": "EUR",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "gci"
+    ],
+    "land": "Frankreich",
+    "liste": "bioMérieux S.A."
+  },
+  {
+    "isin": "FR0013326246",
+    "name": "Unibail-Rodamco-Westfield SE",
+    "search": "FR0013326246",
+    "yf": "URW.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Unibail-Rodamco-Westfield SE"
+  },
+  {
+    "isin": "FR0013447729",
+    "name": "Verallia Société Anonyme",
+    "search": "FR0013447729",
+    "yf": "VRLA.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Verallia Société Anonyme"
+  },
+  {
+    "isin": "FR0013451333",
+    "name": "FDJ United",
+    "search": "FR0013451333",
+    "yf": "FDJU.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "FDJ United"
+  },
+  {
+    "isin": "FR0014000MR3",
+    "name": "Eurofins Scientific SE",
+    "search": "FR0014000MR3",
+    "yf": "ERF.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Frankreich",
+    "liste": "Eurofins Scientific SE"
+  },
+  {
+    "isin": "FR0014003TT8",
+    "name": "Dassault Systèmes SE",
+    "search": "FR0014003TT8",
+    "yf": "DSY.PA",
+    "currency": "EUR",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "gci"
+    ],
+    "land": "Frankreich",
+    "liste": "Dassault Systèmes SE"
+  },
+  {
+    "isin": "IT0001078911",
+    "name": "Interpump Group S.p.A.",
+    "search": "IT0001078911",
+    "yf": "IP.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Italien",
+    "liste": "Interpump Group S.p.A."
+  },
+  {
+    "isin": "IT0005282865",
+    "name": "Reply S.p.A.",
+    "search": "IT0005282865",
+    "yf": "REY.MI",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Italien",
+    "liste": "Reply S.p.A."
+  },
+  {
+    "isin": "NL0006294274",
+    "name": "Euronext N.V.",
+    "search": "NL0006294274",
+    "yf": "ENX.PA",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Niederlande",
+    "liste": "Euronext N.V."
+  },
+  {
+    "isin": "NL0010545661",
+    "name": "CNH Industrial N.V.",
+    "search": "NL0010545661",
+    "yf": "CNH",
+    "currency": "USD",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Niederlande",
+    "liste": "CNH Industrial N.V."
+  },
+  {
+    "isin": "NL0012059018",
+    "name": "Exor N.V.",
+    "search": "NL0012059018",
+    "yf": "EXO.AS",
+    "currency": "EUR",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Niederlande",
+    "liste": "Exor N.V."
+  },
+  {
+    "isin": "SE0000106270",
+    "name": "H & M Hennes & Mauritz AB (publ)",
+    "search": "SE0000106270",
+    "yf": "HM-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "H & M Hennes & Mauritz AB (publ)"
+  },
+  {
+    "isin": "SE0000108227",
+    "name": "AB SKF (publ)",
+    "search": "SE0000108227",
+    "yf": "SKF-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "AB SKF (publ)"
+  },
+  {
+    "isin": "SE0000108656",
+    "name": "Telefonaktiebolaget LM Ericsson (publ)",
+    "search": "SE0000108656",
+    "yf": "ERIC-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Telefonaktiebolaget LM Ericsson (publ)"
+  },
+  {
+    "isin": "SE0000108847",
+    "name": "L E Lundbergföretagen AB (publ)",
+    "search": "SE0000108847",
+    "yf": "LUND-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "L E Lundbergföretagen AB (publ)"
+  },
+  {
+    "isin": "SE0000112724",
+    "name": "Svenska Cellulosa Aktiebolaget SCA (publ)",
+    "search": "SE0000112724",
+    "yf": "SCA-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Svenska Cellulosa Aktiebolaget SCA (publ)"
+  },
+  {
+    "isin": "SE0000113250",
+    "name": "Skanska AB (publ)",
+    "search": "SE0000113250",
+    "yf": "SKA-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Skanska AB (publ)"
+  },
+  {
+    "isin": "SE0000114837",
+    "name": "Trelleborg AB (publ)",
+    "search": "SE0000114837",
+    "yf": "TREL-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Trelleborg AB (publ)"
+  },
+  {
+    "isin": "SE0000115446",
+    "name": "AB Volvo (publ)",
+    "search": "SE0000115446",
+    "yf": "VOLV-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "AB Volvo (publ)"
+  },
+  {
+    "isin": "SE0000148884",
+    "name": "Skandinaviska Enskilda Banken AB (publ)",
+    "search": "SE0000148884",
+    "yf": "SEB-A.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Skandinaviska Enskilda Banken AB (publ)"
+  },
+  {
+    "isin": "SE0000163594",
+    "name": "Securitas AB (publ)",
+    "search": "SE0000163594",
+    "yf": "SECU-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Securitas AB (publ)"
+  },
+  {
+    "isin": "SE0000163628",
+    "name": "Elekta AB (publ)",
+    "search": "SE0000163628",
+    "yf": "EKTA-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Elekta AB (publ)"
+  },
+  {
+    "isin": "SE0000190126",
+    "name": "AB Industrivärden (publ)",
+    "search": "SE0000190126",
+    "yf": "INDU-A.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "AB Industrivärden (publ)"
+  },
+  {
+    "isin": "SE0000202624",
+    "name": "Getinge AB (publ)",
+    "search": "SE0000202624",
+    "yf": "GETI-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Getinge AB (publ)"
+  },
+  {
+    "isin": "SE0000242455",
+    "name": "Swedbank AB (publ)",
+    "search": "SE0000242455",
+    "yf": "SWED-A.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Swedbank AB (publ)"
+  },
+  {
+    "isin": "SE0000379190",
+    "name": "Castellum AB (publ)",
+    "search": "SE0000379190",
+    "yf": "CAST.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Castellum AB (publ)"
+  },
+  {
+    "isin": "SE0000667891",
+    "name": "Sandvik AB (publ)",
+    "search": "SE0000667891",
+    "yf": "SAND.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Sandvik AB (publ)"
+  },
+  {
+    "isin": "SE0000667925",
+    "name": "Telia Company AB (publ)",
+    "search": "SE0000667925",
+    "yf": "TELIA.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Telia Company AB (publ)"
+  },
+  {
+    "isin": "SE0000695876",
+    "name": "Alfa Laval AB (publ)",
+    "search": "SE0000695876",
+    "yf": "ALFA.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Alfa Laval AB (publ)"
+  },
+  {
+    "isin": "SE0000862997",
+    "name": "Billerud AB (publ)",
+    "search": "SE0000862997",
+    "yf": "BILL.ST",
+    "currency": "SEK",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "gci"
+    ],
+    "land": "Schweden",
+    "liste": "Billerud AB (publ)"
+  },
+  {
+    "isin": "SE0000872095",
+    "name": "Swedish Orphan Biovitrum AB (publ)",
+    "search": "SE0000872095",
+    "yf": "SOBI.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Swedish Orphan Biovitrum AB (publ)"
+  },
+  {
+    "isin": "SE0001515552",
+    "name": "Indutrade AB (publ)",
+    "search": "SE0001515552",
+    "yf": "INDT.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Indutrade AB (publ)"
+  },
+  {
+    "isin": "SE0001662230",
+    "name": "Husqvarna AB (publ)",
+    "search": "SE0001662230",
+    "yf": "HUSQ-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Husqvarna AB (publ)"
+  },
+  {
+    "isin": "SE0005190238",
+    "name": "Tele2 AB (publ)",
+    "search": "SE0005190238",
+    "yf": "TEL2-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Tele2 AB (publ)"
+  },
+  {
+    "isin": "SE0006422390",
+    "name": "Thule Group AB (publ)",
+    "search": "SE0006422390",
+    "yf": "THULE.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Thule Group AB (publ)"
+  },
+  {
+    "isin": "SE0007074281",
+    "name": "HEXPOL AB (publ)",
+    "search": "SE0007074281",
+    "yf": "HPOL-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "HEXPOL AB (publ)"
+  },
+  {
+    "isin": "SE0007100581",
+    "name": "ASSA ABLOY AB (publ)",
+    "search": "SE0007100581",
+    "yf": "ASSA-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "ASSA ABLOY AB (publ)"
+  },
+  {
+    "isin": "SE0007100599",
+    "name": "Svenska Handelsbanken AB (publ)",
+    "search": "SE0007100599",
+    "yf": "SHB-A.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Svenska Handelsbanken AB (publ)"
+  },
+  {
+    "isin": "SE0009216278",
+    "name": "Mips AB (publ)",
+    "search": "SE0009216278",
+    "yf": "MIPS.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Mips AB (publ)"
+  },
+  {
+    "isin": "SE0009922164",
+    "name": "Essity AB (publ)",
+    "search": "SE0009922164",
+    "yf": "ESSITY-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Essity AB (publ)"
+  },
+  {
+    "isin": "SE0010100958",
+    "name": "Investment AB Latour (publ)",
+    "search": "SE0010100958",
+    "yf": "LATO-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Investment AB Latour (publ)"
+  },
+  {
+    "isin": "SE0011090018",
+    "name": "Holmen AB (publ)",
+    "search": "SE0011090018",
+    "yf": "HOLM-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Holmen AB (publ)"
+  },
+  {
+    "isin": "SE0011166974",
+    "name": "Fabege AB (publ)",
+    "search": "SE0011166974",
+    "yf": "FABG.ST",
+    "currency": "SEK",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "europa",
+      "gci"
+    ],
+    "land": "Schweden",
+    "liste": "Fabege AB (publ)"
+  },
+  {
+    "isin": "SE0011205202",
+    "name": "Vitrolife AB (publ)",
+    "search": "SE0011205202",
+    "yf": "VITR.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Vitrolife AB (publ)"
+  },
+  {
+    "isin": "SE0011337708",
+    "name": "AAK AB (publ.)",
+    "search": "SE0011337708",
+    "yf": "AAK.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "AAK AB (publ.)"
+  },
+  {
+    "isin": "SE0012673267",
+    "name": "Evolution AB (publ)",
+    "search": "SE0012673267",
+    "yf": "EVO.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Evolution AB (publ)"
+  },
+  {
+    "isin": "SE0012853455",
+    "name": "EQT AB (publ)",
+    "search": "SE0012853455",
+    "yf": "EQT.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "EQT AB (publ)"
+  },
+  {
+    "isin": "SE0014781795",
+    "name": "Addtech AB (publ.)",
+    "search": "SE0014781795",
+    "yf": "ADDT-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Addtech AB (publ.)"
+  },
+  {
+    "isin": "SE0015658109",
+    "name": "Epiroc AB (publ)",
+    "search": "SE0015658109",
+    "yf": "EPI-A.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Epiroc AB (publ)"
+  },
+  {
+    "isin": "SE0015810247",
+    "name": "Kinnevik AB",
+    "search": "SE0015810247",
+    "yf": "KINV-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Kinnevik AB"
+  },
+  {
+    "isin": "SE0015811963",
+    "name": "Investor AB (publ)",
+    "search": "SE0015811963",
+    "yf": "INVE-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Investor AB (publ)"
+  },
+  {
+    "isin": "SE0015949201",
+    "name": "Lifco AB (publ)",
+    "search": "SE0015949201",
+    "yf": "LIFCO-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Lifco AB (publ)"
+  },
+  {
+    "isin": "SE0015961909",
+    "name": "Hexagon AB (publ)",
+    "search": "SE0015961909",
+    "yf": "HEXA-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Hexagon AB (publ)"
+  },
+  {
+    "isin": "SE0015988019",
+    "name": "NIBE Industrier AB (publ)",
+    "search": "SE0015988019",
+    "yf": "NIBE-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "NIBE Industrier AB (publ)"
+  },
+  {
+    "isin": "SE0016101844",
+    "name": "Sinch AB (publ)",
+    "search": "SE0016101844",
+    "yf": "SINCH.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "Sinch AB (publ)"
+  },
+  {
+    "isin": "SE0016589188",
+    "name": "AB Electrolux (publ)",
+    "search": "SE0016589188",
+    "yf": "ELUX-B.ST",
+    "currency": "SEK",
+    "stars": 0,
+    "markt": "europa",
+    "indices": [
+      "europa"
+    ],
+    "land": "Schweden",
+    "liste": "AB Electrolux (publ)"
+  },
+  {
+    "isin": "CA1363751027",
+    "name": "Canadian National Railway Company",
+    "search": "CA1363751027",
+    "yf": "CNR.TO",
+    "currency": "CAD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Canadian National Railway Company"
+  },
+  {
+    "isin": "CH0012549785",
+    "name": "Sonova Holding AG",
+    "search": "CH0012549785",
+    "yf": "SOON.SW",
+    "currency": "CHF",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Sonova Holding AG"
+  },
+  {
+    "isin": "CH0030170408",
+    "name": "Geberit AG",
+    "search": "CH0030170408",
+    "yf": "GEBN.SW",
+    "currency": "CHF",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Geberit AG"
+  },
+  {
+    "isin": "CH0126881561",
+    "name": "Swiss Re AG",
+    "search": "CH0126881561",
+    "yf": "SREN.SW",
+    "currency": "CHF",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Swiss Re AG"
+  },
+  {
+    "isin": "DK0060094928",
+    "name": "Ørsted A/S",
+    "search": "DK0060094928",
+    "yf": "ORSTED.CO",
+    "currency": "DKK",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Ørsted A/S"
+  },
+  {
+    "isin": "DK0060448595",
+    "name": "Coloplast A/S",
+    "search": "DK0060448595",
+    "yf": "COLO-B.CO",
+    "currency": "DKK",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Coloplast A/S"
+  },
+  {
+    "isin": "DK0061539921",
+    "name": "Vestas Wind Systems A/S",
+    "search": "DK0061539921",
+    "yf": "VWS.CO",
+    "currency": "DKK",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Vestas Wind Systems A/S"
+  },
+  {
+    "isin": "DK0063855168",
+    "name": "Rockwool A/S",
+    "search": "DK0063855168",
+    "yf": "ROCK-B.CO",
+    "currency": "DKK",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Rockwool A/S"
+  },
+  {
+    "isin": "ES0127797019",
+    "name": "EDP Renewables, S.A.",
+    "search": "ES0127797019",
+    "yf": "EDPR.LS",
+    "currency": "EUR",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "EDP Renewables, S.A."
+  },
+  {
+    "isin": "ES0165386014",
+    "name": "Solaria Energía y Medio Ambiente, S.A.",
+    "search": "ES0165386014",
+    "yf": "SLR.MC",
+    "currency": "EUR",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Solaria Energía y Medio Ambiente, S.A."
+  },
+  {
+    "isin": "GB0003452173",
+    "name": "FirstGroup plc",
+    "search": "GB0003452173",
+    "yf": "FGP.L",
+    "currency": "GBp",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "FirstGroup plc"
+  },
+  {
+    "isin": "GB0006776081",
+    "name": "Pearson plc",
+    "search": "GB0006776081",
+    "yf": "PSON.L",
+    "currency": "GBp",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Pearson plc"
+  },
+  {
+    "isin": "GB0009223206",
+    "name": "Smith & Nephew plc",
+    "search": "GB0009223206",
+    "yf": "SN.L",
+    "currency": "GBp",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Smith & Nephew plc"
+  },
+  {
+    "isin": "GB00B1FH8J72",
+    "name": "Severn Trent PLC",
+    "search": "GB00B1FH8J72",
+    "yf": "SVT.L",
+    "currency": "GBp",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Severn Trent PLC"
+  },
+  {
+    "isin": "GB00B39J2M42",
+    "name": "United Utilities Group PLC",
+    "search": "GB00B39J2M42",
+    "yf": "UU.L",
+    "currency": "GBp",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "United Utilities Group PLC"
+  },
+  {
+    "isin": "GB00BD3VFW73",
+    "name": "Convatec Group PLC",
+    "search": "GB00BD3VFW73",
+    "yf": "CTEC.L",
+    "currency": "GBp",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Convatec Group PLC"
+  },
+  {
+    "isin": "GB00BMWC6P49",
+    "name": "Mondi plc",
+    "search": "GB00BMWC6P49",
+    "yf": "MNDI.L",
+    "currency": "GBp",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Mondi plc"
+  },
+  {
+    "isin": "GB00BNNTLN49",
+    "name": "Pennon Group Plc",
+    "search": "GB00BNNTLN49",
+    "yf": "PNN.L",
+    "currency": "GBp",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Pennon Group Plc"
+  },
+  {
+    "isin": "IE00028FXN24",
+    "name": "Smurfit Westrock Plc",
+    "search": "IE00028FXN24",
+    "yf": "SW",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Smurfit Westrock Plc"
+  },
+  {
+    "isin": "IE00BTN1Y115",
+    "name": "Medtronic plc",
+    "search": "IE00BTN1Y115",
+    "yf": "MDT",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Medtronic plc"
+  },
+  {
+    "isin": "JP3270000007",
+    "name": "Kurita Water Industries Ltd.",
+    "search": "JP3270000007",
+    "yf": "6370.T",
+    "currency": "JPY",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Kurita Water Industries Ltd."
+  },
+  {
+    "isin": "JP3300600008",
+    "name": "Konica Minolta, Inc.",
+    "search": "JP3300600008",
+    "yf": "4902.T",
+    "currency": "JPY",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Konica Minolta, Inc."
+  },
+  {
+    "isin": "JP3973400009",
+    "name": "Ricoh Company, Ltd.",
+    "search": "JP3973400009",
+    "yf": "7752.T",
+    "currency": "JPY",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Ricoh Company, Ltd."
+  },
+  {
+    "isin": "NL0011821392",
+    "name": "Signify N.V.",
+    "search": "NL0011821392",
+    "yf": "LIGHT.AS",
+    "currency": "EUR",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Signify N.V."
+  },
+  {
+    "isin": "NO0010715139",
+    "name": "Scatec ASA",
+    "search": "NO0010715139",
+    "yf": "SCATC.OL",
+    "currency": "NOK",
+    "stars": 1,
+    "markt": "europa",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Scatec ASA"
+  },
+  {
+    "isin": "US00737L1035",
+    "name": "Covista Inc.",
+    "search": "US00737L1035",
+    "yf": "CVSA",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Covista Inc."
+  },
+  {
+    "isin": "US1307881029",
+    "name": "California Water Service Group",
+    "search": "US1307881029",
+    "yf": "CWT",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "California Water Service Group"
+  },
+  {
+    "isin": "US3364331070",
+    "name": "First Solar, Inc.",
+    "search": "US3364331070",
+    "yf": "FSLR",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "First Solar, Inc."
+  },
+  {
+    "isin": "US41068X1000",
+    "name": "HA Sustainable Infrastructure Capital, Inc.",
+    "search": "US41068X1000",
+    "yf": "HASI",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "HA Sustainable Infrastructure Capital, Inc."
+  },
+  {
+    "isin": "US4586653044",
+    "name": "Interface, Inc.",
+    "search": "US4586653044",
+    "yf": "TILE",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Interface, Inc."
+  },
+  {
+    "isin": "US6005441000",
+    "name": "MillerKnoll, Inc.",
+    "search": "US6005441000",
+    "yf": "MLKN",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "MillerKnoll, Inc."
+  },
+  {
+    "isin": "US6687711084",
+    "name": "Gen Digital Inc.",
+    "search": "US6687711084",
+    "yf": "GEN",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Gen Digital Inc."
+  },
+  {
+    "isin": "US6866881021",
+    "name": "Ormat Technologies, Inc.",
+    "search": "US6866881021",
+    "yf": "ORA",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Ormat Technologies, Inc."
+  },
+  {
+    "isin": "US9078181081",
+    "name": "Union Pacific Corporation",
+    "search": "US9078181081",
+    "yf": "UNP",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Union Pacific Corporation"
+  },
+  {
+    "isin": "US98421M1062",
+    "name": "Xerox Holdings Corporation",
+    "search": "US98421M1062",
+    "yf": "XRX",
+    "currency": "USD",
+    "stars": 1,
+    "markt": "us",
+    "indices": [
+      "gci"
+    ],
+    "land": null,
+    "liste": "Xerox Holdings Corporation"
   }
 ]

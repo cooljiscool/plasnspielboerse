@@ -1,10 +1,11 @@
 """Marktdaten über yfinance: Kurse (Open/High/Low/Close), Kennzahlen, Marktumfeld, Schlagzeilen."""
 import pandas as pd
 
-from . import signals
+from . import fx, signals
 
 INDEX = {"dax": "^GDAXI", "spx": "^GSPC", "vix": "^VIX"}
 STALE_DAYS = 6   # Titel ohne Kurs der letzten Tage (Delisting, Handelsaussetzung) werden ignoriert
+MAX_JUMP = 0.5   # Titel mit einer Tagesbewegung über 50 % in den letzten 300 Handelstagen (Übernahme, Spaltung, Datenfehler) werden nicht gehandelt
 
 
 def download(symbols: list, period: str = "14mo", interval: str = "1d"):
@@ -44,10 +45,17 @@ def load(universe: dict):
     if not syms:
         return {}, signals.regime_at(signals.Frames(pd.DataFrame({"dax": [1.0]})), -1)
     close, high, low, _ = download(list(syms) + list(INDEX.values()))
+    # Alles in Euro: Das Spiel wertet in Euro (siehe bot/fx.py). Unbekannte Währung oder fehlender Wechselkurs: Titel ohne Kurs, wird ignoriert.
+    ccy = {s: universe[isin].get("currency") or fx.infer_currency(s) or "?" for s, isin in syms.items()}
+    rates = fx.download_rates({c for c in ccy.values() if c != "?"}, period="14mo")
+    close, high, low = (fx.convert(x, ccy, rates) for x in (close, high, low))
+    close, high, low, _ = (x.ffill(limit=3) for x in signals.clean_prices(close, high, low, close))   # Datenfehler entfernen (bot/signals.py: clean_prices)
+    have = [s for s in syms if s in close.columns]
+    jumpy = set(signals.max_jump(close[have]).loc[lambda x: x > MAX_JUMP].index) if have else set()
     idx_cols = {k: s for k, s in INDEX.items() if s in close.columns}
     idx = signals.Frames(close[list(idx_cols.values())].rename(columns={s: k for k, s in idx_cols.items()}))
     regime = signals.regime_at(idx, -1)
-    cols = [s for s in syms if s in close.columns and close[s].notna().any()]   # delistete Symbole liefern leere Spalten
+    cols = [s for s in syms if s in close.columns and close[s].notna().any() and s not in jumpy]   # delistete Symbole liefern leere Spalten; Ereignissprünge entfallen
     dax = close[INDEX["dax"]] if INDEX["dax"] in close.columns else None
     fr = signals.Frames(close[cols], high[cols], low[cols], dax)
     regime["mkt_vol_60d"] = fr.market_at(-1)["vol_60d"]   # Schwankung des Marktdurchschnitts der Auswahl (Volatilitäts-Skalierung)

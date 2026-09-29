@@ -220,8 +220,9 @@ def split_summary(df: pd.DataFrame, split_year: int = 2015) -> dict:
 
 
 # --- Kommandozeile: python -m bot.lab -------------------------------------------------------------------------------
-def load_history(cache: str, refresh: bool = False):
-    """Kurshistorie ab 2003 für alle Titel aus bot/universes.py; wird zwischengespeichert (Download dauert ca. 40 s)."""
+def load_history(cache: str, refresh: bool = False, symbols: list = None, currencies: dict = None):
+    """Kurshistorie ab 2003, wird zwischengespeichert (Download dauert ca. 40 s je 200 Titel). Ohne `symbols`: die Titel aus bot/universes.py in Heimatwährung.
+    Mit `currencies` ({Symbol: Währung}) werden alle Kurse in Euro umgerechnet (bot/fx.py), so wie der Bot live rechnet."""
     import os
     import pickle
 
@@ -229,9 +230,13 @@ def load_history(cache: str, refresh: bool = False):
     if os.path.exists(cache) and not refresh:
         return pickle.load(open(cache, "rb"))
     import yfinance as yf
-    syms = list(dict.fromkeys(universes.ALL)) + ["^GDAXI", "^GSPC", "^VIX", "^STOXX50E"]
+    syms = list(dict.fromkeys(symbols or universes.ALL)) + ["^GDAXI", "^GSPC", "^VIX", "^STOXX50E"]
     d = yf.download(syms, start="2003-06-01", interval="1d", auto_adjust=True, progress=False, group_by="ticker", threads=True)
     hist = {k: d.xs(k.capitalize(), axis=1, level=1) for k in ("close", "high", "low", "open")}
+    if currencies:
+        from . import fx
+        rates = fx.download_rates(set(currencies.values()) - {"EUR"}, start="2003-06-01")
+        hist = {k: fx.convert(v.sort_index().ffill(limit=5), currencies, rates) for k, v in hist.items()}
     os.makedirs(os.path.dirname(cache), exist_ok=True)
     pickle.dump(hist, open(cache, "wb"))
     return hist
@@ -267,6 +272,41 @@ def _overlay_report(hist):
         print(f"{name:52}{s['median'] * 100:>+8.1f}%{s['pct'] * 100:>6.0f}%{s['worst'] * 100:>+19.1f}%")
 
 
+def _official_report(refresh: bool, years: bool):
+    """Die Strategien auf dem amtlichen Universum (data/universe.json aus `python -m bot.universe_tool official`), Kurse in Euro, gruppiert nach Markt."""
+    import json
+    import os
+
+    from . import config
+    rows = json.load(open(os.path.join(config.DATA_DIR, "universe.json")))
+    if not all(r.get("markt") and r.get("currency") for r in rows):
+        raise SystemExit("data/universe.json stammt nicht aus `python -m bot.universe_tool official` (Felder markt und currency fehlen)")
+    hist = load_history(os.path.join(config.DATA_DIR, "cache", "history_official.pkl"), refresh, [r["yf"] for r in rows], {r["yf"]: r["currency"] for r in rows})
+    groups = {g: [r["yf"] for r in rows if r["markt"] == g] for g in ("dax", "mdax", "sdax", "europa", "us")}
+    groups["alle"] = [r["yf"] for r in rows]
+    _run_groups(hist, groups, years, f"Amtliches Universum ({len(rows)} Titel), Kurse in Euro")
+
+
+def _run_groups(hist, groups: dict, years: bool, title: str):
+    strategies = {"rules (Standard, jetzt)": rules.decide, "frühere Version (alle Filter)": bt.alt_all_filters, "nur 60-Tage-Momentum": bt.momentum_only}
+    pct = lambda x: f"{x * 100:+5.1f}%"
+    print(f"{title}. Planspiel-Jahre: 1.10. bis 25.1., je 50.000 €, Gebühren der Plattform. Rang = Anteil zufälliger 6-Titel-Depots, die geschlagen werden.\n")
+    for g, syms in groups.items():
+        d = bt.Data.from_frames(hist["close"], hist["high"], hist["low"], hist["open"], syms)
+        w = planspiel_windows(d.dates)
+        print(f"== {g}: {len(d.cols)} Titel, {len(w)} Jahre ({w[0][0]}-{w[-1][0]}) ==")
+        for name, st in strategies.items():
+            df = evaluate(d, w, st)
+            s = split_summary(df)
+            print(f"  {name:32} Median {pct(s['alle']['median'])}  im Plus {s['alle']['positive'] * 100:3.0f}%  schlechtestes Jahr {pct(s['alle']['worst'])}  "
+                  f"Rang {s['alle']['pct'] * 100:3.0f}% (2004-14: {s['früh']['pct'] * 100:3.0f}%, 2015-25: {s['spät']['pct'] * 100:3.0f}%)", flush=True)
+            if years and g == "alle" and name.startswith("rules"):
+                out = (df[["ret", "ew", "dax", "pct"]] * 100).round(1)
+                out.columns = ["Strategie %", "Ø alle Titel %", "DAX %", "Rang %"]
+                print(out.to_string())
+        print()
+
+
 def main():
     import argparse
     import os
@@ -278,32 +318,18 @@ def main():
     ap.add_argument("--refresh", action="store_true", help="Kurshistorie neu laden")
     ap.add_argument("--years", action="store_true", help="Ergebnis je Planspiel-Jahr ausgeben")
     ap.add_argument("--macro", action="store_true", help="Zins- und Konjunktur-Warnsignale als Überlagerung testen (Markt alle)")
+    ap.add_argument("--official", action="store_true", help="Strategien auf dem amtlichen Universum (data/universe.json) testen, Kurse in Euro")
     ap.add_argument("--overlays", action="store_true", help="Marktbreite und Schutzschalter bei Depotrückgang als Überlagerung testen (Markt alle)")
     a = ap.parse_args()
+    if a.official:
+        return _official_report(a.refresh, a.years)
     hist = load_history(os.path.join(config.DATA_DIR, "cache", "history.pkl"), a.refresh)
     if a.macro:
         return _macro_report(hist)
     if a.overlays:
         return _overlay_report(hist)
     groups = {**universes.GROUPS, "alle": list(dict.fromkeys(universes.ALL))}
-    strategies = {"rules (Standard, jetzt)": rules.decide, "frühere Version (alle Filter)": bt.alt_all_filters,
-                  "nur 60-Tage-Momentum": bt.momentum_only}
-    pct = lambda x: f"{x * 100:+5.1f}%"
-    print("Planspiel-Jahre: 1.10. bis 25.1., je 50.000 €, Gebühren der Plattform. Rang = Anteil zufälliger 6-Titel-Depots, die geschlagen werden.\n")
-    for g, syms in groups.items():
-        d = bt.Data.from_frames(hist["close"], hist["high"], hist["low"], hist["open"], syms)
-        w = planspiel_windows(d.dates)
-        print(f"== {g}: {len(d.cols)} Titel, {len(w)} Jahre ({w[0][0]}-{w[-1][0]}) ==")
-        for name, st in strategies.items():
-            df = evaluate(d, w, st)
-            s = split_summary(df)
-            print(f"  {name:32} Median {pct(s['alle']['median'])}  im Plus {s['alle']['positive'] * 100:3.0f}%  schlechtestes Jahr {pct(s['alle']['worst'])}  "
-                  f"Rang {s['alle']['pct'] * 100:3.0f}% (2004-14: {s['früh']['pct'] * 100:3.0f}%, 2015-25: {s['spät']['pct'] * 100:3.0f}%)")
-            if a.years and g == "alle" and name.startswith("rules"):
-                out = (df[["ret", "ew", "dax", "pct"]] * 100).round(1)
-                out.columns = ["Strategie %", "Ø alle Titel %", "DAX %", "Rang %"]
-                print(out.to_string())
-        print()
+    _run_groups(hist, groups, a.years, "Getestetes Universum (Kurse in Heimatwährung)")
 
 
 if __name__ == "__main__":

@@ -189,3 +189,21 @@ def test_depot_api_exposes_extra_data_line(authed, app, tmp_path):
                                                               "daten": {"analysten": 3, "reddit": 2, "insider_sec": "aus: SEC_USER_AGENT (Name und E-Mail) fehlt"}}))
     d = authed.get("/api/depot").get_json()
     assert d["decisions"][0]["daten"]["analysten"] == 3
+
+
+def test_universe_action_runs_the_official_list_import(authed, app, tmp_path):
+    fake = tmp_path / "fakepython"
+    argsfile = tmp_path / "args.txt"
+    fake.write_text(f"#!/bin/sh\necho \"$@\" > {argsfile}\nsleep 5\n")
+    fake.chmod(0o755)
+    app.runner.python = str(fake)
+    assert authed.post("/api/control", headers=H, json={"action": "universe"}).get_json()["running"] is True
+    assert authed.post("/api/control", headers=H, json={"action": "universe"}).status_code == 409        # nur ein Vorgang zugleich
+    import time
+    for _ in range(50):
+        if argsfile.exists() and argsfile.read_text().strip():
+            break
+        time.sleep(0.1)
+    assert argsfile.read_text().strip() == "-m bot.universe_tool official"
+    assert authed.post("/api/control", headers=H, json={"action": "stop"}).get_json()["running"] is False
+    assert authed.post("/api/control", headers=H, json={"action": "gibtsnicht"}).status_code == 400
