@@ -1,0 +1,35 @@
+name: trade
+on:
+  schedule:
+    # Werktags 3x täglich (UTC): nach Handelsstart, mittags, vor Handelsschluss in Stuttgart
+    - cron: "20 6 * * 1-5"
+    - cron: "30 11 * * 1-5"
+    - cron: "40 17 * * 1-5"
+  workflow_dispatch:
+
+concurrency: trade
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt && playwright install --with-deps chromium
+      - run: python -m bot.run
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BOT_LIVE: ${{ vars.BOT_LIVE || '0' }}
+          PSB_USER: ${{ secrets.PSB_USER }}
+          PSB_PASSWORD: ${{ secrets.PSB_PASSWORD }}
+      - name: Depotstand und Logs sichern
+        run: |
+          git config user.name "trade-bot"
+          git config user.email "trade-bot@users.noreply.github.com"
+          git add data logs
+          git diff --cached --quiet || (git commit -m "Handelslauf $(date -u +%F-%H%M)" && git push)
