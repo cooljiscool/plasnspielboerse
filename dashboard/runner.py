@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 TZ = ZoneInfo("Europe/Berlin")
-SECRET_KEYS = ("CLAUDE_CODE_OAUTH_TOKEN", "ANTHROPIC_API_KEY", "PSB_USER", "PSB_PASSWORD")
+SECRET_KEYS = ("CLAUDE_CODE_OAUTH_TOKEN", "ANTHROPIC_API_KEY", "PSB_USER", "PSB_PASSWORD", "QUIVER_API_TOKEN", "SEC_USER_AGENT")
 PROVIDERS = ("auto", "claude_cli", "api", "rules")
 DEFAULTS = {"enabled": False, "live": False, "times": ["09:20", "13:30", "19:40"], "model": "claude-sonnet-5-5",
             "provider": "auto", "research": True, "kronos": False}

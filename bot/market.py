@@ -58,6 +58,9 @@ def load(universe: dict):
             continue
         m = fr.at(-1, s)
         if m:
+            rp = signals.risk_profile(close[s].to_numpy())
+            if rp:
+                m["risiko"] = rp
             snap[syms[s]] = m
     return snap, regime
 

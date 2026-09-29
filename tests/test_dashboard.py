@@ -60,7 +60,7 @@ def test_secrets_stored_privately_and_never_returned(authed, app):
     body = r.get_data(as_text=True)
     assert "geheim-xyz" not in body and "sk-ant-abc123" not in body
     assert r.get_json()["secrets"] == {"ANTHROPIC_API_KEY": True, "PSB_USER": True, "PSB_PASSWORD": True,
-                                       "CLAUDE_CODE_OAUTH_TOKEN": False}
+                                       "CLAUDE_CODE_OAUTH_TOKEN": False, "QUIVER_API_TOKEN": False, "SEC_USER_AGENT": False}
     path = os.path.join(app.store.dir, "secrets.json")
     assert stat.S_IMODE(os.stat(path).st_mode) == 0o600
     # leeres Feld ändert nichts
@@ -170,3 +170,22 @@ def test_research_toggle_reaches_bot_env(authed, app):
     assert app.runner._env(live=False)["BOT_RESEARCH"] == "0"
     authed.post("/api/settings", headers=H, json={"research": True})
     assert app.runner._env(live=False)["BOT_RESEARCH"] == "1"
+
+
+def test_quiver_token_and_sec_contact_are_stored_privately_and_reach_the_bot_env(authed, app):
+    r = authed.post("/api/settings", headers=H, json={"secrets": {"QUIVER_API_TOKEN": "qv-geheim-123", "SEC_USER_AGENT": "Max Muster max@example.org"}})
+    body = r.get_data(as_text=True)
+    assert "qv-geheim-123" not in body and "max@example.org" not in body
+    assert r.get_json()["secrets"]["QUIVER_API_TOKEN"] is True and r.get_json()["secrets"]["SEC_USER_AGENT"] is True
+    env = app.runner._env(False)
+    assert env["QUIVER_API_TOKEN"] == "qv-geheim-123" and env["SEC_USER_AGENT"] == "Max Muster max@example.org"
+    assert stat.S_IMODE(os.stat(os.path.join(app.store.dir, "secrets.json")).st_mode) == 0o600
+
+
+def test_depot_api_exposes_extra_data_line(authed, app, tmp_path):
+    log_dir = tmp_path / "logs"
+    log_dir.mkdir(exist_ok=True)
+    (log_dir / "20261001-0920.json").write_text(json.dumps({"time": "2026-10-01T09:20:00", "total_after": 50000.0, "holdings": {}, "approved": [], "rejected": [],
+                                                              "daten": {"analysten": 3, "reddit": 2, "insider_sec": "aus: SEC_USER_AGENT (Name und E-Mail) fehlt"}}))
+    d = authed.get("/api/depot").get_json()
+    assert d["decisions"][0]["daten"]["analysten"] == 3

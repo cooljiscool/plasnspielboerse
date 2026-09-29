@@ -118,6 +118,10 @@ svg{width:100%;height:auto;display:block}
     <input id="CLAUDE_CODE_OAUTH_TOKEN" type="password" autocomplete="new-password" placeholder="leer lassen = unverändert">
     <label>Anthropic-API-Key (optional, kostenpflichtig) <span id="s_ANTHROPIC_API_KEY" class="mute"></span></label>
     <input id="ANTHROPIC_API_KEY" type="password" autocomplete="new-password" placeholder="leer lassen = unverändert">
+    <label>Kontakt für die SEC-Insiderdaten: Vorname Nachname und E-Mail <span id="s_SEC_USER_AGENT" class="mute"></span></label>
+    <input id="SEC_USER_AGENT" autocomplete="off" autocapitalize="off" placeholder="z. B. Max Muster max@example.org (verlangt die SEC; ohne Angabe bleiben die Insiderdaten aus)">
+    <label>Quiver-Quantitative-Schlüssel (optional, kostenpflichtig, ungetestet) <span id="s_QUIVER_API_TOKEN" class="mute"></span></label>
+    <input id="QUIVER_API_TOKEN" type="password" autocomplete="new-password" placeholder="leer lassen = unverändert">
   </div>
   <h2>Zeitplan &amp; Modell</h2>
   <div class="card">
@@ -255,6 +259,13 @@ async function loadLog() {
       x.regime ? el('div', {class: 'mute'}, 'Marktumfeld: ' + ({risk_on: 'freundlich', neutral: 'neutral', risk_off: 'schwach'}[x.regime.label] || x.regime.label) + ' (' + x.regime.score + ')') : '',
       x.research ? el('div', {class: x.research.error ? 'down' : 'mute'}, x.research.error ? 'Web-Recherche fehlgeschlagen: ' + x.research.error : 'Web-Recherche: ' + x.research.notes + ' Titel' + (x.research.cached ? ' (von heute früh)' : '')) : '',
       (x.makro && (x.makro.warnsignale || []).length) ? el('div', {class: 'mute'}, 'Makro-Warnsignale (nur Information): ' + x.makro.warnsignale.join('; ')) : '',
+      x.daten ? el('div', {class: 'mute'}, 'Zusatzdaten für Claude: ' + [
+        x.daten.insider_sec !== undefined ? 'SEC-Insider ' + x.daten.insider_sec : '',
+        x.daten.analysten !== undefined ? 'Analysten ' + x.daten.analysten : '', x.daten.reddit !== undefined ? 'Reddit ' + x.daten.reddit : '',
+        x.daten.stocktwits !== undefined ? 'StockTwits ' + x.daten.stocktwits : '',
+        x.daten.quiver ? 'Quiver ' + (x.daten.quiver.fehler ? 'Fehler: ' + x.daten.quiver.fehler : x.daten.quiver.titel) : '',
+        x.daten.prognosen ? 'Prognosen neu ' + x.daten.prognosen.neu + ', ausgewertet ' + x.daten.prognosen.ausgewertet : ''].filter(Boolean).join(' · ')) : '',
+      (x.research && x.research.warning) ? el('div', {class: 'down'}, 'Hinweis zur Recherche: ' + x.research.warning) : '',
       x.kronos ? el('div', {class: x.kronos.fehler ? 'down' : 'mute'}, x.kronos.fehler ? 'Kronos fehlgeschlagen: ' + x.kronos.fehler : 'Kronos: ' + x.kronos.titel + ' Prognosen (' + x.kronos.modell + ')') : '',
       x.fallback_reason ? el('div', {class: 'down'}, 'KI ausgefallen, Regeln genutzt: ' + x.fallback_reason) : '',
       ...(x.guard || []).map(g => el('div', {class: 'mute'}, 'Kontrolle: ' + g.aktion + ' (' + g.isin + '): ' + g.grund)),
@@ -295,7 +306,7 @@ async function loadSettingsForm() {
   } catch (e) {}
 }
 $('saveSettings').onclick = act(async () => {
-  const secrets = {}; for (const k of ['PSB_USER', 'PSB_PASSWORD', 'CLAUDE_CODE_OAUTH_TOKEN', 'ANTHROPIC_API_KEY']) { secrets[k] = $(k).value; $(k).value = ''; }
+  const secrets = {}; for (const k of ['PSB_USER', 'PSB_PASSWORD', 'CLAUDE_CODE_OAUTH_TOKEN', 'ANTHROPIC_API_KEY', 'SEC_USER_AGENT', 'QUIVER_API_TOKEN']) { secrets[k] = $(k).value; $(k).value = ''; }
   S = await api('/api/settings', {times: $('times').value.split(',').map(s => s.trim()).filter(Boolean), model: $('model').value, provider: $('provider').value, research: $('research').checked, kronos: $('kronos').checked, secrets});
   renderStatus();
 }, 'Gespeichert');

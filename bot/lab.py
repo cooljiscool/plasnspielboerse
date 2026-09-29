@@ -128,6 +128,31 @@ def macro_exposure(trigger, off_exposure=0.5, target=0.20, floor=0.4, n=6):
     return f
 
 
+def breadth_exposure(threshold=0.40, off_exposure=0.5, target=0.20, floor=0.4, n=6, key="breadth200"):
+    """Marktbreite (Skill "Market Breadth Analyzer"): sind weniger als `threshold` der Titel über ihrer Durchschnittslinie, höchstens `off_exposure` investiert."""
+    base = mktvol_exposure(target, floor, n)
+
+    def f(regime):
+        exp, pos = base(regime)
+        b = regime.get(key)
+        if b is not None and b == b and b < threshold:
+            exp, pos = _scaled(min(exp, off_exposure), n)
+        return exp, pos
+    return f
+
+
+def drawdown_exposure(dd=0.10, off_exposure=0.5, target=0.20, floor=0.4, n=6):
+    """Schutzschalter (Skill "Drawdown Circuit Breaker"): liegt das Depot mehr als `dd` unter seinem Höchststand, höchstens `off_exposure` investiert."""
+    base = mktvol_exposure(target, floor, n)
+
+    def f(regime):
+        exp, pos = base(regime)
+        if regime.get("drawdown", 0.0) <= -dd:
+            exp, pos = _scaled(min(exp, off_exposure), n)
+        return exp, pos
+    return f
+
+
 def vix_exposure(level=28.0, off_exposure=0.5, off_positions=3):
     def f(regime):
         v = regime.get("vix")

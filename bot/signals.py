@@ -131,3 +131,22 @@ def regime_at(idx: Frames, pos: int) -> dict:
     return {"label": label, "score": f"{score}/{n}", "exposure": exposure, "positions": positions,
             "checks": {k: bool(v) for k, v in checks.items()}, "vix": vix,
             "dax_ret_20d": get("dax", "ret_20d"), "spx_ret_20d": get("spx", "ret_20d")}
+
+
+def risk_profile(close) -> dict:
+    """Risikokennzahlen eines Titels aus den letzten Schlusskursen (neueste zuletzt, mindestens 120 Werte):
+    Jahresschwankung, größter Rückgang im letzten Jahr, Value at Risk (in 19 von 20 Zehn-Tages-Zeiträumen war der Verlust kleiner)
+    und eine Risikostufe von 1 (ruhig) bis 5 (sehr riskant), die bei tiefem Einbruch um eine Stufe steigt."""
+    c = np.asarray(close, dtype=float)
+    c = c[~np.isnan(c)][-253:]
+    if len(c) < 120:
+        return {}
+    r = c[1:] / c[:-1] - 1
+    vol = float(r.std(ddof=1) * math.sqrt(252))
+    max_dd = float((c / np.maximum.accumulate(c) - 1).min())
+    r10 = c[10:] / c[:-10] - 1
+    var95 = float(np.quantile(r10, 0.05))
+    stufe = 1 if vol < 0.20 else 2 if vol < 0.30 else 3 if vol < 0.40 else 4 if vol < 0.55 else 5
+    if max_dd < -0.45:
+        stufe = min(5, stufe + 1)
+    return {"vola_jahr": round(vol, 3), "max_rueckgang_1j": round(max_dd, 3), "var95_10_tage": round(var95, 3), "risikostufe": stufe}

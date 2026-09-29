@@ -89,6 +89,11 @@ class Data:
         self.uni = {c: {"name": c, "stars": 0} for c in self.cols}
         self._snaps = {}
         self._macro = None
+        a = self.fr.a
+        for key, sma in (("breadth200", "sma200"), ("breadth50", "sma50")):   # Marktbreite: Anteil der Titel über ihrer Durchschnittslinie
+            ok = ~np.isnan(a[sma])
+            with np.errstate(invalid="ignore", divide="ignore"):
+                setattr(self, key, np.where(ok.sum(1) > 20, ((a["price"] > a[sma]) & ok).sum(1) / np.maximum(ok.sum(1), 1), np.nan))
 
     def attach_macro(self, frame):
         """Makrokennzahlen (bot/macro.py: frame) je Handelstag; danach steht regime["macro"] im Backtest zur Verfügung."""
@@ -154,6 +159,8 @@ def simulate(d: Data, start: int, end: int, strategy, step: int = 2, capital: fl
             snap = d.snap(i)
             regime = signals.regime_at(d.idx, i)
             regime["mkt_vol_60d"] = d.fr.market_at(i)["vol_60d"]
+            regime["breadth200"], regime["breadth50"] = float(d.breadth200[i]), float(d.breadth50[i])
+            regime["drawdown"] = total / max(equity) - 1   # Abstand zum bisherigen Höchststand des Depots
             if d._macro is not None:
                 regime["macro"] = d.macro_at(i)
             out = strategy(pf, d.uni, snap, total, regime)

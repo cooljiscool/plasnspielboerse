@@ -10,7 +10,7 @@ import subprocess
 import tempfile
 from datetime import date
 
-from . import config, rules
+from . import config, mcp, rules
 
 SYSTEM = f"""Du bist der Portfoliomanager eines Teams im Planspiel Börse der Sparkassen (virtuelles Depot, echte Kurse).
 Ziel: maximaler Rang in der Depotgesamtwertung bis {config.GAME_END} (Zwischenwertung {config.INTERIM_EVAL}) und
@@ -37,16 +37,28 @@ Weitere Daten im Kontext. Keine davon ist im Test als nützlich belegt, sie sind
   zählt als belegter negativer Befund. Leichte Warnungen sind Information.
 - insider (Käufe und Verkäufe der Führungskräfte, nur US-Aktien) und recherche.insider_web (BaFin, SEC): Verkäufe sind oft planmäßig und ein schwaches Signal, Käufe mehrerer Insider
   sind schwach positiv. Kein Grund für ein Veto.
-- social (Privatanleger-Stimmung auf StockTwits, nur US-Aktien, Momentaufnahme der letzten Stunden, nur Zahlen) und recherche.social / social_summary (Stimmung in Foren und sozialen Medien
-  aus dem Web): laut, leicht zu manipulieren, teils ein Gegenindikator. Der Bullish-Anteil liegt bei fast allen Titeln über 60 %, ein hoher
-  Wert allein sagt also nichts, nur deutliche Abweichungen fallen auf. Weder Kaufgrund noch Veto-Grund.
+- social.stocktwits (Privatanleger-Stimmung auf StockTwits, nur US-Aktien, Momentaufnahme der letzten Stunden, nur Zahlen), social.reddit (Erwähnungen in Reddit-Foren: Rang, Zahl in 24 Stunden,
+  "auffaellig" bei Rang bis 20 oder verdoppelten Erwähnungen) und recherche.social / social_summary (Stimmung aus dem Web): laut, leicht zu manipulieren, oft ein Gegenindikator oder
+  zu spät. Der Bullish-Anteil liegt bei fast allen Titeln über 60 %, ein hoher Wert allein sagt also nichts, nur deutliche Abweichungen fallen auf. Weder Kaufgrund noch Veto-Grund.
+- insider_sec (Käufe und Verkäufe der Führungskräfte aus den offiziellen SEC-Meldungen der letzten 90 Tage, nur US-Aktien): cluster_kauf = mehrere Führungskräfte kauften innerhalb von 30 Tagen
+  am offenen Markt, das gilt in der Forschung als schwach positives Signal. Geplante Verkäufe (10b5-1) und Verkäufe ohne gleichzeitige Käufe sind kaum aussagekräftig. Kein Veto-Grund.
+- analysten (Änderungen der Gewinnschätzungen, Ratings, Kursziele, Yahoo): Die Richtung der Schätzungsänderungen zählt zu den am besten belegten Signalen der Forschung, ist hier aber nicht über die
+  Planspiel-Jahre getestet. Nur analysten.schaetzungen_gesenkt = true (Schätzung in 30 Tagen um mindestens 5 % gesenkt, kaum Erhöhungen) zählt als belegter negativer Befund. schaetzungen_angehoben
+  und kauf_anteil sind Information und kein Grund, vom Vorschlag abzuweichen; große kursziel_streuung heißt: Analysten sind uneinig.
+- quiver (nur wenn der Nutzer den kostenpflichtigen Zugang eingerichtet hat: Kongress-Handel, Regierungsaufträge, Lobbyausgaben, Wikipedia-Aufrufe, außerbörslicher Leerverkaufsanteil): schwach
+  oder umstritten belegte Zusatzinformation, weder Kaufgrund noch Veto-Grund.
+- risiko (rein aus den Kursen gerechnet: vola_jahr, max_rueckgang_1j, var95_10_tage = Verlust, der in 95 % der 10-Tage-Zeiträume nicht überschritten wurde, risikostufe 1 bis 5): nur zur
+  Einordnung. Gewichtung nach Volatilität senkte im Test den Rang, die Positionsgröße im Vorschlag berücksichtigt die Marktschwankung bereits. Kein Grund zur Abweichung.
+- recherche.szenarien, erwartung_3m_prozent, risikomatrix und risiko_einschaetzung sind Schätzungen aus der Websuche und historisch nicht geprüft. prognose_bilanz zeigt, ob frühere Prognosen
+  zutrafen (Trefferquote der Richtung, Rangkorrelation). Fehlt die Bilanz oder liegt die Rangkorrelation bei 0 oder darunter, tragen die Prognosen keine Entscheidung. Ist sie klar positiv,
+  darfst du sie höchstens nutzen, um zwischen ähnlich platzierten Titeln der Top 25 zu wählen. Nie als Veto-Grund.
 
 Vorgehen:
 1. Ausgangspunkt ist "quant_vorschlag" (Ranking nach mittelfristigem Momentum, 6 gleich große Positionen, Größe nach Marktschwankung). Übernimm ihn,
    sofern du keinen konkreten Grund zur Abweichung hast. Jede Abweichung braucht einen benannten Grund in "reason".
 2. Prüfe jeden vorgeschlagenen Kauf wie ein Anwalt des Teufels: Nenne in "bear_case" das stärkste Gegenargument (Gewinnwarnung, Rechtsstreit,
    Übernahme mit schlechten Konditionen, Termin in den nächsten Tagen, Datenfehler wie ein Aktiensplit). Nur ein belegter negativer Befund
-   (recherche.sentiment -1 oder -2, event_soon, days_to_earnings 0-3, next_event, bilanz.schwer) rechtfertigt, einen Kauf zu streichen und durch den nächsten Titel zu ersetzen.
+   (recherche.sentiment -1 oder -2, event_soon, days_to_earnings 0-3, bilanz.schwer, analysten.schaetzungen_gesenkt) rechtfertigt, einen Kauf zu streichen und durch den nächsten Titel zu ersetzen.
    Bloße Vorsicht, hohe Bewertung (pe, fwd_pe), niedriges Wachstum oder Analystenurteil reichen nicht, sie sind nur Zusatzinformationen.
 3. Verkaufe eine Position nur bei belegter Verschlechterung der Lage oder wenn der Vorschlag sie verkauft. Nicht wegen kleiner Kursschwankungen.
    Gehe nicht in Cash, weil dir der Markt teuer oder unsicher vorkommt: die Größe nach Marktschwankung ist im Vorschlag bereits eingerechnet.
@@ -98,7 +110,7 @@ def resolve_provider() -> str:
     return "rules"
 
 
-def build_context(pf, universe, snap, news, today, total, regime=None, research=None, baseline=None, history=None, macro=None) -> dict:
+def build_context(pf, universe, snap, news, today, total, regime=None, research=None, baseline=None, history=None, macro=None, track_record=None) -> dict:
     """Kompakter Kontext: Marktumfeld, Depot, die stärksten Kandidaten nach Regelscore plus alle Depottitel."""
     top = sorted(snap, key=lambda i: rules.score(snap[i], universe[i].get("stars", 0)), reverse=True)[:config.LLM_CANDIDATES]
     ids = list(dict.fromkeys([*pf["positions"], *top]))
@@ -131,15 +143,18 @@ def build_context(pf, universe, snap, news, today, total, regime=None, research=
         ctx["quant_vorschlag"] = baseline
     if history:
         ctx["verlauf"] = history
+    if track_record:
+        ctx["prognose_bilanz"] = track_record
     return ctx
 
 
 def _negative(isin: str, snap: dict, research: dict) -> bool:
-    """Belegter negativer Befund: schlechte Nachrichtenlage, anstehender Termin oder Gewinnmeldung in den nächsten Tagen."""
+    """Belegter negativer Befund: schlechte Nachrichtenlage, anstehender Termin oder Gewinnmeldung in den nächsten Tagen, schweres Bilanz-Warnsignal
+    oder deutlich gesenkte Analystenschätzungen (gemessene Fakten). Claudes eigene Szenarien und Risikoeinschätzungen zählen nicht: sonst könnte er Vetos mit seiner eigenen Meinung begründen."""
     note = ((research or {}).get("notes") or {}).get(isin, {})
     m = snap.get(isin, {})
     return (note.get("sentiment", 0) <= -1 or bool(note.get("event_soon")) or 0 <= m.get("days_to_earnings", 99) <= 3
-            or bool((m.get("bilanz") or {}).get("schwer")))
+            or bool((m.get("bilanz") or {}).get("schwer")) or bool((m.get("analysten") or {}).get("schaetzungen_gesenkt")))
 
 
 def guard(baseline: dict, out: dict, snap: dict, universe: dict, research: dict = None, top_k: int = 25):
@@ -199,8 +214,8 @@ def _decide_cli(context: dict) -> dict:
     env = {k: v for k, v in os.environ.items() if k not in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")}
     cmd = ["claude", "-p", "Entscheide anhand der Daten auf stdin und gib nur die Orders im Schema zurück.",
            "--output-format", "json", "--json-schema", json.dumps(TOOL["input_schema"]),
-           "--system-prompt", SYSTEM, "--tools", "", "--disable-slash-commands", "--no-session-persistence",
-           "--permission-mode", "dontAsk", "--model", config.MODEL]
+           "--system-prompt", SYSTEM, "--tools", "", "--strict-mcp-config", "--mcp-config", mcp.EMPTY,   # keine MCP-Server: die Entscheidung läuft ganz ohne Werkzeuge
+           "--disable-slash-commands", "--no-session-persistence", "--permission-mode", "dontAsk", "--model", config.MODEL]
     with tempfile.TemporaryDirectory() as cwd:  # leeres Verzeichnis: keine CLAUDE.md, keine Projektdateien
         proc = subprocess.run(cmd, input=json.dumps(context, ensure_ascii=False), capture_output=True, text=True,
                               cwd=cwd, env=env, timeout=config.CLI_TIMEOUT)
@@ -216,13 +231,13 @@ def _decide_cli(context: dict) -> dict:
 
 
 def decide(pf: dict, universe: dict, snap: dict, news: dict, today: date, total: float,
-           regime: dict = None, research: dict = None, history: list = None, macro: dict = None) -> dict:
+           regime: dict = None, research: dict = None, history: list = None, macro: dict = None, track_record: dict = None) -> dict:
     """Gibt {market_view, orders, provider[, fallback_reason]} zurück."""
     provider = resolve_provider()
     if provider != "rules":
         try:
             baseline = rules.decide(pf, universe, snap, total, regime)
-            context = build_context(pf, universe, snap, news, today, total, regime, research, baseline, history, macro)
+            context = build_context(pf, universe, snap, news, today, total, regime, research, baseline, history, macro, track_record)
             out = _decide_cli(context) if provider == "claude_cli" else _decide_api(context)
             orders, overrides = guard(baseline, out, snap, universe, research)
             return {**out, "orders": orders, "guard": overrides, "provider": provider}

@@ -3,7 +3,7 @@ import json
 import os
 from datetime import date, datetime
 
-from . import brain, config, fundamentals, journal, kronos_signal, macro, market, research, risk, rules, social, statements
+from . import analysts, brain, config, edgar, fundamentals, journal, kronos_signal, macro, market, quiver, research, risk, rules, social, statements, track
 from .executor import DryRunExecutor, PlaywrightExecutor
 
 
@@ -15,6 +15,15 @@ def load(name, default):
 def save(name, obj):
     os.makedirs(config.DATA_DIR, exist_ok=True)
     json.dump(obj, open(os.path.join(config.DATA_DIR, name), "w"), indent=2, ensure_ascii=False)
+
+
+def optional(name, fn, default=None):
+    """Zusatzdaten holen. Ein Fehler wird gemeldet, stoppt den Lauf aber nie (die Regelstrategie braucht sie nicht)."""
+    try:
+        return fn()
+    except Exception as e:  # noqa: BLE001
+        print(f"{name} nicht verfügbar: {e}")
+        return default
 
 
 def main():
@@ -36,6 +45,8 @@ def main():
     research_info = None
     kronos_info = None
     macro_info = None
+    data_info = {}
+    track_record = None
     try:
         # Live: Depot von der Plattform lesen. Schlägt das fehl, wird nichts gehandelt (Exception bricht ab).
         pf = executor.get_portfolio(pf) if config.LIVE else executor.get_portfolio()
@@ -72,8 +83,21 @@ def main():
                 if isin in snap and note.get("event_soon"):
                     snap[isin]["event_soon"] = True
         history = journal.recent(config.LOG_DIR, snap) if provider != "rules" else None
+
+        # Prognose-Bilanz: Claudes Szenario-Prognosen speichern und frühere gegen den tatsächlichen Kurs auswerten (bot/track.py)
+        def track_forecasts():
+            rows = track.load()
+            evaluated = track.update(rows, prices, today)
+            added = track.add(rows, (research_info or {}).get("notes"), prices, today)
+            track.save(rows)
+            summaries = {f"nach_{h}_tagen": track.summary(rows, h) for h in track.HORIZONS}
+            return {"neu": added, "ausgewertet": evaluated, "gespeichert": len(rows)}, {k: v for k, v in summaries.items() if v["n"] >= track.MIN_N}
+        tracked = optional("Prognose-Bilanz", track_forecasts)
+        if tracked:
+            data_info["prognosen"], track_record = tracked[0], tracked[1] or None
+
         macro_info = None
-        if provider != "rules":   # Zusatzdaten für Claude: Zins- und Konjunkturlage, Bilanzqualität, Insider (die Regeln nutzen sie nicht)
+        if provider != "rules":   # Zusatzdaten für Claude: Zins- und Konjunkturlage, Bilanzqualität, Insider, Analysten, Stimmung (die Regeln nutzen sie nicht)
             macro_info = macro.snapshot()
             try:
                 sectors = {i: snap[i]["sector"] for i in shortlist if snap[i].get("sector")}
@@ -83,12 +107,28 @@ def main():
                             snap[isin][key] = extra[key]
             except Exception as e:  # noqa: BLE001 – Zusatzdaten
                 print("Bilanzdaten nicht verfügbar:", e)
-            try:
-                for isin, s in social.get(universe, shortlist).items():
-                    snap[isin]["social"] = s   # Privatanleger-Stimmung (StockTwits, nur US-Titel)
-            except Exception as e:  # noqa: BLE001
-                print("Social-Media-Stimmung nicht verfügbar:", e)
-        proposal = brain.decide(pf, universe, snap, news, today, total, regime, research_info, history, macro_info)
+            stocktwits = optional("StockTwits", lambda: social.get(universe, shortlist), {})   # Privatanleger-Stimmung, nur US-Titel
+            reddit = optional("Reddit-Erwähnungen", lambda: social.reddit(universe, shortlist), {})
+            for isin in {*stocktwits, *reddit}:
+                snap[isin]["social"] = {k: v for k, v in (("stocktwits", stocktwits.get(isin)), ("reddit", reddit.get(isin))) if v}
+            data_info.update(stocktwits=len(stocktwits), reddit=len(reddit))
+            if edgar.contact_ok():
+                sec = optional("SEC-Insiderdaten", lambda: edgar.get(universe, shortlist, today), {})
+                for isin, v in sec.items():
+                    snap[isin]["insider_sec"] = v
+                data_info["insider_sec"] = len(sec)
+            else:
+                data_info["insider_sec"] = "aus: SEC_USER_AGENT (Name und E-Mail) fehlt"
+            est = optional("Analystenschätzungen", lambda: analysts.get(universe, shortlist, today), {})
+            for isin, v in est.items():
+                snap[isin]["analysten"] = v
+            data_info["analysten"] = len(est)
+            if config.QUIVER_TOKEN:   # optional, kostenpflichtig
+                qv, qerr = optional("Quiver", lambda: quiver.get(universe, shortlist, today), ({}, "Abruf gescheitert"))
+                for isin, v in qv.items():
+                    snap[isin]["quiver"] = v
+                data_info["quiver"] = {"titel": len(qv), **({"fehler": qerr} if qerr else {})}
+        proposal = brain.decide(pf, universe, snap, news, today, total, regime, research_info, history, macro_info, track_record)
         approved, rejected = risk.validate(proposal["orders"], pf, prices, universe, today)
         for o in approved:
             o["name"] = universe[o["isin"]]["name"]
@@ -112,7 +152,8 @@ def main():
            "market_view": proposal["market_view"], "provider": proposal.get("provider"),
            "fallback_reason": proposal.get("fallback_reason"), "guard": proposal.get("guard"), "kronos": kronos_info, "regime": regime,
            "makro": ({"warnsignale": macro_info.get("warnsignale", [])} if macro_info else None),
-           "research": ({"error": research_info.get("error"), "cached": research_info.get("cached", False),
+           "daten": data_info or None,
+           "research": ({"error": research_info.get("error"), "warning": research_info.get("warning"), "cached": research_info.get("cached", False),
                          "market": research_info.get("market"), "notes": len(research_info["notes"])}
                         if research_info else None),
            "approved": approved,

@@ -170,3 +170,27 @@ def test_research_failure_never_raises(tmp_path, monkeypatch):
     fake_claude(tmp_path, monkeypatch, "cat >/dev/null\necho boom >&2\nexit 2\n")
     r = research.get({"A": {"name": "A"}}, ["A"], date(2026, 10, 6))
     assert r["notes"] == {} and "Code 2" in r["error"]
+
+
+# --- Risikoprofil ---
+def test_risk_profile_orders_calm_and_wild_series():
+    calm = series(n=300, drift=0.0005, noise=0.005, seed=4)
+    wild = series(n=300, drift=0.0, noise=0.035, seed=5)
+    a, b = signals.risk_profile(calm.to_numpy()), signals.risk_profile(wild.to_numpy())
+    assert a["vola_jahr"] < b["vola_jahr"] and a["risikostufe"] < b["risikostufe"]
+    assert a["max_rueckgang_1j"] > b["max_rueckgang_1j"] and a["var95_10_tage"] > b["var95_10_tage"]      # ruhiger: kleinerer Rückgang, kleinerer Verlust
+    assert 1 <= a["risikostufe"] <= 5 and -1 < b["max_rueckgang_1j"] <= 0 and b["var95_10_tage"] < 0
+
+
+def test_risk_profile_deep_crash_raises_level_and_short_history_gives_nothing():
+    prices = np.r_[np.linspace(100, 100, 150), np.linspace(100, 40, 60), np.linspace(40, 45, 60)]
+    p = signals.risk_profile(prices)
+    assert p["max_rueckgang_1j"] <= -0.55
+    base_level = 1 if p["vola_jahr"] < 0.2 else 2 if p["vola_jahr"] < 0.3 else 3 if p["vola_jahr"] < 0.4 else 4 if p["vola_jahr"] < 0.55 else 5
+    assert p["risikostufe"] == min(5, base_level + 1)
+    assert signals.risk_profile(np.arange(1.0, 100.0)) == {} and signals.risk_profile([np.nan] * 300) == {}
+
+
+def test_risk_profile_ignores_nan_gaps():
+    s = series(n=300, seed=6).to_numpy().copy(); s[50] = np.nan; s[120] = np.nan
+    assert signals.risk_profile(s)["vola_jahr"] > 0

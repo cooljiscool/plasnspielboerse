@@ -16,6 +16,7 @@ from datetime import datetime
 from . import config
 
 URL = "https://api.stocktwits.com/api/2/streams/symbol/{}.json"
+APE_URL = "https://apewisdom.io/api/v1.0/filter/all-stocks/page/{}"   # frei nutzbar, wertet Reddit-Foren (u. a. wallstreetbets) aus; Daten: apewisdom.io
 MAX_AGE = 3 * 3600   # Stimmung ist kurzlebig: nach 3 Stunden neu abfragen
 MIN_TAGGED = 5       # unter so vielen markierten Beiträgen wird kein Anteil ausgewiesen
 
@@ -77,3 +78,49 @@ def get(universe: dict, isins: list, fetch=None, workers: int = 3) -> dict:
         os.makedirs(config.DATA_DIR, exist_ok=True)
         json.dump(cache, open(path, "w"))
     return {i: cache["items"][i] for i in isins if cache["items"].get(i)}
+
+
+def ape_summary(rows: dict, symbol: str) -> dict:
+    """Zahlen zu Reddit-Erwähnungen eines Symbols aus den Zeilen von ApeWisdom ({Ticker: Zeile}); {} wenn es nicht erwähnt wird."""
+    r = rows.get(symbol)
+    if not r:
+        return {}
+    now, before = r.get("mentions"), r.get("mentions_24h_ago")
+    out = {"rang": r.get("rank"), "erwaehnungen_24h": now, "erwaehnungen_vor_24h": before, "rang_vor_24h": r.get("rank_24h_ago"), "upvotes": r.get("upvotes")}
+    try:
+        out["auffaellig"] = bool(int(r["rank"]) <= 20 or (int(now) >= 30 and int(before) > 0 and int(now) >= 2 * int(before)))
+    except (KeyError, TypeError, ValueError):
+        pass
+    return out
+
+
+def _fetch_ape(max_pages: int = 8, wanted: set = None) -> dict:
+    rows = {}
+    for page in range(1, max_pages + 1):
+        req = urllib.request.Request(APE_URL.format(page), headers={"User-Agent": "planspiel-bot/1.0 (private research)"})
+        data = json.loads(urllib.request.urlopen(req, timeout=20).read().decode())
+        for r in data.get("results", []):
+            rows[str(r.get("ticker", "")).upper()] = r
+        if page >= int(data.get("pages", 1)) or (wanted and wanted <= set(rows)):
+            break
+    return rows
+
+
+def reddit(universe: dict, isins: list, fetch=None) -> dict:
+    """{isin: Reddit-Erwähnungen} für US-Titel der Auswahl (ApeWisdom, 3 Stunden zwischengespeichert). Fehler ergeben ein leeres Ergebnis."""
+    path = os.path.join(config.DATA_DIR, "reddit.json")
+    try:
+        cache = json.load(open(path))
+    except (OSError, json.JSONDecodeError):
+        cache = {}
+    us = {i: universe[i]["yf"] for i in isins if us_symbol(universe.get(i, {}).get("yf"))}
+    if not us:
+        return {}
+    if time.time() - cache.get("time", 0) > MAX_AGE or not cache.get("rows"):
+        try:
+            cache = {"time": time.time(), "rows": (fetch or _fetch_ape)(wanted=set(us.values()))}
+        except Exception:  # noqa: BLE001 – Zusatzsignal
+            return {}
+        os.makedirs(config.DATA_DIR, exist_ok=True)
+        json.dump(cache, open(path, "w"))
+    return {i: s for i, sym in us.items() if (s := ape_summary(cache["rows"], sym))}

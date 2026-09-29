@@ -53,3 +53,52 @@ def test_get_only_us_titles_caches_and_survives_errors(tmp_path, monkeypatch):
 
 def test_prompt_mentions_social_as_neutral_information():
     assert "StockTwits" in brain.SYSTEM and "Weder Kaufgrund noch Veto-Grund" in brain.SYSTEM
+
+
+# --- Reddit über ApeWisdom ---
+ROWS = {"NVDA": {"rank": 3, "ticker": "NVDA", "mentions": 120, "upvotes": 900, "rank_24h_ago": 5, "mentions_24h_ago": 100},
+        "MU": {"rank": 60, "ticker": "MU", "mentions": 40, "upvotes": 50, "rank_24h_ago": 90, "mentions_24h_ago": 15},
+        "F": {"rank": 200, "ticker": "F", "mentions": 4, "upvotes": 5, "rank_24h_ago": 210, "mentions_24h_ago": 3}}
+
+
+def test_ape_summary_flags_top_ranks_and_mention_spikes():
+    assert social.ape_summary(ROWS, "NVDA")["auffaellig"] is True                      # Rang 3
+    mu = social.ape_summary(ROWS, "MU")
+    assert mu["auffaellig"] is True and mu["erwaehnungen_24h"] == 40                    # mehr als verdoppelt
+    assert social.ape_summary(ROWS, "F")["auffaellig"] is False
+    assert social.ape_summary(ROWS, "ZZZ") == {}
+
+
+def test_reddit_uses_us_titles_only_and_caches(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "DATA_DIR", str(tmp_path))
+    calls = []
+    fake = lambda wanted: calls.append(wanted) or ROWS  # noqa: E731
+    uni = {"A": {"yf": "NVDA"}, "B": {"yf": "SAP.DE"}, "C": {"yf": "MU"}, "D": {"yf": "ZZZZ"}}
+    out = social.reddit(uni, ["A", "B", "C", "D"], fake)
+    assert set(out) == {"A", "C"} and calls == [{"NVDA", "MU", "ZZZZ"}]
+    social.reddit(uni, ["A", "C"], fake)
+    assert len(calls) == 1                                                             # zweiter Aufruf: Zwischenspeicher
+    assert social.reddit({"B": {"yf": "SAP.DE"}}, ["B"], fake) == {}                    # keine US-Titel: gar kein Abruf
+    assert len(calls) == 1
+
+
+def test_reddit_failure_gives_empty_result(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "DATA_DIR", str(tmp_path))
+    def broken(wanted):
+        raise OSError("gesperrt")
+    assert social.reddit({"A": {"yf": "NVDA"}}, ["A"], broken) == {}
+
+
+def test_fetch_ape_stops_when_all_wanted_symbols_found(monkeypatch):
+    pages = {1: {"pages": 3, "results": [{"ticker": "AAA", "rank": 1}]}, 2: {"pages": 3, "results": [{"ticker": "BBB", "rank": 101}]},
+             3: {"pages": 3, "results": [{"ticker": "CCC", "rank": 201}]}}
+    seen = []
+
+    class R:
+        def __init__(self, body): self.body = body
+        def read(self): return json.dumps(self.body).encode()
+    def fake_open(req, timeout):
+        page = int(req.full_url.rsplit("/", 1)[1]); seen.append(page); return R(pages[page])
+    monkeypatch.setattr(social.urllib.request, "urlopen", fake_open)
+    rows = social._fetch_ape(wanted={"AAA", "BBB"})
+    assert seen == [1, 2] and set(rows) == {"AAA", "BBB"}
