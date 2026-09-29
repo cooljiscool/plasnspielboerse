@@ -1,19 +1,26 @@
 """Regelstrategie ohne KI und ohne Kosten. Zugleich Vergleichsbasis im Backtest und Rückfall, wenn die KI ausfällt.
 
-Aufbau nach Backtest (bot/backtest.py, DAX 2022-2026 und US-Aktien als Gegenprobe), nicht nach Bauchgefühl:
-- Ranking nach mittelfristigem Momentum (Mittel aus 60- und 120-Tage-Rendite). Kurzfristige Rendite (5/20 Tage) schadet
-  (Umkehreffekt), ebenso volatilitätsgewichtete Formeln.
-- Wenig Umschichten: Gehalten wird, solange ein Titel in der oberen Hälfte des Rankings bleibt. Jede Runde kostet 0,6 % Gebühr.
-- Nur milde Schutzregeln: Trendfilter beim Kauf, kein Kauf bei RSI über 85, Notfall-Stopp bei 25 % Verlust.
-- Getestet und verworfen (senkten den Rang): Marktumfeld-Filter, Trailing-Stop, Verkauf unter SMA50, Trendbruch-Verkauf,
-  Volatilitätsgewichtung, mehr als 6 Positionen. Sie sind über PARAMS weiter schaltbar.
-Nicht testbar (keine historischen Daten): Termine, Fundamentaldaten, Web-Recherche. Termine und Streuung nach Branche
-gelten weiter als Vorsichtsregeln und stehen in PARAMS."""
+Aufbau nach Tests in 22 Planspiel-Jahren (jeweils 1.10. bis 25.1., 2004/05 bis 2025/26, 214 Titel aus DAX, MDAX, Europa und USA; siehe
+bot/lab.py), nicht nach Bauchgefühl:
+- Ranking nach mittelfristigem Momentum: Mittel aus 60-Tage-, 120-Tage- und 12-1-Monats-Rendite. Das beste Signal von rund 20 getesteten
+  (Reversal, 52-Wochen-Hoch, niedrige Volatilität, Residual-Momentum und Mischungen waren gleich gut oder schlechter).
+- 6 gleich große Positionen, kaum umschichten: Gehalten wird, solange ein Titel in den oberen 70 % des Rankings bleibt (Gebühren).
+- Volatilitäts-Skalierung (Daniel/Moskowitz): Ist der Markt sehr unruhig (Schwankung über 20 % pro Jahr), sinkt die investierte Quote.
+  Kostete im Test keinen Rang, senkte aber den schlechtesten Fall von -12,8 % auf -9,9 %.
+- Getestet und verworfen: Trendfilter beim Kauf, Marktumfeld-Filter (DAX unter SMA200, VIX, Ampel), Trailing-Stops, enge Stopps,
+  Verkauf unter SMA50, Gewichtung nach Volatilität. Sie senkten den Rang. Über PARAMS bleiben sie schaltbar.
+Erwartung: im exakten Planspiel-Fenster schlug die Strategie 81 % zufälliger 6-Titel-Depots, bei verschobenen Fenstern und beliebigen
+Startpunkten nur etwa 63 %. Rechnet man mit dem zweiten Wert. Die Tests nutzen heutige Indexmitglieder (zu optimistisch).
+Nicht testbar (keine historischen Daten): Termine, Fundamentaldaten, Web-Recherche; sie gelten als Vorsichtsregeln."""
 from . import config, signals
 
-PARAMS = {"trend_filter": True, "rsi_filter": True, "hard_stop": True, "trailing": False, "trend_break": False,
-          "sma50_sell": False, "vol_weight": False, "regime": False, "earnings_blackout": True,
-          "keep_frac": 0.5, "n_positions": None}
+PARAMS = {"trend_filter": False, "rsi_filter": True, "hard_stop": True, "trailing": False, "trend_break": False,
+          "sma50_sell": False, "vol_weight": False, "regime": False, "earnings_blackout": True, "vol_scale": True,
+          "keep_frac": 0.7, "n_positions": 6, "min_score": None}
+
+VOL_TARGET = 0.20        # Zielschwankung des Marktes; darüber sinkt die investierte Quote
+VOL_FLOOR = 0.40         # mindestens 40 % investiert
+MIN_SLOT_EUR = 5500.0    # jede Position mindestens so groß (Plattform: Order mindestens 5.000 €)
 
 CASH_FLOOR = 0.03
 HARD_STOP = 0.25         # Notfall-Stopp: Verkauf, wenn der Kurs 25 % unter dem Einstand liegt
@@ -25,7 +32,14 @@ MIN_KEEP = 12
 
 
 def score(m: dict, stars: int = 0) -> float:
-    """Mittelfristiges Momentum; der kleine Sternbonus bedient die Nachhaltigkeitswertung."""
+    """Mittelfristiges Momentum: Mittel aus 60-Tage-, 120-Tage- und 12-1-Monats-Rendite (fehlt eine, zählt die nächstkürzere).
+    Der kleine Sternbonus bedient die Nachhaltigkeitswertung."""
+    r120 = m.get("ret_120d", m["ret_60d"])
+    return (m["ret_60d"] + r120 + m.get("mom_12_1", r120)) / 3 + 0.01 * stars
+
+
+def score_60_120(m: dict, stars: int = 0) -> float:
+    """Frühere Formel (Vergleich im Backtest): Mittel aus 60- und 120-Tage-Rendite."""
     return 0.5 * m["ret_60d"] + 0.5 * m.get("ret_120d", m["ret_60d"]) + 0.01 * stars
 
 
@@ -64,6 +78,14 @@ def _regime(regime: dict = None, use: bool = True) -> dict:
     return regime
 
 
+def vol_scaled(mkt_vol, n: int, capital: float) -> tuple:
+    """Volatilitäts-Skalierung: (Anteil investiert, Positionszahl). Bei ruhigem Markt voll investiert."""
+    if not mkt_vol:
+        return signals.REGIME_TABLE["risk_on"][0], n
+    exposure = min(signals.REGIME_TABLE["risk_on"][0], max(VOL_FLOOR, VOL_TARGET / mkt_vol))
+    return exposure, max(2, min(n, int(exposure * capital / MIN_SLOT_EUR)))
+
+
 def decide(pf: dict, universe: dict, snap: dict, total: float, regime: dict = None,
            params: dict = None, score_fn=None) -> dict:
     P = {**PARAMS, **(params or {})}
@@ -71,6 +93,8 @@ def decide(pf: dict, universe: dict, snap: dict, total: float, regime: dict = No
     shown = regime or {"label": "unbekannt", "score": "-"}   # nur zur Anzeige; gesteuert wird nur mit PARAMS["regime"]
     regime = _regime(regime, P["regime"])
     n_target, exposure = P["n_positions"] or regime["positions"], regime["exposure"]
+    if P["vol_scale"] and shown.get("mkt_vol_60d"):
+        exposure, n_target = vol_scaled(shown["mkt_vol_60d"], n_target, total)
     ranked = sorted(snap, key=lambda i: score_fn(snap[i], universe[i].get("stars", 0)), reverse=True)
     rank = {isin: r for r, isin in enumerate(ranked)}
     keep_rank = max(MIN_KEEP, int(P["keep_frac"] * len(ranked)))
@@ -119,6 +143,8 @@ def decide(pf: dict, universe: dict, snap: dict, total: float, regime: dict = No
         m = snap[isin]
         if isin in pf["positions"] or not can_buy(m, regime["label"], P):
             continue
+        if P.get("min_score") is not None and score_fn(m, universe[isin].get("stars", 0)) <= P["min_score"]:
+            continue   # absolutes Momentum: nur kaufen, wenn der Score über der Schwelle liegt
         sec = m.get("sector") or universe[isin].get("sector")
         if sec and sectors.get(sec, 0) >= config.MAX_PER_SECTOR:
             continue

@@ -56,9 +56,28 @@ STRATEGIES = {"rules": rules.decide, "frueher_alle_filter": alt_all_filters, "nu
 
 
 class Data:
-    def __init__(self, symbols: list, years: int):
+    """Kurshistorie plus Kennzahlen. Aus Yahoo (`Data(symbols, years)`) oder aus fertigen Tabellen (`Data.from_frames`)."""
+
+    def __init__(self, symbols: list, years: int = 4, start: str = None):
         cols = list(symbols) + list(market.INDEX.values())
-        close, high, low, opn = market.download(cols, period=f"{years}y")
+        if start:
+            import yfinance as yf
+            d = yf.download(cols, start=start, interval="1d", auto_adjust=True, progress=False, group_by="ticker", threads=True)
+            parts = [d.xs(f, axis=1, level=1).dropna(how="all").ffill(limit=3) for f in ("Close", "High", "Low", "Open")]
+        else:
+            parts = market.download(cols, period=f"{years}y")
+            parts = [parts[0], parts[1], parts[2], parts[3]]
+        self._build(*parts, symbols)
+
+    @classmethod
+    def from_frames(cls, close, high, low, opn, symbols):
+        self = object.__new__(cls)
+        self._build(close, high, low, opn, symbols)
+        return self
+
+    def _build(self, close, high, low, opn, symbols):
+        # Feiertage einzelner Börsen füllen (bis 5 Tage), sonst sind gleitende Durchschnitte und Schwankungen lückenhaft
+        close, high, low, opn = (x.sort_index().ffill(limit=5) for x in (close, high, low, opn))
         idx_syms = {k: s for k, s in market.INDEX.items() if s in close.columns}
         self.cols = [s for s in symbols if s in close.columns and close[s].notna().sum() > WARMUP + WINDOW]
         if not self.cols:
@@ -69,6 +88,13 @@ class Data:
         self.idx = signals.Frames(close[list(idx_syms.values())].rename(columns={s: k for k, s in idx_syms.items()}))
         self.open = opn[self.cols].reindex(close.index).to_numpy(dtype=float)
         self.uni = {c: {"name": c, "stars": 0} for c in self.cols}
+        self._snaps = {}
+
+    def snap(self, i):
+        """Kennzahlen aller Titel am Tag i (zwischengespeichert, hängen nicht vom Depot ab)."""
+        if i not in self._snaps:
+            self._snaps[i] = {c: m for c in self.cols if (m := self.fr.at(i, c))}
+        return self._snaps[i]
 
     def px(self, i, c):
         return self.fr.price_at(i, c)
@@ -118,8 +144,9 @@ def simulate(d: Data, start: int, end: int, strategy, step: int = 2, capital: fl
         equity.append(total)
         # 3. Entscheiden (nur mit Daten bis heute) und für morgen vormerken
         if (i - start) % step == 0 and i < end:
-            snap = {c: m for c in d.cols if (m := d.fr.at(i, c))}
+            snap = d.snap(i)
             regime = signals.regime_at(d.idx, i)
+            regime["mkt_vol_60d"] = d.fr.market_at(i)["vol_60d"]
             out = strategy(pf, d.uni, snap, total, regime)
             pending, _ = risk.validate(out["orders"], pf, prices, d.uni, today)
     return {"equity": equity, "fees": fees, "trades": trades}

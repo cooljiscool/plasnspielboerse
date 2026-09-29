@@ -33,6 +33,7 @@ def load(universe: dict):
     cols = [s for s in syms if s in close.columns]
     dax = close[INDEX["dax"]] if INDEX["dax"] in close.columns else None
     fr = signals.Frames(close[cols], high[cols], low[cols], dax)
+    regime["mkt_vol_60d"] = fr.market_at(-1)["vol_60d"]   # Schwankung des Marktdurchschnitts der Auswahl (Volatilitäts-Skalierung)
     newest = close.index[-1]
     snap = {}
     for s in cols:

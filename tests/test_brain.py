@@ -116,9 +116,29 @@ def test_rules_hold_winners_and_sell_ranking_losers():
 
 
 def test_rules_defaults_follow_backtest():
-    assert rules.PARAMS["regime"] is False and rules.PARAMS["trailing"] is False and rules.PARAMS["vol_weight"] is False
-    m = {"ret_5d": 0.5, "ret_20d": 0.5, "ret_60d": 0.1, "ret_120d": 0.3, "vol_20d": 0.2}
-    assert rules.score(m) == 0.5 * 0.1 + 0.5 * 0.3   # kurzfristige Rendite zählt nicht
+    P = rules.PARAMS
+    assert P["regime"] is False and P["trailing"] is False and P["vol_weight"] is False and P["trend_filter"] is False
+    assert P["keep_frac"] == 0.7 and P["n_positions"] == 6 and P["vol_scale"] is True
+    m = {"ret_5d": 0.5, "ret_20d": 0.5, "ret_60d": 0.1, "ret_120d": 0.3, "mom_12_1": 0.2, "vol_20d": 0.2}
+    assert rules.score(m) == pytest.approx((0.1 + 0.3 + 0.2) / 3)   # kurzfristige Rendite zählt nicht
+    assert rules.score({"ret_5d": 0, "ret_20d": 0, "ret_60d": 0.1, "vol_20d": 0.2}) == pytest.approx(0.1)   # Rückfall ohne Historie
+
+
+def test_vol_scaling_reduces_exposure_only_in_wild_markets():
+    assert rules.vol_scaled(0.12, 6, 50000.0) == (0.97, 6)                 # ruhiger Markt: voll investiert
+    exp, n = rules.vol_scaled(0.40, 6, 50000.0)                             # Ziel 20 % / 40 % = halb investiert
+    assert exp == pytest.approx(0.5) and n == 4 and n * 5500 <= 50000 * exp
+    assert rules.vol_scaled(0.90, 6, 50000.0)[0] == rules.VOL_FLOOR         # nie unter 40 %
+    assert rules.vol_scaled(None, 6, 50000.0) == (0.97, 6)
+
+
+def test_rules_use_market_vol_from_regime():
+    calm = rules.decide(pf(), UNI, snapshot(), 50000.0, {"label": "risk_on", "score": "5/5", "mkt_vol_60d": 0.10})
+    wild = rules.decide(pf(), UNI, snapshot(), 50000.0, {"label": "risk_on", "score": "5/5", "mkt_vol_60d": 0.40})
+    n_calm = sum(o["action"] == "buy" for o in calm["orders"])
+    n_wild = sum(o["action"] == "buy" for o in wild["orders"])
+    assert n_calm == 6 and n_wild == 4
+    assert sum(o["amount_eur"] for o in wild["orders"]) <= 50000 * 0.5 + 1
 
 
 def test_llm_context_contains_rules_baseline(monkeypatch):

@@ -3,7 +3,7 @@ import json
 import os
 from datetime import date, datetime
 
-from . import brain, config, fundamentals, market, research, risk, rules
+from . import brain, config, fundamentals, journal, market, research, risk, rules
 from .executor import DryRunExecutor, PlaywrightExecutor
 
 
@@ -60,7 +60,8 @@ def main():
             for isin, note in research_info["notes"].items():
                 if isin in snap and note.get("event_soon"):
                     snap[isin]["event_soon"] = True
-        proposal = brain.decide(pf, universe, snap, news, today, total, regime, research_info)
+        history = journal.recent(config.LOG_DIR, snap) if provider != "rules" else None
+        proposal = brain.decide(pf, universe, snap, news, today, total, regime, research_info, history)
         approved, rejected = risk.validate(proposal["orders"], pf, prices, universe, today)
         for o in approved:
             o["name"] = universe[o["isin"]]["name"]
@@ -81,7 +82,7 @@ def main():
     log = {"time": datetime.now().isoformat(timespec="seconds"), "live": config.LIVE, "total_before": total,
            "total_after": total_after, "cash": pf["cash"], "holdings": holdings,
            "market_view": proposal["market_view"], "provider": proposal.get("provider"),
-           "fallback_reason": proposal.get("fallback_reason"), "regime": regime,
+           "fallback_reason": proposal.get("fallback_reason"), "guard": proposal.get("guard"), "regime": regime,
            "research": ({"error": research_info.get("error"), "cached": research_info.get("cached", False),
                          "market": research_info.get("market"), "notes": len(research_info["notes"])}
                         if research_info else None),

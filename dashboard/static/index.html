@@ -253,6 +253,7 @@ async function loadLog() {
       x.regime ? el('div', {class: 'mute'}, 'Marktumfeld: ' + ({risk_on: 'freundlich', neutral: 'neutral', risk_off: 'schwach'}[x.regime.label] || x.regime.label) + ' (' + x.regime.score + ')') : '',
       x.research ? el('div', {class: x.research.error ? 'down' : 'mute'}, x.research.error ? 'Web-Recherche fehlgeschlagen: ' + x.research.error : 'Web-Recherche: ' + x.research.notes + ' Titel' + (x.research.cached ? ' (von heute früh)' : '')) : '',
       x.fallback_reason ? el('div', {class: 'down'}, 'KI ausgefallen, Regeln genutzt: ' + x.fallback_reason) : '',
+      ...(x.guard || []).map(g => el('div', {class: 'mute'}, 'Kontrolle: ' + g.aktion + ' (' + g.isin + '): ' + g.grund)),
       el('p', {class: 'mute'}, x.market_view || ''));
     for (const o of x.approved || []) c.append(el('div', {class: 'pos'}, el('span', {class: 'tag ' + o.action}, o.action === 'buy' ? 'KAUF' : 'VERKAUF'),
       `${o.name || o.isin} · ${o.shares} Stk`, el('div', {class: 'mute'}, o.reason || '')));

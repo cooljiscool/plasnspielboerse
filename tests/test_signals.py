@@ -60,8 +60,10 @@ def m(**kw):
 
 def test_can_buy_filters():
     assert rules.can_buy(m(), "risk_on")
-    assert not rules.can_buy(m(above_sma50=False), "risk_on")
-    assert not rules.can_buy(m(trend_up=False), "risk_on")
+    trend = {**rules.PARAMS, "trend_filter": True}   # im Backtest schadete der Trendfilter, ist daher standardmäßig aus
+    assert rules.can_buy(m(above_sma50=False), "risk_on")
+    assert not rules.can_buy(m(above_sma50=False), "risk_on", trend)
+    assert not rules.can_buy(m(trend_up=False), "risk_on", trend)
     assert not rules.can_buy(m(rsi14=90.0), "risk_on")
     assert not rules.can_buy(m(days_to_earnings=2), "risk_on")
     assert not rules.can_buy(m(event_soon=True), "risk_on")
@@ -100,7 +102,7 @@ def test_risk_off_reduces_positions():
     pf = {"cash": 1000.0, "positions": pos}
     snap = {i: m(ret_60d=0.05 + 0.01 * k) for k, i in enumerate("ABCDEFGH")}
     regime = {"label": "risk_off", "score": "0/5", "exposure": 0.5, "positions": 4}
-    sells = [o for o in rules.decide(pf, UNI, snap, 50000.0, regime, params={"regime": True})["orders"]
+    sells = [o for o in rules.decide(pf, UNI, snap, 50000.0, regime, params={"regime": True, "n_positions": None})["orders"]
              if o["action"] == "sell"]
     assert {o["isin"] for o in sells} == {"A", "B"}   # die zwei schwächsten
 

@@ -26,8 +26,9 @@ def _atr_pct(high, low, close, n: int = 14) -> pd.DataFrame:
 class Frames:
     """Alle Kennzahlen als Arrays (Zeilen = Handelstage, Spalten = Titel)."""
 
-    ROUND = {"ret_5d": 4, "ret_20d": 4, "ret_60d": 4, "ret_120d": 4, "vol_20d": 3, "rsi14": 1,
-             "atr_pct": 4, "dist_hi": 3, "rel_60d": 4}
+    ROUND = {"ret_5d": 4, "ret_20d": 4, "ret_60d": 4, "ret_120d": 4, "mom_12_1": 4, "vol_20d": 3, "vol_60d": 3,
+             "rsi14": 1, "atr_pct": 4, "dist_hi": 3, "rel_60d": 4, "beta": 2, "beta_mkt": 2,
+             "resid_60d": 4, "resid_120d": 4}
 
     def __init__(self, close: pd.DataFrame, high: pd.DataFrame = None, low: pd.DataFrame = None,
                  index_close: pd.Series = None):
@@ -37,7 +38,10 @@ class Frames:
         f = {"price": close}
         for n in (5, 20, 60, 120):
             f[f"ret_{n}d"] = close / close.shift(n) - 1
-        f["vol_20d"] = (close / close.shift(1) - 1).rolling(20).std() * math.sqrt(252)
+        daily = close / close.shift(1) - 1
+        f["mom_12_1"] = close.shift(21) / close.shift(252) - 1    # 12-Monats-Momentum ohne den letzten Monat
+        f["vol_20d"] = daily.rolling(20).std() * math.sqrt(252)
+        f["vol_60d"] = daily.rolling(60).std() * math.sqrt(252)
         f["sma50"], f["sma200"] = close.rolling(50).mean(), close.rolling(200).mean()
         f["rsi14"] = _rsi(close)
         f["atr_pct"] = _atr_pct(high, low, close)
@@ -45,6 +49,17 @@ class Frames:
         if index_close is not None:
             idx = index_close.reindex(close.index).ffill()
             f["rel_60d"] = f["ret_60d"].sub(idx / idx.shift(60) - 1, axis=0)
+            idx_d = idx / idx.shift(1) - 1
+            f["beta"] = daily.rolling(120).cov(idx_d).div(idx_d.rolling(120).var(), axis=0)
+        # Eigener "Markt" aus dem Durchschnitt aller Titel dieser Gruppe: Beta, Residual-Momentum und Marktschwankung
+        mkt = daily.mean(axis=1)
+        f["beta_mkt"] = daily.rolling(120).cov(mkt).div(mkt.rolling(120).var(), axis=0)
+        logm = np.log1p(mkt.fillna(0.0))
+        self.mkt = {"vol_60d": (mkt.rolling(60).std() * math.sqrt(252)).to_numpy(dtype=float)}
+        for n in (60, 120):
+            m_n = np.expm1(logm.rolling(n).sum())
+            self.mkt[f"ret_{n}d"] = m_n.to_numpy(dtype=float)
+            f[f"resid_{n}d"] = f[f"ret_{n}d"].sub(f["beta_mkt"].mul(m_n, axis=0))   # Rendite ohne Marktanteil
         self.a = {k: v.to_numpy(dtype=float) for k, v in f.items()}
         self.col_index = {c: j for j, c in enumerate(self.cols)}
 
@@ -54,8 +69,9 @@ class Frames:
     def at(self, pos: int, col) -> dict | None:
         """Kennzahlen eines Titels am Tag `pos` (negativ = von hinten). None, wenn zu wenig Historie."""
         j = self.col_index[col]
-        price, r60 = self.a["price"][pos, j], self.a["ret_60d"][pos, j]
-        if np.isnan(price) or np.isnan(r60):
+        price = self.a["price"][pos, j]
+        core = (price, self.a["ret_5d"][pos, j], self.a["ret_20d"][pos, j], self.a["ret_60d"][pos, j], self.a["vol_20d"][pos, j])
+        if any(np.isnan(v) for v in core):   # Kerndaten unvollständig (Datenlücke, zu kurze Historie): Titel auslassen
             return None
         out = {"price": round(float(price), 3)}
         for k, nd in self.ROUND.items():
@@ -71,6 +87,10 @@ class Frames:
         if not (np.isnan(s50) or np.isnan(s200)):
             out["trend_up"] = bool(s50 > s200)
         return out
+
+    def market_at(self, pos: int) -> dict:
+        """Eigener Marktdurchschnitt der Gruppe: Rendite 60/120 Tage und Schwankung."""
+        return {k: (None if np.isnan(v[pos]) else float(v[pos])) for k, v in self.mkt.items()}
 
     def price_at(self, pos: int, col) -> float:
         return float(self.a["price"][pos, self.col_index[col]])

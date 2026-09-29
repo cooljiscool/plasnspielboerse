@@ -42,34 +42,60 @@ Pro Lauf, in dieser Reihenfolge:
 4. **Entscheidung** durch eine zweite Claude-Anfrage **ohne Werkzeuge**: Sie bekommt Kennzahlen, Fundamentaldaten, Recherche-Notizen
    und den **Vorschlag der Regelstrategie** als Ausgangspunkt und weicht nur mit benanntem Grund ab (z. B. Gewinnwarnung,
    Termin in den nächsten Tagen). Die Trennung verhindert, dass Text aus dem Web direkt Orders auslöst. Fällt Claude aus, gilt der Regelvorschlag.
+   Ein **Schutzgeländer in Code** (`brain.guard`) prüft Claudes Antwort: Käufe außerhalb der 25 besten Titel des Rankings und Verkäufe ohne belegten
+   negativen Befund werden verworfen, ein ohne Beleg gestrichener Kauf wird wiederhergestellt. Claude bekommt außerdem seine letzten Orders samt
+   Ergebnis (`verlauf`) und soll zu jedem Kauf das stärkste Gegenargument nennen (`bear_case`).
 5. **Risikoschicht in Code** (`bot/risk.py`, gilt für jede Quelle): max. 19 % je Titel, min. 5.000 € je Order, max. 6 Orders je Lauf,
    max. 2 Titel je Branche, Penny-Stock-Sperre, Mindesthaltedauer, Gebühren und Cash-Prüfung.
 6. **Ausführung** und Kontrolle, dann Protokoll.
 
-**Regelstrategie** (`bot/rules.py`, kostenlos, auch Rückfall): Ranking nach dem Mittel aus 60- und 120-Tage-Rendite, 6 gleich große
-Positionen, gehalten wird, solange ein Titel in der oberen Hälfte des Rankings bleibt. Kaufsperren: Kurs unter der 50-Tage-Linie bzw. SMA50 unter SMA200,
-RSI über 85, Termin der Gewinnmeldung in den nächsten 3 Tagen. Notfall-Stopp bei 25 % Verlust.
+**Regelstrategie** (`bot/rules.py`, kostenlos, auch Rückfall): Ranking nach dem Mittel aus 60-Tage-, 120-Tage- und 12-1-Monats-Rendite, 6 gleich
+große Positionen, gehalten wird, solange ein Titel in den oberen 70 % des Rankings bleibt. **Volatilitäts-Skalierung:** Schwankt der Markt stark
+(über 20 % pro Jahr), sinkt die investierte Quote bis auf 40 %. Kaufsperren: RSI über 85, Gewinnmeldung in den nächsten 3 Tagen. Notfall-Stopp bei 25 % Verlust.
 
-### Was der Backtest zeigt (`python -m bot.backtest --demo-dax`, ca. 20 Sekunden)
+### Wie die Strategie entstanden ist und was sie kann (`python -m bot.lab --years`, ca. 1 Minute)
 
-Getestet wird an echten Kursen von 2022 bis 2026 in Zeiträumen von 80 Handelstagen (Länge des Spiels), jeweils mit 50.000 € und den Gebühren
-der Plattform. Als Ersatz für die Konkurrenz dient der Anteil zufällig zusammengestellter 6-Titel-Depots, die die Strategie schlägt (50 % = Durchschnitt).
+Getestet wurde in **22 echten Planspiel-Zeiträumen** (jedes Jahr 1.10. bis 25.1., 2004/05 bis 2025/26, darunter 2008, 2011, 2018, 2022) mit 214 Titeln aus
+DAX, MDAX, Europa und USA, 50.000 € und den Gebühren der Plattform. Rang = Anteil zufällig zusammengestellter 6-Titel-Depots, die die Strategie
+im selben Zeitraum schlägt (50 % = Durchschnitt). Rund 20 Signale und Filter wurden verglichen, nach früher/später Zeit und nach Markt getrennt.
 
-| Strategie | DAX-Werte (dort abgestimmt) | US-Aktien (Gegenprobe) |
+| Ergebnis | Regelstrategie (jetzt) | meine erste Version (alle Filter) |
 |---|---|---|
-| **Regelstrategie (jetzt)** | **64 %**, Median +10,0 %, Gebühren 311 € | **48 %**, Median +7,3 %, Gebühren 288 € |
-| meine frühere Version (alle Filter, Stopps, Marktumfeld) | 49 %, Median +1,7 %, Gebühren 846 € | 41 % |
-| nur 60-Tage-Momentum, keine Filter | 61 % | 45 % |
+| Median je Planspiel-Jahr | **+17,4 %** | +6,3 % |
+| Jahre im Plus | **19 von 22** | 16 von 22 |
+| schlechtestes Jahr | −11,1 % | −21,1 % |
+| Rang gegenüber Zufallsdepots (alle Titel) | **81 %** (2004-14: 75 %, 2015-25: 86 %) | 46 % |
+| Gebühren je Jahr (Median) | 145 € | 692 € |
 
-**Was daraus folgt, ohne Schönfärberei:**
-- Meine erste, aufwendigere Version war **schlechter** als eine einfache. Marktumfeld-Filter, Trailing-Stops, Verkauf unter der 50-Tage-Linie,
-  Trendbruch-Verkäufe und Volatilitätsgewichtung senkten den Rang. Kurzfristige Rendite (5/20 Tage) schadete (Umkehreffekt), häufiges Umschichten
-  kostet Gebühren. Diese Bausteine sind deshalb aus, aber über `rules.PARAMS` schaltbar.
-- Der Vorsprung gilt **nur am DAX**, wo ich abgestimmt habe. An US-Aktien liegt die Strategie im Durchschnitt, also ohne Vorsprung gegenüber Zufallsdepots.
-  Ein echter Vorteil ist damit **nicht belegt**.
-- Grenzen: heutige Indexmitglieder (zu optimistisch), nur 4 Jahre mit überwiegend steigenden Märkten, kein Test der Fundamentaldaten, der Termine,
-  der Web-Recherche und von Claudes Urteil, weil es dafür keine historischen Daten gibt. Ob Claude besser entscheidet als die Regeln, zeigt erst der
-  Trockenlauf über einige Wochen. Vergangenheit ist keine Prognose.
+Krisenjahre gegenüber dem Durchschnitt aller Titel: 2008 −9,5 % gegen −30,9 %, 2007 −11,1 % gegen −15,5 %, 2018 −3,0 % gegen −7,3 %. Schwach: 2011, 2014 und 2022 (Trendwenden).
+
+**Was gilt und was nicht, ohne Schönfärberei:**
+- **Realistisch sind eher 63 % als 81 %.** Im exakten Planspiel-Fenster liegt der Rang bei 81 %, bei um Wochen verschobenen Fenstern und beliebigen
+  Startpunkten seit 2004 nur bei 55-70 %, im Mittel 63 % (Vorsprung gegenüber dem Durchschnitt aller Titel im Mittel +3,9 %).
+- **Innerhalb einzelner Märkte ist der Vorsprung klein:** DAX 51 %, Europa 43 %, MDAX 61 %, USA 66 %. Den großen Wert erreicht erst das gemischte Universum
+  (wie im Spiel), weil das Ranking dort zwischen Märkten und Branchen auswählen kann.
+- **Zu optimistische Grundlage:** heutige Indexmitglieder (Überlebens-Verzerrung), Kurse in Landeswährung, keine Fundamentaldaten, Termine, Web-Recherche
+  und kein Urteil von Claude, weil es dafür keine historischen Daten gibt. Ob Claude besser entscheidet als die Regeln, zeigt nur der Trockenlauf.
+- **Was verworfen wurde,** weil es den Rang senkte: Trendfilter, Marktumfeld-Filter (DAX unter SMA200, VIX, Ampel), Trailing-Stops, enge Stopps, Verkauf unter
+  SMA50, Gewichtung nach Volatilität, Reversal-Ideen (Rücksetzer, überverkauft), Nähe zum 52-Wochen-Hoch, niedrige Volatilität, Residual-Momentum,
+  Mischungen mehrerer Signale und Teildepots. Wer Gewinner länger hält, spart Gebühren und liegt vorne.
+- Auf einen Fehler in meinen ersten Tests hin (Feiertagslücken in den Kursen verfälschten die Kennzahlen) wurden alle Ergebnisse neu berechnet.
+
+### Was ich von anderen übernommen habe (Recherche)
+
+- **Momentum** ist der am besten belegte Faktor, mit 3 bis 12 Monaten als bestem Zeitraum und Umkehr bei einem Monat
+  ([Jegadeesh/Titman](https://www.nber.org/system/files/working_papers/w7159/w7159.pdf)). Schutz vor Momentum-Einbrüchen durch Volatilitäts-Skalierung
+  ([Daniel/Moskowitz](https://www.nber.org/system/files/working_papers/w20439/w20439.pdf), [Übersicht](https://quantpedia.com/three-methods-to-fix-momentum-crashes/)):
+  übernommen und im Test bestätigt (schlechtester Fall −12,8 % auf −9,9 %, kein Rangverlust). Residual-Momentum brachte im Test keinen Vorteil.
+- **Sprachmodelle als Händler:** [FINSABER](https://arxiv.org/html/2505.07078v4) fand über 20 Jahre, dass sie den Markt nicht schlagen, im Aufschwung zu vorsichtig
+  und im Abschwung zu aggressiv sind und dass mehr Komplexität nur Rauschen bringt. [StockBench](https://arxiv.org/abs/2510.02209) fand dasselbe.
+  Konsequenz: Claude bekommt eine enge Rolle (prüfen und begründet abweichen) und das Schutzgeländer, keine freie Handelsvollmacht.
+- **[TradingAgents](https://github.com/TauricResearch/TradingAgents):** Gegenargument-Prüfung (`bear_case`), Erinnerung an frühere Entscheidungen samt Ergebnis (`verlauf`).
+  **[Anthropics Finanz-Werkzeuge](https://github.com/anthropics/financial-services):** Katalysatorkalender und Vorab-Analyse vor Gewinnmeldungen
+  (Feld `next_event` in der Recherche). Mehrere Analysten-Agenten mit Debatte habe ich nicht übernommen: mehr Aufrufe des Abo-Limits ohne Beleg für Nutzen.
+- **Planspiel-Sieger** setzten laut [Presseberichten](https://www.dsgv.de/newsroom/presse/20220131_PM_Spielende_Planspiel_Boerse_03.html) auf Trend und starke Titel (US-Großwerte, Halbleiter,
+  Rüstung) und stiegen um etwa 25 bis 40 %. Das deckt sich mit der Momentum-Auswahl. Jahreszeitliche Muster (Weihnachtsrally, Januar-Effekt) sind nur schwach belegt
+  und wurden nicht eingebaut.
 
 ## Dashboard fürs Handy
 
@@ -103,7 +129,7 @@ liest der nächste Lauf das Depot neu und arbeitet vom tatsächlichen Stand weit
 Der GitHub-Workflow ist jetzt nur noch manuell startbar, damit nicht zwei Zeitpläne gleichzeitig handeln.
 
 **Ehrlicher Stand:** Datenabruf, Kennzahlen, Regelstrategie, Risikoschicht, Backtest, Trockenlauf, Dashboard und Zeitplan sind
-getestet (`pytest`, 54 Tests) und liefen mit echten Yahoo-Daten. **Nicht getestet** sind die Live-Ausführung auf der
+getestet (`pytest`, 65 Tests) und liefen mit echten Yahoo-Daten. **Nicht getestet** sind die Live-Ausführung auf der
 Plattform (braucht deinen Team-Login) und die Aufrufe über dein Claude-Abo samt Web-Recherche (braucht dein Token). Dafür gibt es
 den Selbsttest (Schritt 5), der ohne Order prüft, ob alles funktioniert. Erst danach live gehen.
 
@@ -160,5 +186,6 @@ Alternative ohne Dashboard: GitHub Actions (`.github/workflows/trade.yml`, Secre
 
 ## Dateien
 `bot/run.py` Ablauf · `bot/signals.py` Kennzahlen · `bot/fundamentals.py` Fundamentaldaten · `bot/research.py` Web-Recherche ·
-`bot/brain.py` Claude-Entscheidung · `bot/rules.py` Regelstrategie · `bot/backtest.py` Backtest · `bot/risk.py` Risikoregeln · `bot/executor.py` Trockenlauf und Plattform ·
+`bot/brain.py` Claude-Entscheidung mit Schutzgeländer · `bot/journal.py` Gedächtnis · `bot/rules.py` Regelstrategie ·
+`bot/lab.py` Test in Planspiel-Jahren · `bot/backtest.py` Backtest-Grundlage · `bot/universes.py` Testtitel · `bot/risk.py` Risikoregeln · `bot/executor.py` Trockenlauf und Plattform ·
 `bot/universe_tool.py` Universum · `bot/selftest.py` Prüfung · `.github/workflows/trade.yml` Zeitplan (Werktags 3× UTC).
