@@ -138,6 +138,10 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
         for flag in ("research", "kronos"):
             if isinstance(body.get(flag), bool):
                 changes[flag] = body[flag]
+        if "nh_slots" in body:
+            if not (isinstance(body["nh_slots"], int) and not isinstance(body["nh_slots"], bool) and 0 <= body["nh_slots"] <= 6):
+                return jsonify(error="Plätze für Sterntitel: ganze Zahl von 0 bis 6"), 400
+            changes["nh_slots"] = body["nh_slots"]
         if changes:
             store.save_settings(**changes)
         if isinstance(body.get("secrets"), dict):

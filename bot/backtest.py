@@ -116,6 +116,7 @@ class Data:
 def simulate(d: Data, start: int, end: int, strategy, step: int = 2, capital: float = 50000.0) -> dict:
     pf = {"cash": capital, "positions": {}, "buy_orders_executed": 0}
     pending, equity, fees, trades = [], [], 0.0, 0
+    flows = {}   # je Titel: [Summe der Käufe, Summe der Verkäufe] (für den Nachhaltigkeitsertrag)
     for i in range(start, end + 1):
         today = d.dates[i].date()
         # 1. Orders von gestern zum heutigen Eröffnungskurs
@@ -131,6 +132,7 @@ def simulate(d: Data, start: int, end: int, strategy, step: int = 2, capital: fl
                 fee = config.fee(sh * px)
                 pf["cash"] -= sh * px + fee
                 fees, trades = fees + fee, trades + 1
+                flows.setdefault(o["isin"], [0.0, 0.0])[0] += sh * px
                 pos = pf["positions"].get(o["isin"])
                 if pos:
                     pos["avg_price"] = (pos["avg_price"] * pos["shares"] + sh * px) / (pos["shares"] + sh)
@@ -145,6 +147,7 @@ def simulate(d: Data, start: int, end: int, strategy, step: int = 2, capital: fl
                 fee = config.fee(sh * px)
                 pf["cash"] += sh * px - fee
                 fees, trades = fees + fee, trades + 1
+                flows.setdefault(o["isin"], [0.0, 0.0])[1] += sh * px
                 pos["shares"] -= sh
                 if pos["shares"] == 0:
                     del pf["positions"][o["isin"]]
@@ -166,7 +169,8 @@ def simulate(d: Data, start: int, end: int, strategy, step: int = 2, capital: fl
                 regime["macro"] = d.macro_at(i)
             out = strategy(pf, d.uni, snap, total, regime)
             pending, _ = risk.validate(out["orders"], pf, prices, d.uni, today)
-    return {"equity": equity, "fees": fees, "trades": trades}
+    held = {c: pos["shares"] * prices.get(c, pos["avg_price"]) for c, pos in pf["positions"].items()}   # Wert der Bestände am letzten Tag
+    return {"equity": equity, "fees": fees, "trades": trades, "flows": flows, "held_value": held}
 
 
 def stats(equity: list) -> dict:

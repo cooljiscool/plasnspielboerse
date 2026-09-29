@@ -314,3 +314,26 @@ def test_fixed_price_takeover_offer_counts_as_negative_evidence():
     assert veto in {o["isin"] for o in kept}
     from bot import research as r
     assert "uebernahme_angebot" in r.SCHEMA["properties"]["notes"]["items"]["properties"] and "uebernahme_angebot" in brain.SYSTEM
+
+
+def test_reserved_star_places_are_not_swapped_for_unstarred_titles_without_evidence(monkeypatch):
+    uni = {**UNI, "S30": {"name": "Stern", "stars": 1}}
+    s = snap()
+    monkeypatch.setattr(config, "NH_SLOTS", 1)
+    base = brain.rules.decide(pf(), uni, s, 50000.0, params={"nh_slots": 1})
+    star_buy = next(o["isin"] for o in base["orders"] if uni[o["isin"]].get("stars"))
+    others = [o for o in base["orders"] if o["isin"] != star_buy]
+    swap = {"orders": others + [buy("S25")]}                                     # Claude tauscht den Sterntitel gegen einen Titel aus den Top 25 ohne Beleg
+    kept, notes = brain.guard(base, swap, s, uni)
+    assert star_buy in {o["isin"] for o in kept} and any(n["aktion"] == "Kauf wiederhergestellt" for n in notes)
+    monkeypatch.setattr(config, "NH_SLOTS", 0)                                   # ohne Reservierung bleibt der bisherige Tausch innerhalb der Top 25 erlaubt
+    kept, notes = brain.guard(base, swap, s, uni)
+    assert any(n["aktion"] == "Ersetzt ohne Beleg" for n in notes)
+
+
+def test_context_and_prompt_mention_reserved_star_places(monkeypatch):
+    monkeypatch.setattr(config, "NH_SLOTS", 2)
+    ctx = brain.build_context(pf(), UNI, snap(), {}, date(2026, 10, 5), 50000.0)
+    assert ctx["nachhaltigkeit_plaetze"] == 2 and "nachhaltigkeit_plaetze" in brain.SYSTEM
+    monkeypatch.setattr(config, "NH_SLOTS", 0)
+    assert "nachhaltigkeit_plaetze" not in brain.build_context(pf(), UNI, snap(), {}, date(2026, 10, 5), 50000.0)

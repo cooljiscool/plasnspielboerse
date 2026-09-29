@@ -137,6 +137,13 @@ svg{width:100%;height:auto;display:block}
     </select>
     <label><input type="checkbox" id="research" style="width:auto;margin:0 8px 0 0;vertical-align:middle">Web-Recherche für Claude (nur mit Abo-Token, einmal täglich, verbraucht mehr Abo-Limit)</label>
     <div style="height:12px"></div>
+    <label>Nachhaltigkeitswertung: Plätze im Depot für Titel mit Stern
+      <select id="nh_slots">
+        <option value="0">0: nur Gesamtwertung (Standard)</option>
+        <option value="1">1 Platz</option><option value="2">2 Plätze</option><option value="3">3 Plätze</option>
+        <option value="4">4 Plätze</option><option value="6">6 Plätze: alles Sterntitel</option>
+      </select></label>
+    <p class="mute" style="margin:-6px 0 12px">Jeder reservierte Platz kostet Rang in der Gesamtwertung (Messwerte im README, Abschnitt Nachhaltigkeit).</p>
     <label><input type="checkbox" id="kronos" style="width:auto;margin:0 8px 0 0;vertical-align:middle">Kronos-Prognose (optional, braucht einmalig <code>scripts/setup_kronos.sh</code>)</label>
     <div style="height:12px"></div>
     <label>Claude-Modell</label>
@@ -303,13 +310,13 @@ $('btnLive').onclick = act(async () => {
 
 async function loadSettingsForm() {
   try {
-    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model; $('provider').value = st.provider; $('research').checked = st.research; $('kronos').checked = st.kronos;
+    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model; $('provider').value = st.provider; $('research').checked = st.research; $('kronos').checked = st.kronos; $('nh_slots').value = String(st.nh_slots);
     $('f_selectors').value = (await api('/api/file/selectors')).text; $('f_universe').value = (await api('/api/file/universe')).text;
   } catch (e) {}
 }
 $('saveSettings').onclick = act(async () => {
   const secrets = {}; for (const k of ['PSB_USER', 'PSB_PASSWORD', 'CLAUDE_CODE_OAUTH_TOKEN', 'ANTHROPIC_API_KEY', 'SEC_USER_AGENT', 'QUIVER_API_TOKEN']) { secrets[k] = $(k).value; $(k).value = ''; }
-  S = await api('/api/settings', {times: $('times').value.split(',').map(s => s.trim()).filter(Boolean), model: $('model').value, provider: $('provider').value, research: $('research').checked, kronos: $('kronos').checked, secrets});
+  S = await api('/api/settings', {times: $('times').value.split(',').map(s => s.trim()).filter(Boolean), model: $('model').value, provider: $('provider').value, research: $('research').checked, kronos: $('kronos').checked, nh_slots: parseInt($('nh_slots').value, 10), secrets});
   renderStatus();
 }, 'Gespeichert');
 $('saveSelectors').onclick = act(() => api('/api/file/selectors', {text: $('f_selectors').value}), 'Selektoren gespeichert');

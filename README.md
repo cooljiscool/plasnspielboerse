@@ -134,6 +134,25 @@ Einzelne Märkte im amtlichen Universum: DAX 50 %, MDAX 54 %, SDAX 65 %, Europa 
   die bisherigen Regeln). Ausnahme nach unten: nur Europa ohne deutsche Indizes (52 %) und nur Nasdaq 100 (60 %) sind schwächer.
 - Grenzen wie zuvor: heutige Indexmitglieder (Überlebens-Verzerrung, die Zahlen sind eher zu gut), keine Fundamentaldaten, Termine und Web-Recherche im Test. Ob Claude die Ergebnisse verbessert, zeigt nur der Trockenlauf und später die Prognose-Bilanz.
 
+**Die zweite Wertung: Nachhaltigkeit.** Laut Regeln zählt dort der *Nachhaltigkeitsertrag*, die aufsummierten Kursgewinne und -verluste aller im Depot gehandelten Wertpapiere mit Stern (im amtlichen Universum die 50 Titel des
+Global Challenges Index; bei Gleichstand gewinnt das Depot mit weniger Kaufaufträgen). Sie hängt also davon ab, wie viel Geld in Sterntiteln steckt, nicht vom Depot insgesamt. Bisher gab der Bot Sterntiteln nur einen Bonus von einem Punkt im Ranking, kaum
+spürbar: In den Tests handelte die Strategie nur in 6 von 22 Jahren überhaupt einen Sterntitel, die Nachhaltigkeitswertung lief also praktisch ohne den Bot. **Neu ist eine Einstellung** (Dashboard, Einstellungen, „Nachhaltigkeitswertung: Plätze im Depot für Titel mit Stern“,
+oder `BOT_NH_SLOTS`): Sie reserviert 0 bis 6 der 6 Depotplätze für die jeweils stärksten Sterntitel (nach Momentum). Was das kostet und bringt (`python -m bot.lab --nachhaltigkeit`, amtliches Universum in Euro, 22 Jahre, NH-Rang = Anteil zufälliger 6er-Depots aus Sterntiteln,
+deren Ertrag in € die Strategie übertrifft):
+
+| reservierte Plätze | Median | schlechtestes Jahr | Rang Gesamtwertung | Ø Nachhaltigkeitsertrag | Rang Nachhaltigkeit |
+|---|---|---|---|---|---|
+| **0 (Standard)** | +13,1 % | −12,8 % | **67 %** | −58 € (Sterntitel in 6 von 22 Jahren) | 26 % |
+| 1 | +13,1 % | −15,6 % | 61 % | +346 € | 28 % |
+| 2 | +10,0 % | −21,1 % | 59 % | +1.068 € | 34 % |
+| 3 | +9,4 % | −16,0 % | 59 % | +1.856 € | 42 % |
+| 4 | +10,7 % | −11,8 % | 59 % | +2.749 € | 49 % |
+| 6 (alles Sterntitel) | +10,8 % | −14,4 % | 54 % | +4.013 € | 60 % |
+
+**Ehrlich gesagt lässt sich die Nachhaltigkeitswertung nicht nebenbei mitgewinnen.** Der Ertrag wächst mit dem Geld in Sterntiteln, aber schon der erste reservierte Platz kostet 6 Punkte Rang in der Gesamtwertung, alle sechs kosten 13 Punkte, und selbst mit sechs Sterntiteln schlägt die Auswahl
+nur 60 % zufälliger Sterntitel-Depots: Im kleinen Universum von 50 Titeln trägt Momentum weniger. Deshalb bleibt der **Standard bei 0** (Gesamtwertung zuerst). Wer die Nachhaltigkeitswertung bewusst angehen will, stellt auf 6, nimmt dafür etwa 13 Punkte Rang in der Gesamtwertung in Kauf und
+sollte wissen, dass auch das keinen sicheren Platz in der Nachhaltigkeitswertung bringt (die Konkurrenz dort ist nicht zufällig). Ein Zwischenweg mit 1 bis 4 Plätzen hat in den Tests keinen Vorteil gezeigt.
+
 ### Was ich von anderen übernommen habe (Recherche)
 
 - **Momentum** ist der am besten belegte Faktor, mit 3 bis 12 Monaten als bestem Zeitraum und Umkehr bei einem Monat
@@ -389,7 +408,7 @@ liest der nächste Lauf das Depot neu und arbeitet vom tatsächlichen Stand weit
 Der GitHub-Workflow ist jetzt nur noch manuell startbar, damit nicht zwei Zeitpläne gleichzeitig handeln.
 
 **Ehrlicher Stand:** Datenabruf, Kennzahlen, Regelstrategie, Risikoschicht, Backtest, Trockenlauf, Dashboard und Zeitplan sind
-getestet (`pytest`, 282 Tests) und liefen mit echten Yahoo-Daten (auch mit dem amtlichen Universum: Import der Liste, Zuordnung der ISIN, Euro-Umrechnung, ein ganzer Trockenlauf). Die Aufrufe von `claude -p` (Recherche in Paketen, Entscheidung mit Schutzgeländer, Schema, Websuche) habe ich
+getestet (`pytest`, 291 Tests) und liefen mit echten Yahoo-Daten (auch mit dem amtlichen Universum: Import der Liste, Zuordnung der ISIN, Euro-Umrechnung, ein ganzer Trockenlauf). Die Aufrufe von `claude -p` (Recherche in Paketen, Entscheidung mit Schutzgeländer, Schema, Websuche) habe ich
 in der Entwicklungsumgebung mit dem echten Claude Code durchgespielt, ein vollständiger Trockenlauf mit echten Daten ist gelaufen. **Nicht getestet** sind die Live-Ausführung auf der
 Plattform (braucht deinen Team-Login und die aufgezeichneten Selektoren), die Anmeldung mit *deinem* Token aus `claude setup-token` (der Aufruf ist derselbe, das Token kenne ich nicht),
 die SEC-Abfrage mit deinen Kontaktdaten (mit einer Attrappe getestet, früher mit echten Daten geprüft), Quiver und Liquid. Dafür gibt es den Selbsttest (Schritt 5), der ohne Order prüft,

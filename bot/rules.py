@@ -7,6 +7,7 @@ zuletzt das amtliche Universum von 511 Titeln in Euro; siehe bot/lab.py), nicht 
 - 6 gleich große Positionen, kaum umschichten: Gehalten wird, solange ein Titel in den oberen 70 % des Rankings bleibt (Gebühren).
 - Volatilitäts-Skalierung (Daniel/Moskowitz): Ist der Markt sehr unruhig (Schwankung über 20 % pro Jahr), sinkt die investierte Quote.
   Kostete im Test keinen Rang, senkte aber den schlechtesten Fall von -12,8 % auf -9,9 %.
+- Nachhaltigkeit (Parameter nh_slots, Standard 0): reserviert Plätze für Titel mit Stern; kostet Rang in der Gesamtwertung, siehe README.
 - Getestet und verworfen: Trendfilter beim Kauf, Marktumfeld-Filter (DAX unter SMA200, VIX, Ampel), Trailing-Stops, enge Stopps,
   Verkauf unter SMA50, Gewichtung nach Volatilität. Sie senkten den Rang. Über PARAMS bleiben sie schaltbar.
 Erwartung: Am amtlichen Universum in Euro schlug die Strategie im exakten Planspiel-Fenster 67 % zufälliger 6-Titel-Depots, bei um Wochen verschobenen Fenstern
@@ -17,7 +18,7 @@ from . import config, signals
 
 PARAMS = {"trend_filter": False, "rsi_filter": True, "hard_stop": True, "trailing": False, "trend_break": False,
           "sma50_sell": False, "vol_weight": False, "regime": False, "earnings_blackout": True, "vol_scale": True,
-          "keep_frac": 0.7, "n_positions": 6, "min_score": None, "kronos_weight": 0.0}
+          "keep_frac": 0.7, "n_positions": 6, "min_score": None, "kronos_weight": 0.0, "nh_slots": config.NH_SLOTS}
 
 VOL_TARGET = 0.20        # Zielschwankung des Marktes; darüber sinkt die investierte Quote
 VOL_FLOOR = 0.40         # mindestens 40 % investiert
@@ -154,27 +155,40 @@ def decide(pf: dict, universe: dict, snap: dict, total: float, regime: dict = No
             sectors[sec] = sectors.get(sec, 0) + 1
     free = n_target - len(kept)
     slot = total * min(exposure, 1 - CASH_FLOOR) / n_target
-    for isin in ranked:
-        if free <= 0:
-            break
+    nh_need = max(0, (P.get("nh_slots") or 0) - sum(1 for i in kept if universe.get(i, {}).get("stars")))   # Plätze, die für Titel mit Nachhaltigkeits-Stern reserviert sind
+
+    def consider(isin) -> bool:
+        nonlocal free
         m = snap[isin]
-        if isin in pf["positions"] or not can_buy(m, regime["label"], P):
-            continue
+        if isin in pf["positions"] or any(o["isin"] == isin for o in orders) or not can_buy(m, regime["label"], P):
+            return False
         if P.get("min_score") is not None and score_fn(m, universe[isin].get("stars", 0)) <= P["min_score"]:
-            continue   # absolutes Momentum: nur kaufen, wenn der Score über der Schwelle liegt
+            return False   # absolutes Momentum: nur kaufen, wenn der Score über der Schwelle liegt
         sec = m.get("sector") or universe[isin].get("sector")
         if sec and sectors.get(sec, 0) >= config.MAX_PER_SECTOR:
-            continue
+            return False
         weight = min(1.25, max(0.75, 0.30 / max(m["vol_20d"], 0.05))) if P["vol_weight"] else 1.0
         order = {"action": "buy", "isin": isin, "amount_eur": round(slot * weight),
                  "reason": f"Momentum Rang {rank[isin] + 1} von {len(ranked)}: 60 Tage {m['ret_60d']:+.1%}"
-                           + (f", 120 Tage {m['ret_120d']:+.1%}" if "ret_120d" in m else "")}
+                           + (f", 120 Tage {m['ret_120d']:+.1%}" if "ret_120d" in m else "")
+                           + (", Nachhaltigkeits-Stern" if universe[isin].get("stars") and P.get("nh_slots") else "")}
         if P["trailing"]:
             order["stop_price"] = round(m["price"] * (1 - trail_pct(m)), 2)
         orders.append(order)
         if sec:
             sectors[sec] = sectors.get(sec, 0) + 1
         free -= 1
+        return True
+
+    for isin in ranked:   # zuerst die reservierten Nachhaltigkeitsplätze mit den stärksten Sterntiteln
+        if free <= 0 or nh_need <= 0:
+            break
+        if universe[isin].get("stars") and consider(isin):
+            nh_need -= 1
+    for isin in ranked:
+        if free <= 0:
+            break
+        consider(isin)
 
     n_sell = sum(o["action"] == "sell" for o in orders)
     view = (f"Regelstrategie (ohne KI): Momentum 60/120 Tage, {len(kept)} Positionen bleiben, {n_sell} Verkäufe, "

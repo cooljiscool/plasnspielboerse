@@ -1,5 +1,5 @@
 {
-  "_hinweis": "Vorlage. Kopieren nach data/selectors.json und alle Selektoren mit den Werten aus 'playwright codegen' ersetzen. Platzhalter in 'value': {isin} {name} {search} {shares} {stop}. {search} ist der bereinigte Suchbegriff (z. B. 'Siemens'), verlässlicher ist {isin}, sobald data/universe.json echte ISINs aus der Plattformliste enthält.",
+  "_hinweis": "Vorlage. Kopieren nach data/selectors.json und alle Selektoren mit den Werten aus 'playwright codegen' ersetzen. Platzhalter in 'value': {isin} {name} {search} {shares} {stop}. {search} ist bei der amtlichen Wertpapierliste (python -m bot.universe_tool official) die ISIN und damit eindeutig; nimmt das Suchfeld der Plattform keine ISIN an, {name} verwenden.",
   "login_url": "https://trading.planspiel-boerse.de/web/auth/login",
   "user_field": "SELEKTOR_BENUTZERNAME",
   "password_field": "SELEKTOR_PASSWORT",

@@ -251,3 +251,54 @@ def test_max_jump_reports_the_largest_daily_move_in_the_recent_window():
     j = signals.max_jump(c, days=6)
     assert j["A"] == pytest.approx(0.881, abs=0.01) and j["B"] < 0.05
     assert signals.max_jump(c, days=3)["A"] < 0.05                                 # der Sprung liegt außerhalb des Fensters
+
+
+# --- Nachhaltigkeitsplätze ---
+def nh_setup():
+    uni = {i: {"name": i, "stars": 1 if i in ("C", "H", "M") else 0} for i in "ABCDEFGHIJKLMN"}
+    snap = {i: m(ret_60d=0.02 + 0.01 * k) for k, i in enumerate("ABCDEFGHIJKLMN")}         # N ist das stärkste, A das schwächste
+    return uni, snap
+
+
+def test_nh_slots_reserve_places_for_the_strongest_starred_titles():
+    uni, snap = nh_setup()
+    base = [o["isin"] for o in rules.decide({"cash": 50000.0, "positions": {}}, uni, snap, 50000.0)["orders"]]
+    assert base == ["M", "N", "L", "K", "J", "I"]                                             # ohne Reservierung: Momentum (M trägt zufällig einen Stern, der Bonus von 1 Punkt hebt es an N vorbei)
+    two = rules.decide({"cash": 50000.0, "positions": {}}, uni, snap, 50000.0, params={"nh_slots": 2})["orders"]
+    assert [o["isin"] for o in two] == ["M", "H", "N", "L", "K", "J"]                          # zuerst die zwei stärksten Sterntitel (M, H), dann der Rest nach Rang
+    assert sum(uni[o["isin"]]["stars"] for o in two) == 2 and all(o["action"] == "buy" for o in two) and len(two) == 6
+    assert "Nachhaltigkeits-Stern" in two[1]["reason"]
+
+
+def test_nh_slots_count_starred_positions_already_held_and_fill_up_with_others_if_stars_run_out():
+    uni, snap = nh_setup()
+    pos = {"C": {"shares": 10, "avg_price": 100.0, "bought": "2026-10-01"}, "N": {"shares": 10, "avg_price": 100.0, "bought": "2026-10-01"}}
+    pf = {"cash": 40000.0, "positions": pos}
+    buys = [o["isin"] for o in rules.decide(pf, uni, snap, 50000.0, params={"nh_slots": 2, "keep_frac": 1.0})["orders"] if o["action"] == "buy"]
+    assert buys[0] == "M" and len(buys) == 4                                                   # C ist schon im Depot: nur ein weiterer Sterntitel (der stärkste, M), Rest nach Rang
+    uni2 = {i: {"name": i, "stars": 1 if i == "A" else 0} for i in "ABCDEFGHIJKLMN"}
+    few = rules.decide({"cash": 50000.0, "positions": {}}, uni2, snap, 50000.0, params={"nh_slots": 4})["orders"]
+    assert len(few) == 6 and [o["isin"] for o in few][0] == "A" and sum(uni2[o["isin"]]["stars"] for o in few) == 1      # nur ein Sterntitel vorhanden: übrige Plätze nach Rang
+
+
+def test_nh_slots_default_is_off_and_never_buys_a_title_twice():
+    assert rules.PARAMS["nh_slots"] == 0
+    uni, snap = nh_setup()
+    orders = rules.decide({"cash": 50000.0, "positions": {}}, uni, snap, 50000.0, params={"nh_slots": 6})["orders"]
+    ids = [o["isin"] for o in orders]
+    assert len(ids) == len(set(ids)) == 6 and set(ids) >= {"C", "H", "M"}                        # alle drei Sterntitel, keine Doppelkäufe
+
+
+def test_nh_slots_come_from_the_environment_within_bounds(monkeypatch):
+    import importlib
+    try:
+        for raw, expected in (("", 0), ("2", 2), ("99", 6), ("-3", 0)):
+            monkeypatch.setenv("BOT_NH_SLOTS", raw)
+            assert importlib.reload(config).NH_SLOTS == expected
+        monkeypatch.setenv("BOT_NH_SLOTS", "2")
+        importlib.reload(config)
+        assert importlib.reload(rules).PARAMS["nh_slots"] == 2
+    finally:
+        monkeypatch.delenv("BOT_NH_SLOTS")
+        importlib.reload(config)
+        importlib.reload(rules)

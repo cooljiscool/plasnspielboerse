@@ -209,6 +209,36 @@ def evaluate(h, windows, strat=None, parts=None, step=2):
     return pd.DataFrame(rows).set_index("year")
 
 
+# --- Nachhaltigkeitswertung: Ertrag der Sterntitel ---
+def nh_yield(sim: dict, nh_cols) -> float:
+    """Nachhaltigkeitsertrag nach den Spielregeln: aufsummierte Kursgewinne und -verluste (in €, ohne Gebühren) aller im Depot gehandelten Sterntitel
+    (Verkäufe plus Wert der Bestände am Ende minus Käufe)."""
+    return float(sum(f[1] + sim["held_value"].get(c, 0.0) - f[0] for c, f in sim["flows"].items() if c in nh_cols))
+
+
+def random_nh_yields(h, s: int, e: int, nh_cols, n: int = 400, k: int = 6, amount: float = 8083.0, seed: int = 11) -> np.ndarray:
+    """Erträge zufälliger Depots aus k Sterntiteln (Kaufen und Halten, je `amount` €): Ersatz für die Konkurrenz in der Nachhaltigkeitswertung."""
+    rng = np.random.default_rng(seed)
+    p0, p1 = h.fr.a["price"][s], h.fr.a["price"][e]
+    idx = [h.fr.col_index[c] for c in nh_cols if c in h.fr.col_index]
+    ok = [j for j in idx if not np.isnan(p0[j]) and not np.isnan(p1[j])]
+    r = p1[ok] / p0[ok] - 1
+    return np.array([amount * r[rng.choice(len(ok), size=min(k, len(ok)), replace=False)].sum() for _ in range(n)])
+
+
+def evaluate_nh(h, windows, strat, nh_cols, step: int = 2) -> pd.DataFrame:
+    """Je Planspiel-Jahr: Rang in der Gesamtwertung (wie `evaluate`) und in der Nachhaltigkeitswertung (Anteil zufälliger 6er-Depots aus Sterntiteln, deren Ertrag
+    in € die Strategie übertrifft). Wer keinen Sterntitel handelt, hat Ertrag 0 (in der echten Wertung wäre er gar nicht platziert)."""
+    rows = []
+    for y, s, e in windows:
+        sim = bt.simulate(h, s, e, strat, step)
+        ret = bt.stats(sim["equity"])["return"]
+        y_nh = nh_yield(sim, nh_cols)
+        rows.append({"year": y, "ret": ret, "pct": float((_random(h, s, e) < ret).mean()), "nh_yield": y_nh,
+                     "nh_pct": float((random_nh_yields(h, s, e, nh_cols) < y_nh).mean()), "nh_traded": any(c in nh_cols for c in sim["flows"])})
+    return pd.DataFrame(rows).set_index("year")
+
+
 def summarize(df: pd.DataFrame) -> dict:
     return {"n": len(df), "median": df.ret.median(), "mean": df.ret.mean(), "positive": (df.ret > 0).mean(),
             "worst": df.ret.min(), "excess_ew": (df.ret - df.ew).mean(), "beat_ew": (df.ret > df.ew).mean(),
@@ -287,6 +317,29 @@ def _official_report(refresh: bool, years: bool):
     _run_groups(hist, groups, years, f"Amtliches Universum ({len(rows)} Titel), Kurse in Euro")
 
 
+def _nh_report(refresh: bool):
+    """Gesamtwertung gegen Nachhaltigkeitswertung: Wie viele Plätze für Sterntitel reserviert werden (nh_slots), am amtlichen Universum in Euro."""
+    import json
+    import os
+
+    from . import config
+    rows = json.load(open(os.path.join(config.DATA_DIR, "universe.json")))
+    hist = load_history(os.path.join(config.DATA_DIR, "cache", "history_official.pkl"), refresh, [r["yf"] for r in rows], {r["yf"]: r["currency"] for r in rows})
+    d = bt.Data.from_frames(hist["close"], hist["high"], hist["low"], hist["open"], [r["yf"] for r in rows])
+    stars = {r["yf"]: r["stars"] for r in rows}
+    for c in d.cols:
+        d.uni[c]["stars"] = stars.get(c, 0)
+    nh_cols = {c for c in d.cols if stars.get(c)}
+    w = planspiel_windows(d.dates)
+    print(f"Nachhaltigkeit: {len(nh_cols)} Sterntitel von {len(d.cols)}, {len(w)} Planspiel-Jahre. Gesamtrang wie bisher; NH-Rang = Anteil zufälliger 6er-Depots aus Sterntiteln,\n"
+          f"deren Ertrag (aufsummierte Kursgewinne der Sterntitel in €) übertroffen wird.\n")
+    print(f"{'reservierte Plätze':>18}{'Median':>9}{'schlechtestes':>15}{'Gesamtrang':>12}{'NH-Ertrag Ø':>13}{'NH-Ertrag Median':>18}{'NH-Rang':>9}{'Jahre mit NH-Handel':>21}")
+    for k in (0, 1, 2, 3, 4, 6):
+        df = evaluate_nh(d, w, make("mom_blend", n=6, keep_frac=0.7, exposure=mktvol_exposure(0.20, 0.4), rsi_filter=True, hard_stop=True, nh_slots=k), nh_cols)
+        print(f"{k:>18}{df.ret.median() * 100:>+8.1f}%{df.ret.min() * 100:>+14.1f}%{df.pct.mean() * 100:>11.0f}%{df.nh_yield.mean():>12,.0f} €{df.nh_yield.median():>16,.0f} €"
+              f"{df.nh_pct.mean() * 100:>8.0f}%{int(df.nh_traded.sum()):>17} von {len(df)}", flush=True)
+
+
 def _run_groups(hist, groups: dict, years: bool, title: str):
     strategies = {"rules (Standard, jetzt)": rules.decide, "frühere Version (alle Filter)": bt.alt_all_filters, "nur 60-Tage-Momentum": bt.momentum_only}
     pct = lambda x: f"{x * 100:+5.1f}%"
@@ -319,10 +372,13 @@ def main():
     ap.add_argument("--years", action="store_true", help="Ergebnis je Planspiel-Jahr ausgeben")
     ap.add_argument("--macro", action="store_true", help="Zins- und Konjunktur-Warnsignale als Überlagerung testen (Markt alle)")
     ap.add_argument("--official", action="store_true", help="Strategien auf dem amtlichen Universum (data/universe.json) testen, Kurse in Euro")
+    ap.add_argument("--nachhaltigkeit", action="store_true", help="Gesamtwertung gegen Nachhaltigkeitswertung bei reservierten Plätzen für Sterntitel (amtliches Universum, Euro)")
     ap.add_argument("--overlays", action="store_true", help="Marktbreite und Schutzschalter bei Depotrückgang als Überlagerung testen (Markt alle)")
     a = ap.parse_args()
     if a.official:
         return _official_report(a.refresh, a.years)
+    if a.nachhaltigkeit:
+        return _nh_report(a.refresh)
     hist = load_history(os.path.join(config.DATA_DIR, "cache", "history.pkl"), a.refresh)
     if a.macro:
         return _macro_report(hist)

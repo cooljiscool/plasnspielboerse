@@ -207,3 +207,12 @@ def test_universe_action_runs_the_official_list_import(authed, app, tmp_path):
     assert argsfile.read_text().strip() == "-m bot.universe_tool official"
     assert authed.post("/api/control", headers=H, json={"action": "stop"}).get_json()["running"] is False
     assert authed.post("/api/control", headers=H, json={"action": "gibtsnicht"}).status_code == 400
+
+
+def test_nh_slots_setting_is_validated_and_reaches_the_bot(authed, app):
+    assert authed.get("/api/status").get_json()["nh_slots"] == 0
+    assert authed.post("/api/settings", headers=H, json={"nh_slots": 3}).get_json()["nh_slots"] == 3
+    assert app.runner._env(False)["BOT_NH_SLOTS"] == "3"
+    for bad in (7, -1, "2", 1.5, True, None):
+        assert authed.post("/api/settings", headers=H, json={"nh_slots": bad}).status_code == 400
+    assert authed.get("/api/status").get_json()["nh_slots"] == 3                    # ungültige Eingaben ändern nichts

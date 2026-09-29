@@ -32,6 +32,7 @@ SEC_USER_AGENT = os.environ.get("SEC_USER_AGENT", "")   # SEC verlangt Kontaktda
 QUIVER_TOKEN = os.environ.get("QUIVER_API_TOKEN", "")   # optional, kostenpflichtig (ab 30 $/Monat): bot/quiver.py
 MCP_CONFIG = os.environ.get("BOT_RESEARCH_MCP_CONFIG", "")   # optional: Datei mit MCP-Servern nur zum Lesen für die Recherche (bot/mcp.py)
 MCP_TOOLS = os.environ.get("BOT_RESEARCH_MCP_TOOLS", "")     # dazu die einzeln freigegebenen Nur-Lese-Werkzeuge, z. B. mcp__liquid__get_markets
+NH_SLOTS = min(6, max(0, int(os.environ.get("BOT_NH_SLOTS", "0") or 0)))   # Plätze im Depot, die für Titel mit Nachhaltigkeits-Stern reserviert sind (0 = nur Gesamtwertung), siehe README
 KRONOS = os.environ.get("BOT_KRONOS", "0") == "1"       # Kronos-Prognose (optional, braucht PyTorch, siehe scripts/setup_kronos.sh)
 KRONOS_SIZE = os.environ.get("BOT_KRONOS_SIZE", "small")   # mini | small | base
 KRONOS_DIR = os.environ.get("KRONOS_DIR", "vendor/Kronos")
