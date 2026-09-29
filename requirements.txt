@@ -1,4 +1,9 @@
 anthropic>=0.40
 yfinance>=0.2.40
 playwright>=1.45
+flask>=3.0
+waitress>=3.0
+tzdata
 pytest>=8.0
+pandas
+lxml

@@ -1,10 +1,8 @@
 name: trade
 on:
-  schedule:
-    # Werktags 3x täglich (UTC): nach Handelsstart, mittags, vor Handelsschluss in Stuttgart
-    - cron: "20 6 * * 1-5"
-    - cron: "30 11 * * 1-5"
-    - cron: "40 17 * * 1-5"
+  # Nur manuell: Den Zeitplan übernimmt das Dashboard. Zwei Zeitpläne würden doppelt handeln.
+  # Wer stattdessen ohne Dashboard über GitHub laufen will, aktiviert hier wieder einen Cron-Trigger,
+  # z. B. schedule: [{cron: "20 6 * * 1-5"}, {cron: "30 11 * * 1-5"}, {cron: "40 17 * * 1-5"}]
   workflow_dispatch:
 
 concurrency: trade

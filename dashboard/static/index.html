@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="/static/manifest.webmanifest">
+<title>Börsen-Bot</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#0f1720;--mute:#5b6b7a;--line:#e1e6eb;--accent:#0f766e;--accent-ink:#fff;--up:#15803d;--down:#b91c1c;--warn:#b45309;--r:14px}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1117;--card:#151d26;--ink:#e8eef4;--mute:#8fa1b3;--line:#243140;--accent:#2dd4bf;--accent-ink:#04211d;--up:#4ade80;--down:#f87171;--warn:#fbbf24}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+body{padding:0 16px calc(84px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 0 6px;position:sticky;top:0;background:var(--bg);z-index:5}
+h1{font-size:19px;margin:0}
+h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:22px 0 8px}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--card);white-space:nowrap}
+.pill.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.pill.live{background:var(--down);color:#fff;border-color:var(--down)}
+.pill.run{background:var(--warn);color:#fff;border-color:var(--warn)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:12px}
+.big{font-size:34px;font-weight:700;letter-spacing:-.02em}
+.mute{color:var(--mute);font-size:14px}
+.up{color:var(--up)}.down{color:var(--down)}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit;font-weight:600;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:14px 12px;min-height:48px;cursor:pointer;width:100%}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.danger{background:var(--down);color:#fff;border-color:var(--down)}
+button:disabled{opacity:.5}
+input,textarea{font:inherit;width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);margin:4px 0 12px}
+textarea{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;min-height:220px}
+label{font-size:14px;color:var(--mute)}
+pre{background:#0b1117;color:#d6e2ee;padding:12px;border-radius:10px;overflow:auto;max-height:320px;font-size:12px;white-space:pre-wrap;word-break:break-word;margin:0}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:9}
+nav button{border:0;border-radius:0;background:none;color:var(--mute);min-height:58px;font-size:12.5px;flex:1;min-width:0;padding:0 2px;width:auto}
+nav button.active{color:var(--accent);box-shadow:inset 0 3px 0 var(--accent)}
+.pos{padding:10px 0;border-top:1px solid var(--line)}.pos:first-child{border-top:0}
+.tag{font-size:12px;padding:2px 8px;border-radius:6px;font-weight:700;margin-right:6px}
+.buy{background:color-mix(in srgb,var(--up) 18%,transparent);color:var(--up)}.sell{background:color-mix(in srgb,var(--down) 18%,transparent);color:var(--down)}
+#toast{position:fixed;left:16px;right:16px;bottom:calc(76px + env(safe-area-inset-bottom));background:var(--ink);color:var(--bg);padding:12px 14px;border-radius:12px;display:none;z-index:20}
+#login{max-width:380px;margin:18vh auto 0}
+svg{width:100%;height:auto;display:block}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<section id="login" class="hidden">
+  <h1>Börsen-Bot</h1>
+  <p class="mute">Bitte anmelden.</p>
+  <label for="pw">Passwort</label>
+  <input id="pw" type="password" autocomplete="current-password">
+  <button class="primary" id="loginBtn">Anmelden</button>
+  <p id="loginErr" class="down"></p>
+</section>
+
+<div id="app" class="hidden">
+<header>
+  <h1>Börsen-Bot</h1>
+  <div><span class="pill" id="stateP">–</span> <span class="pill" id="modeP">–</span></div>
+</header>
+
+<main>
+<!-- Übersicht -->
+<section data-tab="home">
+  <div class="card">
+    <div class="mute">Depotgesamtwert</div>
+    <div class="big" id="total">–</div>
+    <div id="delta" class="mute">–</div>
+    <div id="chart" style="margin-top:8px"></div>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="mute">Cash</div><div id="cash" style="font-size:20px;font-weight:700">–</div></div>
+    <div class="card"><div class="mute">Käufe (min. 3)</div><div id="buys" style="font-size:20px;font-weight:700">–</div></div>
+  </div>
+  <h2>Positionen</h2>
+  <div class="card" id="positions"><span class="mute">Noch keine Positionen.</span></div>
+</section>
+
+<!-- Steuerung -->
+<section data-tab="control" class="hidden">
+  <div class="card">
+    <div class="row"><span class="mute">Zeitplan</span><b id="schedState">–</b></div>
+    <div class="row"><span class="mute">Nächster Lauf</span><b id="nextRun">–</b></div>
+    <div class="row"><span class="mute">Letzter Lauf</span><b id="lastRun">–</b></div>
+  </div>
+  <div class="grid">
+    <button class="primary" id="btnStart">▶ Start<br><small>Zeitplan an</small></button>
+    <button class="danger" id="btnStop">■ Stopp<br><small>Notaus</small></button>
+    <button id="btnRun">Jetzt ausführen</button>
+    <button id="btnTest">Selbsttest</button>
+  </div>
+  <h2>Modus</h2>
+  <div class="card">
+    <div class="row"><b id="modeText">Trockenlauf</b><button id="btnLive" style="width:auto;padding:10px 16px">wechseln</button></div>
+    <p class="mute" style="margin:8px 0 0">Trockenlauf bucht nur lokal. Live sendet echte Orders an die Plattform.</p>
+  </div>
+  <h2>Ausgabe letzter Vorgang</h2>
+  <pre id="out">–</pre>
+</section>
+
+<!-- Protokoll -->
+<section data-tab="log" class="hidden"><div id="decisions"></div></section>
+
+<!-- Einstellungen -->
+<section data-tab="settings" class="hidden">
+  <h2>Zugangsdaten</h2>
+  <div class="card">
+    <label>Planspiel-Benutzername <span id="s_PSB_USER" class="mute"></span></label>
+    <input id="PSB_USER" autocomplete="off" autocapitalize="off" placeholder="leer lassen = unverändert">
+    <label>Planspiel-Passwort <span id="s_PSB_PASSWORD" class="mute"></span></label>
+    <input id="PSB_PASSWORD" type="password" autocomplete="new-password" placeholder="leer lassen = unverändert">
+    <label>Anthropic-API-Key <span id="s_ANTHROPIC_API_KEY" class="mute"></span></label>
+    <input id="ANTHROPIC_API_KEY" type="password" autocomplete="new-password" placeholder="leer lassen = unverändert">
+  </div>
+  <h2>Zeitplan &amp; Modell</h2>
+  <div class="card">
+    <label>Uhrzeiten (Mo–Fr, Berliner Zeit, kommagetrennt)</label>
+    <input id="times" placeholder="09:20, 13:30, 19:40">
+    <label>Claude-Modell</label>
+    <input id="model" autocapitalize="off">
+  </div>
+  <button class="primary" id="saveSettings">Speichern</button>
+
+  <h2>Selektoren (selectors.json)</h2>
+  <textarea id="f_selectors" spellcheck="false"></textarea>
+  <button id="saveSelectors">Selektoren speichern</button>
+  <h2>Wertpapiere (universe.json)</h2>
+  <textarea id="f_universe" spellcheck="false"></textarea>
+  <button id="saveUniverse">Wertpapiere speichern</button>
+  <h2>Konto</h2>
+  <button id="logout">Abmelden</button>
+</section>
+</main>
+
+<nav>
+  <button data-go="home" class="active">Übersicht</button>
+  <button data-go="control">Steuerung</button>
+  <button data-go="log">Protokoll</button>
+  <button data-go="settings">Einstellungen</button>
+</nav>
+<div id="toast"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const eur = n => (n ?? 0).toLocaleString('de-DE', {style:'currency', currency:'EUR'});
+const pct = n => (n >= 0 ? '+' : '') + (n * 100).toFixed(2).replace('.', ',') + ' %';
+const fmtTime = s => s ? new Date(s).toLocaleString('de-DE', {weekday:'short', hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'}) : '–';
+function el(tag, props = {}, ...kids) {           // baut DOM ohne innerHTML (Inhalte kommen teils vom LLM)
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(props)) k === 'class' ? n.className = v : n.setAttribute(k, v);
+  for (const c of kids.flat()) n.append(c instanceof Node ? c : document.createTextNode(c ?? ''));
+  return n;
+}
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = 'none', 3500); }
+
+async function api(path, body) {
+  const opt = body === undefined ? {} : {method:'POST', headers:{'Content-Type':'application/json', 'X-Requested-With':'dashboard'}, body: JSON.stringify(body)};
+  const r = await fetch(path, opt);
+  if (r.status === 401 && path !== '/api/login') { showLogin(); throw new Error('login'); }
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || 'Fehler ' + r.status);
+  return j;
+}
+const act = (fn, ok) => async (...a) => { try { const r = await fn(...a); if (ok) toast(ok); return r; } catch (e) { if (e.message !== 'login') toast(e.message); } };
+
+let tab = 'home', S = null, poll = null;
+function showLogin() { $('app').classList.add('hidden'); $('login').classList.remove('hidden'); clearInterval(poll); }
+function showApp() { $('login').classList.add('hidden'); $('app').classList.remove('hidden'); refreshAll(); clearInterval(poll); poll = setInterval(refreshAll, 5000); }
+
+$('loginBtn').onclick = async () => {
+  try { await api('/api/login', {password: $('pw').value}); $('pw').value = ''; $('loginErr').textContent = ''; showApp(); loadSettingsForm(); }
+  catch (e) { $('loginErr').textContent = e.message; }
+};
+$('pw').onkeydown = e => { if (e.key === 'Enter') $('loginBtn').click(); };
+$('logout').onclick = async () => { await api('/api/logout', {}); showLogin(); };
+
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  tab = b.dataset.go;
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('active', x === b));
+  document.querySelectorAll('[data-tab]').forEach(s => s.classList.toggle('hidden', s.dataset.tab !== tab));
+  refreshAll(); window.scrollTo(0, 0);
+});
+
+function renderStatus() {
+  const p = $('stateP'); p.className = 'pill' + (S.running ? ' run' : S.enabled ? ' on' : '');
+  p.textContent = S.running ? 'läuft …' : S.enabled ? 'aktiv' : 'gestoppt';
+  const m = $('modeP'); m.className = 'pill' + (S.live ? ' live' : ''); m.textContent = S.live ? 'LIVE' : 'Trockenlauf';
+  $('schedState').textContent = S.enabled ? 'an' : 'aus';
+  $('nextRun').textContent = S.enabled ? fmtTime(S.next_run) : '–';
+  const l = S.last; $('lastRun').textContent = l ? `${fmtTime(l.start)} · ${l.kind === 'run' ? 'Lauf' : 'Test'} · ${l.end ? (l.code === 0 ? 'ok' : 'Fehler ' + l.code) : 'läuft'}` : '–';
+  $('modeText').textContent = S.live ? 'LIVE – echte Orders' : 'Trockenlauf';
+  $('btnLive').textContent = S.live ? 'auf Trockenlauf' : 'auf Live';
+  $('btnStart').disabled = S.enabled; $('btnRun').disabled = S.running; $('btnTest').disabled = S.running;
+  for (const k of Object.keys(S.secrets)) $('s_' + k).textContent = S.secrets[k] ? '(gespeichert)' : '(fehlt)';
+}
+
+function renderChart(series) {
+  const box = $('chart'); box.replaceChildren();
+  if (series.length < 2) { box.append(el('div', {class: 'mute'}, 'Verlauf erscheint nach dem zweiten Lauf.')); return; }
+  const W = 600, H = 160, v = series.map(s => s.v), lo = Math.min(...v), hi = Math.max(...v), span = (hi - lo) || 1;
+  const pts = v.map((y, i) => `${(i / (v.length - 1) * W).toFixed(1)},${(H - 8 - (y - lo) / span * (H - 16)).toFixed(1)}`).join(' ');
+  const NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', 'Depotverlauf');
+  const line = document.createElementNS(NS, 'polyline');
+  line.setAttribute('points', pts); line.setAttribute('fill', 'none'); line.setAttribute('stroke', 'var(--accent)');
+  line.setAttribute('stroke-width', '3'); line.setAttribute('stroke-linejoin', 'round'); line.setAttribute('vector-effect', 'non-scaling-stroke');
+  svg.append(line); box.append(svg);
+}
+
+async function loadHome() {
+  const d = await api('/api/depot'), pf = d.portfolio;
+  const last = d.series.length ? d.series[d.series.length - 1].v : null;
+  $('total').textContent = last != null ? eur(last) : '–';
+  if (last != null) { const base = d.series[0].v; const ch = last / base - 1; $('delta').className = ch >= 0 ? 'up' : 'down'; $('delta').textContent = `${pct(ch)} seit dem ersten Lauf (${eur(last - base)})`; }
+  $('cash').textContent = pf ? eur(pf.cash) : '–';
+  $('buys').textContent = pf ? `${pf.buy_orders_executed ?? 0} / 3` : '–';
+  renderChart(d.series);
+  const box = $('positions'); box.replaceChildren();
+  const h = Object.entries(d.holdings);
+  if (!h.length) box.append(el('span', {class: 'mute'}, 'Noch keine Positionen.'));
+  for (const [isin, p] of h) {
+    const ret = p.price / p.avg_price - 1;
+    box.append(el('div', {class: 'pos'},
+      el('div', {class: 'row'}, el('b', {}, p.name), el('b', {}, eur(p.shares * p.price))),
+      el('div', {class: 'row mute'}, el('span', {}, `${p.shares} Stk · Ø ${eur(p.avg_price)}`), el('span', {class: ret >= 0 ? 'up' : 'down'}, pct(ret)))));
+  }
+}
+
+async function loadLog() {
+  const d = await api('/api/depot'), box = $('decisions'); box.replaceChildren();
+  if (!d.decisions.length) box.append(el('div', {class: 'card mute'}, 'Noch keine Läufe.'));
+  for (const x of d.decisions) {
+    const c = el('div', {class: 'card'},
+      el('div', {class: 'row'}, el('b', {}, fmtTime(x.time)), el('span', {class: 'pill' + (x.live ? ' live' : '')}, x.live ? 'LIVE' : 'Trockenlauf')),
+      el('p', {class: 'mute'}, x.market_view || ''));
+    for (const o of x.approved || []) c.append(el('div', {class: 'pos'}, el('span', {class: 'tag ' + o.action}, o.action === 'buy' ? 'KAUF' : 'VERKAUF'),
+      `${o.name || o.isin} · ${o.shares} Stk`, el('div', {class: 'mute'}, o.reason || '')));
+    for (const r of x.rejected || []) c.append(el('div', {class: 'pos mute'}, `abgelehnt: ${(r.order && r.order.isin) || ''} – ${r.why}`));
+    if (!(x.approved || []).length && !(x.rejected || []).length) c.append(el('div', {class: 'mute'}, 'Keine Order.'));
+    box.append(c);
+  }
+}
+
+async function loadOut() { const o = await api('/api/output'); $('out').textContent = o.text || '–'; }
+
+async function refreshAll() {
+  try {
+    S = await api('/api/status'); renderStatus();
+    if (tab === 'home') await loadHome();
+    if (tab === 'log') await loadLog();
+    if (tab === 'control') await loadOut();
+  } catch (e) { /* bei 401 zeigt api() den Login */ }
+}
+
+$('btnStart').onclick = act(async () => { S = await api('/api/control', {action: 'start'}); renderStatus(); }, 'Zeitplan gestartet');
+$('btnStop').onclick = act(async () => { if (!confirm('Alles stoppen? Ein laufender Vorgang wird abgebrochen.')) return; S = await api('/api/control', {action: 'stop'}); renderStatus(); }, 'Gestoppt');
+$('btnRun').onclick = act(async () => { if (S.live && !confirm('LIVE: Jetzt echte Orders erzeugen?')) return; S = await api('/api/control', {action: 'run'}); renderStatus(); }, 'Lauf gestartet');
+$('btnTest').onclick = act(async () => { S = await api('/api/control', {action: 'selftest'}); renderStatus(); }, 'Selbsttest gestartet');
+$('btnLive').onclick = act(async () => {
+  if (S.live) { S = await api('/api/live', {live: false}); }
+  else { const c = prompt('Live sendet ECHTE Orders. Zur Bestätigung LIVE eingeben:'); if (c === null) return; S = await api('/api/live', {live: true, confirm: c}); }
+  renderStatus();
+}, 'Modus geändert');
+
+async function loadSettingsForm() {
+  try {
+    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model;
+    $('f_selectors').value = (await api('/api/file/selectors')).text; $('f_universe').value = (await api('/api/file/universe')).text;
+  } catch (e) {}
+}
+$('saveSettings').onclick = act(async () => {
+  const secrets = {}; for (const k of ['PSB_USER', 'PSB_PASSWORD', 'ANTHROPIC_API_KEY']) { secrets[k] = $(k).value; $(k).value = ''; }
+  S = await api('/api/settings', {times: $('times').value.split(',').map(s => s.trim()).filter(Boolean), model: $('model').value, secrets});
+  renderStatus();
+}, 'Gespeichert');
+$('saveSelectors').onclick = act(() => api('/api/file/selectors', {text: $('f_selectors').value}), 'Selektoren gespeichert');
+$('saveUniverse').onclick = act(() => api('/api/file/universe', {text: $('f_universe').value}), 'Wertpapiere gespeichert');
+
+api('/api/status').then(() => { showApp(); loadSettingsForm(); }).catch(() => showLogin());
+</script>
+</body>
+</html>

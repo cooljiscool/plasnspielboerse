@@ -1,0 +1,13 @@
+services:
+  dashboard:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DASHBOARD_STATE: /app/state
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./state:/app/state   # Zugangsdaten und Einstellungen (nur auf diesem Rechner)
+      - ./data:/app/data     # Wertpapiere, Selektoren, Depotstand
+      - ./logs:/app/logs     # Entscheidungsprotokolle

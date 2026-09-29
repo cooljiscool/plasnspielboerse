@@ -19,8 +19,18 @@ def check(name, fn):
 
 def main():
     universe = {u["isin"]: u for u in load("universe.json", [])}
-    ok = [check("Universum", lambda: f"{len(universe)} Wertpapiere")]
-    ok.append(check("Marktdaten", lambda: f"{len(market.snapshot(universe))}/{len(universe)} mit Kurs"))
+    def uni():
+        if not universe:
+            raise RuntimeError("data/universe.json ist leer")
+        return f"{len(universe)} Wertpapiere"
+
+    def kurse():
+        n = len(market.snapshot(universe))
+        if n == 0:
+            raise RuntimeError("keine Kursdaten geladen (Symbole prüfen)")
+        return f"{n}/{len(universe)} mit Kurs"
+
+    ok = [check("Universum", uni), check("Marktdaten", kurse)]
 
     def claude():
         import anthropic

@@ -45,18 +45,20 @@ def main():
             o["name"] = universe[o["isin"]]["name"]
             executor.place(o, today)
         if config.LIVE and approved:
-            # Kontrolle: Depot nach den Orders neu lesen und als Stand speichern.
+            # Kontrolle: Depot nach den Orders neu lesen.
             pf = executor.get_portfolio(pf)
             pf["buy_orders_executed"] += sum(o["action"] == "buy" for o in approved)
-            save("portfolio.json", pf)
     finally:
         if ctx:
             ctx.__exit__(None, None, None)
 
-    if not config.LIVE:
-        save("portfolio.json", executor.pf)
+    save("portfolio.json", pf)
+    total_after = risk.portfolio_value(pf, prices)
+    holdings = {i: {"name": universe.get(i, {}).get("name", i), "shares": p["shares"], "avg_price": p["avg_price"],
+                    "price": prices.get(i, p["avg_price"])} for i, p in pf["positions"].items()}
     os.makedirs(config.LOG_DIR, exist_ok=True)
     log = {"time": datetime.now().isoformat(timespec="seconds"), "live": config.LIVE, "total_before": total,
+           "total_after": total_after, "cash": pf["cash"], "holdings": holdings,
            "market_view": proposal["market_view"], "approved": approved,
            "rejected": [{"order": o, "why": w} for o, w in rejected]}
     json.dump(log, open(os.path.join(config.LOG_DIR, datetime.now().strftime("%Y%m%d-%H%M") + ".json"), "w"),

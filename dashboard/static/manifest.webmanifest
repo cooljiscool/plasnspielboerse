@@ -1,0 +1,8 @@
+{
+  "name": "Börsen-Bot",
+  "short_name": "Börsen-Bot",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1117",
+  "theme_color": "#0f766e"
+}

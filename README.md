@@ -2,7 +2,39 @@
 
 Handelt im Planspiel Börse der Sparkassen (1.10.2026 – 25.1.2027) vollautomatisch. Pro Lauf:
 Marktdaten (yfinance) → Claude wählt Orders → harte Risikoregeln (`bot/risk.py`) → Ausführung über die Weboberfläche
-(Playwright) → Log in `logs/`, Depotstand in `data/portfolio.json`. Läuft per GitHub Actions ohne deinen Rechner.
+(Playwright) → Log in `logs/`, Depotstand in `data/portfolio.json`. Gesteuert wird alles über ein **Handy-Dashboard**
+(Start/Stopp, Übersicht, Zugangsdaten, Zeitplan), siehe unten.
+
+## Dashboard fürs Handy
+
+Das Dashboard ist eine kleine Web-App, die zusammen mit dem Bot auf einem Rechner läuft, der dauerhaft an ist
+(Raspberry Pi, Mini-PC, günstiger Server). Ein Handy kann den Bot nicht selbst ausführen, es bedient ihn nur im Browser.
+
+| Tab | Inhalt |
+|---|---|
+| Übersicht | Depotwert, Verlauf, Cash, Positionen mit Gewinn/Verlust, Zähler für die Mindest-Käufe |
+| Steuerung | **Start** (Zeitplan an), **Stopp** (Notaus, bricht laufenden Lauf ab), Jetzt ausführen, Selbsttest, Umschalter Trockenlauf/Live, Ausgabe |
+| Protokoll | Jede Entscheidung mit Begründung, ausgeführte und abgelehnte Orders |
+| Einstellungen | Planspiel-Login, Anthropic-Key, Uhrzeiten, Modell, `selectors.json`, `universe.json` |
+
+**Starten (Docker):**
+1. Auf dem Dauerrechner Docker installieren, Repository klonen, `cp .env.example .env` und in `.env` ein langes
+   `DASHBOARD_PASSWORD` setzen.
+2. `docker compose up -d --build`. Das Dashboard läuft auf Port 8080.
+   Ohne Docker: `pip install -r requirements.txt && playwright install chromium && DASHBOARD_PASSWORD=… python -m dashboard.app`.
+3. **Vom Handy erreichen, ohne den Port ins offene Internet zu stellen:** Tailscale (kostenlos) auf dem Rechner und dem Handy
+   installieren und anmelden, dann `http://<Rechnername>:8080` im Handy-Browser öffnen. Alternative: ein Cloudflare Tunnel
+   oder ein Reverse Proxy mit https, dann `DASHBOARD_HTTPS=1` in `.env`. Im Browser „Zum Startbildschirm hinzufügen“ macht daraus eine App.
+4. Im Tab **Einstellungen** Zugangsdaten eintragen (gespeicherte Werte werden nie wieder angezeigt, leere Felder ändern nichts),
+   Uhrzeiten prüfen, `selectors.json` und `universe.json` einfügen, dann **Selbsttest** im Tab Steuerung.
+5. **Start** drücken. Live schaltest du erst nach erfolgreichem Selbsttest und ein paar Tagen Trockenlauf um (Eingabe von `LIVE` nötig).
+
+**Sicherheit:** Passwortschutz mit Sperre nach 5 Fehlversuchen, Zugangsdaten nur im Ordner `state/` (Dateirechte 600,
+nicht im Repo, in der Ausgabe geschwärzt). Das Dashboard steuert echte Zugangsdaten und Orders: Passwort lang wählen,
+den Port nicht offen ins Internet stellen. Stopp beendet einen laufenden Lauf sofort. Trifft das mitten in einer Order,
+liest der nächste Lauf das Depot neu und arbeitet vom tatsächlichen Stand weiter.
+
+Der GitHub-Workflow ist jetzt nur noch manuell startbar, damit nicht zwei Zeitpläne gleichzeitig handeln.
 
 **Ehrlicher Stand:** Entscheidungslogik, Risikoregeln, Trockenlauf und Zeitplan sind getestet (`pytest`, 11 Tests).
 Die **Live-Ausführung auf der Plattform ist nicht getestet**, weil sie nur mit einem echten Team-Login geprüft werden
@@ -41,18 +73,18 @@ Global Challenges Index) plus Fonds/ETFs/Anleihen (offizielle Liste: planspiel-b
    `{shares}` werden eingesetzt. Zahlen im Depot werden im deutschen Format gelesen (`1.234,56 €`).
 4. Hat der Login Captcha oder 2-Faktor, ist Vollautomatik nicht möglich. Dann Sparkasse fragen.
 
-### 4. GitHub einrichten
-1. Repository → Settings → Secrets and variables → Actions → **Secrets**: `ANTHROPIC_API_KEY`, `PSB_USER`, `PSB_PASSWORD`.
-2. Diesen Branch in den **Default-Branch mergen** (GitHub führt Zeitpläne nur dort aus).
-3. Settings → Actions → General → Workflow permissions: **Read and write** (für das Speichern von Logs und Depotstand).
+### 4. Dashboard einrichten
+Siehe Abschnitt „Dashboard fürs Handy“ oben. Zugangsdaten trägst du dort im Tab Einstellungen ein.
 
 ### 5. Erst testen, dann live
-1. Lokal: `export ANTHROPIC_API_KEY=… PSB_USER=… PSB_PASSWORD=…` und `python -m bot.selftest`.
-   Es prüft Universum, Marktdaten, Claude und (mit Login) das Auslesen des Depots. **Alles muss `[ OK ]` zeigen.**
-2. Trockenlauf: `python -m bot.run` (ohne `BOT_LIVE`) bucht nur lokal. Lauf ein paar Tage über Actions
-   (Actions → trade → Run workflow) und lies die Begründungen in `logs/`.
-3. **Live schalten:** Repository-Variable `BOT_LIVE` = `1` (Settings → Variables). Ab dann gehen Orders wirklich raus.
-   Beobachte die ersten Läufe in Actions und in der Plattform. Stoppen: Variable auf `0` oder Workflow deaktivieren.
+1. **Selbsttest** (Tab Steuerung): prüft Universum, Marktdaten, Claude und Plattform-Login samt Depot-Auslesen.
+   **Alles muss `[ OK ]` zeigen.** Ohne Dashboard: `python -m bot.selftest` mit gesetzten Umgebungsvariablen.
+2. **Trockenlauf:** Standardmodus, bucht nur lokal. Lass ihn ein paar Tage laufen und lies die Begründungen im Tab Protokoll.
+3. **Live schalten:** Tab Steuerung → Modus → „auf Live“, `LIVE` eingeben. Beobachte die ersten Läufe in der Plattform.
+   Zurück oder anhalten: „auf Trockenlauf“ bzw. **Stopp**.
+
+Alternative ohne Dashboard: GitHub Actions (`.github/workflows/trade.yml`, Secrets `ANTHROPIC_API_KEY`, `PSB_USER`,
+`PSB_PASSWORD`, Variable `BOT_LIVE`; Cron-Trigger dort wieder einkommentieren, Branch in den Default-Branch mergen).
 
 ## Sicherheitsnetz
 - Kann das Depot nicht gelesen werden, wird nicht gehandelt. Nach jeder Order wird das Depot neu gelesen.
