@@ -100,6 +100,34 @@ def mktvol_exposure(target=0.20, floor=0.4, n=6):
     return f
 
 
+MACRO_TRIGGERS = {   # Warnsignale aus Zins- und Konjunkturdaten (bot/macro.py), jeweils mit dem Stand des Tages
+    "Zinskurve invers (10J-2J < 0)": lambda m: m.get("curve") is not None and m["curve"] < 0,
+    "Zinskurve invers (10J-3M < 0)": lambda m: m.get("curve3m") is not None and m["curve3m"] < 0,
+    "Kreditaufschläge +0,5 in 120 Tagen": lambda m: (m.get("credit_widening") or 0) > 0.5,
+    "10J-Rendite +0,75 in 3 Monaten": lambda m: (m.get("y10_chg63") or 0) > 0.75,
+    "Fed strafft (+1,0 in 6 Monaten)": lambda m: (m.get("dff_chg126") or 0) > 1.0,
+    "Sahm-Regel >= 0,5": lambda m: (m.get("sahm") or 0) >= 0.5,
+    "Inflation > 4 %": lambda m: (m.get("cpi_yoy") or 0) > 4.0,
+}
+
+
+def n_warnings(m: dict) -> int:
+    keys = ("Zinskurve invers (10J-2J < 0)", "Kreditaufschläge +0,5 in 120 Tagen", "10J-Rendite +0,75 in 3 Monaten", "Fed strafft (+1,0 in 6 Monaten)")
+    return sum(bool(MACRO_TRIGGERS[k](m)) for k in keys)
+
+
+def macro_exposure(trigger, off_exposure=0.5, target=0.20, floor=0.4, n=6):
+    """Volatilitäts-Skalierung wie im Standard, zusätzlich höchstens `off_exposure` investiert, solange das Makro-Warnsignal aktiv ist."""
+    base = mktvol_exposure(target, floor, n)
+
+    def f(regime):
+        exp, pos = base(regime)
+        if trigger(regime.get("macro") or {}):
+            exp, pos = _scaled(min(exp, off_exposure), n)
+        return exp, pos
+    return f
+
+
 def vix_exposure(level=28.0, off_exposure=0.5, off_positions=3):
     def f(regime):
         v = regime.get("vix")
@@ -184,6 +212,21 @@ def load_history(cache: str, refresh: bool = False):
     return hist
 
 
+def _macro_report(hist):
+    from . import macro, universes
+    d = bt.Data.from_frames(hist["close"], hist["high"], hist["low"], hist["open"], list(dict.fromkeys(universes.ALL)))
+    d.attach_macro(macro.frame(d.dates))
+    w = planspiel_windows(d.dates)
+    print(f"Makro-Warnsignale als Überlagerung (bei Signal höchstens 50 % investiert), {len(w)} Planspiel-Jahre, Markt alle\n")
+    print(f"{'Warnsignal':46}{'Jahre aktiv':>12}{'Median':>9}{'Rang':>7}{'schlechtestes Jahr':>20}")
+    cases = [("ohne Makro (Standard)", lambda m: False)] + list(MACRO_TRIGGERS.items()) + [("mindestens 2 von 4 Warnsignalen", lambda m: n_warnings(m) >= 2)]
+    for name, trig in cases:
+        active = sum(bool(trig(d.macro_at(s))) for _, s, _ in w)
+        df = evaluate(d, w, make("mom_blend", keep_frac=0.7, exposure=macro_exposure(trig)))
+        s = summarize(df)
+        print(f"{name:46}{active:>9} von {len(w)}{s['median'] * 100:>+8.1f}%{s['pct'] * 100:>6.0f}%{s['worst'] * 100:>+19.1f}%")
+
+
 def main():
     import argparse
     import os
@@ -194,8 +237,11 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--refresh", action="store_true", help="Kurshistorie neu laden")
     ap.add_argument("--years", action="store_true", help="Ergebnis je Planspiel-Jahr ausgeben")
+    ap.add_argument("--macro", action="store_true", help="Zins- und Konjunktur-Warnsignale als Überlagerung testen (Markt alle)")
     a = ap.parse_args()
     hist = load_history(os.path.join(config.DATA_DIR, "cache", "history.pkl"), a.refresh)
+    if a.macro:
+        return _macro_report(hist)
     groups = {**universes.GROUPS, "alle": list(dict.fromkeys(universes.ALL))}
     strategies = {"rules (Standard, jetzt)": rules.decide, "frühere Version (alle Filter)": bt.alt_all_filters,
                   "nur 60-Tage-Momentum": bt.momentum_only}

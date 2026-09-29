@@ -97,6 +97,37 @@ Krisenjahre gegenüber dem Durchschnitt aller Titel: 2008 −9,5 % gegen −30,9
   Rüstung) und stiegen um etwa 25 bis 40 %. Das deckt sich mit der Momentum-Auswahl. Jahreszeitliche Muster (Weihnachtsrally, Januar-Effekt) sind nur schwach belegt
   und wurden nicht eingebaut.
 
+### Weitere Daten: Zinsen, Konjunktur, Bilanzen, Insider, Social Media
+
+Der Bot betrachtet zusätzlich diese Daten. **Nur Claude sieht sie, die feste Berechnung nutzt sie nicht.** Grund: Was sich nicht an der Vergangenheit prüfen lässt, darf die Auswahl
+nicht steuern. Meine erste Version mit vielen ungeprüften Zusatzregeln lag bei 46 % Rang, die einfache bei 81 %.
+
+| Daten | Quelle | Was genau | Getestet? | Wirkung |
+|---|---|---|---|---|
+| **Zinsen und Konjunktur** | FRED, EZB (frei, ohne Schlüssel) | Zinskurve, Kreditaufschläge (Baa), 10-jährige Rendite, Fed-Zins, EZB-Einlagesatz, Arbeitslosigkeit (Sahm-Regel), Inflation | **Ja**, über 22 Jahre | keine Verbesserung (Tabelle unten); Claude sieht die Lage und soll deswegen **nicht** in Cash gehen |
+| **Bilanzen im Detail** | Yahoo (letzte Quartale) | Nettoverschuldung zu EBITDA, Zinsdeckung, Liquidität, Eigenkapital, freier Cashflow, Marge, Piotroski-Score | Nein, Yahoo hat keine Historie mit Veröffentlichungsstand | Nur ein **schweres** Warnsignal zählt als Beleg für ein Veto von Claude |
+| **Insider-Käufe** | Yahoo (nur US-Aktien), Web-Recherche (BaFin, SEC) | Käufe und Verkäufe der Führungskräfte der letzten 6 bzw. 3 Monate | Nein | nur Information (Verkäufe sind oft planmäßig) |
+| **Social-Media-Stimmung** | Web-Recherche über dein Abo | Foren, Reddit, StockTwits, X, sofern konkrete Beiträge gefunden werden | Nein | nur Information, weder Kauf- noch Veto-Grund (leicht manipulierbar) |
+
+Fehlt etwas (Banken haben kein EBITDA, Yahoo kennt keine deutschen Insider-Geschäfte, französische Firmen melden halbjährlich), bleibt das Feld leer, geschätzt wird nichts.
+
+**Test der Makrodaten** (Zinsen, Konjunktur; Warnsignal aktiv: höchstens 50 % investiert, sonst wie im Standard; 22 Planspiel-Jahre, Markt „alle“; nur zum Spielstart aktive Jahre gezählt):
+
+| Warnsignal | Jahre aktiv | Median | Rang | schlechtestes Jahr |
+|---|---|---|---|---|
+| **ohne Makro (Standard)** | – | **+17,4 %** | **81 %** | −9,9 % |
+| Zinskurve invers (10 Jahre unter 2 Jahren) | 3 von 22 | +15,0 % | 77 % | −9,9 % |
+| Kreditaufschläge weiten sich aus | 4 von 22 | +16,6 % | 74 % | −9,1 % |
+| Anleiherenditen steigen schnell | 2 von 22 | +16,3 % | 79 % | −9,9 % |
+| Fed strafft | 1 von 22 | +16,6 % | 79 % | −9,3 % |
+| Sahm-Regel (Arbeitsmarkt) | 4 von 22 | +17,0 % | 77 % | −8,7 % |
+| Inflation über 4 % | 3 von 22 | +16,6 % | 78 % | −6,0 % |
+| mindestens 2 von 4 Warnsignalen | 2 von 22 | +16,3 % | 79 % | −9,3 % |
+
+Jede Makro-Warnung kostet Rendite und Rang und hilft im schlechtesten Jahr nur wenig (am meisten die Inflationswarnung, −9,9 % auf −6,0 %). Die Aussagekraft ist begrenzt: Die Signale waren nur
+in 1 bis 4 von 22 Jahren aktiv. Richtig ist also: **kein Beleg für einen Nutzen**, nicht: sicher nutzlos. Wer das Risiko im schlechtesten Fall senken will und dafür etwas Rendite opfert,
+kann in `bot/lab.py` (`macro_exposure`) eine Überlagerung einschalten. Nachrechnen: `python -m bot.lab --macro`.
+
 ### Kronos (optional, standardmäßig aus)
 
 [Kronos](https://github.com/shiyu-coder/Kronos) ist ein quelloffenes Basismodell (MIT-Lizenz) für Kerzendaten, trainiert auf über 12 Milliarden Kerzen von 45 Börsen
@@ -154,7 +185,7 @@ liest der nächste Lauf das Depot neu und arbeitet vom tatsächlichen Stand weit
 Der GitHub-Workflow ist jetzt nur noch manuell startbar, damit nicht zwei Zeitpläne gleichzeitig handeln.
 
 **Ehrlicher Stand:** Datenabruf, Kennzahlen, Regelstrategie, Risikoschicht, Backtest, Trockenlauf, Dashboard und Zeitplan sind
-getestet (`pytest`, 74 Tests) und liefen mit echten Yahoo-Daten. **Nicht getestet** sind die Live-Ausführung auf der
+getestet (`pytest`, 96 Tests) und liefen mit echten Yahoo-Daten. **Nicht getestet** sind die Live-Ausführung auf der
 Plattform (braucht deinen Team-Login) und die Aufrufe über dein Claude-Abo samt Web-Recherche (braucht dein Token). Dafür gibt es
 den Selbsttest (Schritt 5), der ohne Order prüft, ob alles funktioniert. Erst danach live gehen.
 
@@ -214,5 +245,5 @@ Alternative ohne Dashboard: GitHub Actions (`.github/workflows/trade.yml`, Secre
 ## Dateien
 `bot/run.py` Ablauf · `bot/signals.py` Kennzahlen · `bot/fundamentals.py` Fundamentaldaten · `bot/research.py` Web-Recherche ·
 `bot/brain.py` Claude-Entscheidung mit Schutzgeländer · `bot/journal.py` Gedächtnis · `bot/rules.py` Regelstrategie ·
-`bot/lab.py` Test in Planspiel-Jahren · `bot/backtest.py` Backtest-Grundlage · `bot/universes.py` Testtitel · `bot/kronos_signal.py` Kronos (optional) · `bot/risk.py` Risikoregeln · `bot/executor.py` Trockenlauf und Plattform ·
+`bot/lab.py` Test in Planspiel-Jahren · `bot/backtest.py` Backtest-Grundlage · `bot/universes.py` Testtitel · `bot/macro.py` Zinsen und Konjunktur · `bot/statements.py` Bilanzen und Insider · `bot/kronos_signal.py` Kronos (optional) · `bot/risk.py` Risikoregeln · `bot/executor.py` Trockenlauf und Plattform ·
 `bot/universe_tool.py` Universum · `bot/selftest.py` Prüfung · `.github/workflows/trade.yml` Zeitplan (Werktags 3× UTC).

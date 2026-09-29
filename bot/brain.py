@@ -30,12 +30,21 @@ Was Tests in 22 Planspiel-Jahren gezeigt haben (jeweils 1.10. bis 25.1., 2004-20
   Komplexität bringt nur Rauschen. Darum ist deine Rolle bewusst eng: prüfen und begründet abweichen, nicht frei handeln.
 Nicht testbar und damit dein eigentlicher Beitrag: Nachrichtenlage, Termine, Fundamentaldaten und Recherche.
 
+Weitere Daten im Kontext. Keine davon ist im Test als nützlich belegt, sie sind Zusatzinformation und keine Kaufgründe:
+- makro (Zinskurve, Kreditaufschläge, Leitzinsen, Arbeitslosigkeit, Inflation, Warnsignale) und makro_web: Im Test senkte jede Makro-Warnung den Rang (weniger investiert zu sein
+  kostete Rendite und half im schlechtesten Jahr nur wenig). Gehe deshalb NICHT wegen Makrodaten in Cash und streiche keine Käufe deswegen.
+- bilanz (Bilanzqualität aus den letzten Quartalen: Verschuldung, Zinsdeckung, Liquidität, Piotroski-Score, jeweils nur, was vorliegt): Nur ein schweres Warnsignal (bilanz.schwer = true)
+  zählt als belegter negativer Befund. Leichte Warnungen sind Information.
+- insider (Käufe und Verkäufe der Führungskräfte, nur US-Aktien) und recherche.insider_web (BaFin, SEC): Verkäufe sind oft planmäßig und ein schwaches Signal, Käufe mehrerer Insider
+  sind schwach positiv. Kein Grund für ein Veto.
+- recherche.social und social_summary (Stimmung in Foren und sozialen Medien): laut und leicht zu manipulieren. Weder Kaufgrund noch Veto-Grund.
+
 Vorgehen:
 1. Ausgangspunkt ist "quant_vorschlag" (Ranking nach mittelfristigem Momentum, 6 gleich große Positionen, Größe nach Marktschwankung). Übernimm ihn,
    sofern du keinen konkreten Grund zur Abweichung hast. Jede Abweichung braucht einen benannten Grund in "reason".
 2. Prüfe jeden vorgeschlagenen Kauf wie ein Anwalt des Teufels: Nenne in "bear_case" das stärkste Gegenargument (Gewinnwarnung, Rechtsstreit,
    Übernahme mit schlechten Konditionen, Termin in den nächsten Tagen, Datenfehler wie ein Aktiensplit). Nur ein belegter negativer Befund
-   (recherche.sentiment -1 oder -2, event_soon, days_to_earnings 0-3, next_event) rechtfertigt, einen Kauf zu streichen und durch den nächsten Titel zu ersetzen.
+   (recherche.sentiment -1 oder -2, event_soon, days_to_earnings 0-3, next_event, bilanz.schwer) rechtfertigt, einen Kauf zu streichen und durch den nächsten Titel zu ersetzen.
    Bloße Vorsicht, hohe Bewertung (pe, fwd_pe), niedriges Wachstum oder Analystenurteil reichen nicht, sie sind nur Zusatzinformationen.
 3. Verkaufe eine Position nur bei belegter Verschlechterung der Lage oder wenn der Vorschlag sie verkauft. Nicht wegen kleiner Kursschwankungen.
    Gehe nicht in Cash, weil dir der Markt teuer oder unsicher vorkommt: die Größe nach Marktschwankung ist im Vorschlag bereits eingerechnet.
@@ -87,7 +96,7 @@ def resolve_provider() -> str:
     return "rules"
 
 
-def build_context(pf, universe, snap, news, today, total, regime=None, research=None, baseline=None, history=None) -> dict:
+def build_context(pf, universe, snap, news, today, total, regime=None, research=None, baseline=None, history=None, macro=None) -> dict:
     """Kompakter Kontext: Marktumfeld, Depot, die stärksten Kandidaten nach Regelscore plus alle Depottitel."""
     top = sorted(snap, key=lambda i: rules.score(snap[i], universe[i].get("stars", 0)), reverse=True)[:config.LLM_CANDIDATES]
     ids = list(dict.fromkeys([*pf["positions"], *top]))
@@ -112,6 +121,10 @@ def build_context(pf, universe, snap, news, today, total, regime=None, research=
     }
     if research and research.get("market"):
         ctx["marktlage_web"] = research["market"]
+    if research and research.get("macro"):
+        ctx["makro_web"] = research["macro"]
+    if macro:
+        ctx["makro"] = macro
     if baseline:
         ctx["quant_vorschlag"] = baseline
     if history:
@@ -123,7 +136,8 @@ def _negative(isin: str, snap: dict, research: dict) -> bool:
     """Belegter negativer Befund: schlechte Nachrichtenlage, anstehender Termin oder Gewinnmeldung in den nächsten Tagen."""
     note = ((research or {}).get("notes") or {}).get(isin, {})
     m = snap.get(isin, {})
-    return note.get("sentiment", 0) <= -1 or bool(note.get("event_soon")) or 0 <= m.get("days_to_earnings", 99) <= 3
+    return (note.get("sentiment", 0) <= -1 or bool(note.get("event_soon")) or 0 <= m.get("days_to_earnings", 99) <= 3
+            or bool((m.get("bilanz") or {}).get("schwer")))
 
 
 def guard(baseline: dict, out: dict, snap: dict, universe: dict, research: dict = None, top_k: int = 25):
@@ -200,13 +214,13 @@ def _decide_cli(context: dict) -> dict:
 
 
 def decide(pf: dict, universe: dict, snap: dict, news: dict, today: date, total: float,
-           regime: dict = None, research: dict = None, history: list = None) -> dict:
+           regime: dict = None, research: dict = None, history: list = None, macro: dict = None) -> dict:
     """Gibt {market_view, orders, provider[, fallback_reason]} zurück."""
     provider = resolve_provider()
     if provider != "rules":
         try:
             baseline = rules.decide(pf, universe, snap, total, regime)
-            context = build_context(pf, universe, snap, news, today, total, regime, research, baseline, history)
+            context = build_context(pf, universe, snap, news, today, total, regime, research, baseline, history, macro)
             out = _decide_cli(context) if provider == "claude_cli" else _decide_api(context)
             orders, overrides = guard(baseline, out, snap, universe, research)
             return {**out, "orders": orders, "guard": overrides, "provider": provider}

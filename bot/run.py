@@ -3,7 +3,7 @@ import json
 import os
 from datetime import date, datetime
 
-from . import brain, config, fundamentals, journal, kronos_signal, market, research, risk, rules
+from . import brain, config, fundamentals, journal, kronos_signal, macro, market, research, risk, rules, statements
 from .executor import DryRunExecutor, PlaywrightExecutor
 
 
@@ -35,6 +35,7 @@ def main():
         ctx.__enter__()
     research_info = None
     kronos_info = None
+    macro_info = None
     try:
         # Live: Depot von der Plattform lesen. Schlägt das fehl, wird nichts gehandelt (Exception bricht ab).
         pf = executor.get_portfolio(pf) if config.LIVE else executor.get_portfolio()
@@ -71,7 +72,18 @@ def main():
                 if isin in snap and note.get("event_soon"):
                     snap[isin]["event_soon"] = True
         history = journal.recent(config.LOG_DIR, snap) if provider != "rules" else None
-        proposal = brain.decide(pf, universe, snap, news, today, total, regime, research_info, history)
+        macro_info = None
+        if provider != "rules":   # Zusatzdaten für Claude: Zins- und Konjunkturlage, Bilanzqualität, Insider (die Regeln nutzen sie nicht)
+            macro_info = macro.snapshot()
+            try:
+                sectors = {i: snap[i]["sector"] for i in shortlist if snap[i].get("sector")}
+                for isin, extra in statements.get(universe, shortlist, today, sectors).items():
+                    for key in ("bilanz", "insider"):
+                        if extra.get(key):
+                            snap[isin][key] = extra[key]
+            except Exception as e:  # noqa: BLE001 – Zusatzdaten
+                print("Bilanzdaten nicht verfügbar:", e)
+        proposal = brain.decide(pf, universe, snap, news, today, total, regime, research_info, history, macro_info)
         approved, rejected = risk.validate(proposal["orders"], pf, prices, universe, today)
         for o in approved:
             o["name"] = universe[o["isin"]]["name"]
@@ -94,6 +106,7 @@ def main():
            "total_after": total_after, "cash": pf["cash"], "holdings": holdings,
            "market_view": proposal["market_view"], "provider": proposal.get("provider"),
            "fallback_reason": proposal.get("fallback_reason"), "guard": proposal.get("guard"), "kronos": kronos_info, "regime": regime,
+           "makro": ({"warnsignale": macro_info.get("warnsignale", [])} if macro_info else None),
            "research": ({"error": research_info.get("error"), "cached": research_info.get("cached", False),
                          "market": research_info.get("market"), "notes": len(research_info["notes"])}
                         if research_info else None),

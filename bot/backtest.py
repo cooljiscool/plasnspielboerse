@@ -88,6 +88,14 @@ class Data:
         self.open = opn[self.cols].reindex(close.index).to_numpy(dtype=float)
         self.uni = {c: {"name": c, "stars": 0} for c in self.cols}
         self._snaps = {}
+        self._macro = None
+
+    def attach_macro(self, frame):
+        """Makrokennzahlen (bot/macro.py: frame) je Handelstag; danach steht regime["macro"] im Backtest zur Verfügung."""
+        self._macro = {k: frame[k].to_numpy(dtype=float) for k in frame.columns}
+
+    def macro_at(self, i):
+        return {k: (None if np.isnan(v[i]) else float(v[i])) for k, v in self._macro.items()}
 
     def snap(self, i):
         """Kennzahlen aller Titel am Tag i (zwischengespeichert, hängen nicht vom Depot ab)."""
@@ -146,6 +154,8 @@ def simulate(d: Data, start: int, end: int, strategy, step: int = 2, capital: fl
             snap = d.snap(i)
             regime = signals.regime_at(d.idx, i)
             regime["mkt_vol_60d"] = d.fr.market_at(i)["vol_60d"]
+            if d._macro is not None:
+                regime["macro"] = d.macro_at(i)
             out = strategy(pf, d.uni, snap, total, regime)
             pending, _ = risk.validate(out["orders"], pf, prices, d.uni, today)
     return {"equity": equity, "fees": fees, "trades": trades}

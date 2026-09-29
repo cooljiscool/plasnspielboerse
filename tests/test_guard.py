@@ -125,3 +125,60 @@ def test_context_contains_history_and_bear_case_schema():
     assert ctx["verlauf"] == [{"aktion": "Kauf"}]
     item = brain.TOOL["input_schema"]["properties"]["orders"]["items"]["properties"]
     assert "bear_case" in item
+
+
+# --- Zusatzdaten: Makro, Bilanz, Insider, Social Media ---
+def test_severe_balance_sheet_warning_counts_as_negative_evidence():
+    s = snap()
+    base = baseline(s)
+    veto = base["orders"][0]["isin"]
+    out = {"orders": [o for o in base["orders"] if o["isin"] != veto]}
+    s[veto]["bilanz"] = {"schwer": True, "warnungen": ["Zinsdeckung nur 0.8"]}
+    kept, notes = brain.guard(base, out, s, UNI)
+    assert veto not in {o["isin"] for o in kept} and any(n["aktion"] == "Veto akzeptiert" for n in notes)
+
+
+def test_mild_balance_sheet_warning_social_and_insider_are_no_veto_reason():
+    s = snap()
+    base = baseline(s)
+    veto = base["orders"][0]["isin"]
+    out = {"orders": [o for o in base["orders"] if o["isin"] != veto]}
+    s[veto]["bilanz"] = {"schwer": False, "warnungen": ["Liquidität knapp"]}
+    s[veto]["insider"] = {"kaeufe": 0, "verkaeufe": 9, "signal": "Netto-Verkäufe der Führungskräfte (oft planmäßig, schwaches Signal)"}
+    research = {"notes": {veto: {"sentiment": 0, "social": -2, "social_summary": "Forum schimpft", "insider_web": "Verkauf 1 Mio."}}}
+    kept, notes = brain.guard(base, out, s, UNI, research)
+    assert veto in {o["isin"] for o in kept} and any(n["aktion"] == "Kauf wiederhergestellt" for n in notes)
+
+
+def test_context_carries_macro_bilanz_and_web_macro():
+    s = snap()
+    s["S39"]["bilanz"] = {"schwer": False, "piotroski": "7/9"}
+    ctx = brain.build_context(pf(), UNI, s, {}, date(2026, 10, 5), 50000.0, None,
+                              {"market": "ruhig", "macro": "EZB pausiert", "notes": {}}, None, None,
+                              {"kurve_10y_2y": 0.3, "warnsignale": []})
+    assert ctx["makro"]["kurve_10y_2y"] == 0.3 and ctx["makro_web"] == "EZB pausiert"
+    assert ctx["kandidaten"]["S39"]["bilanz"]["piotroski"] == "7/9"
+    assert "makro" not in brain.build_context(pf(), UNI, s, {}, date(2026, 10, 5), 50000.0)
+
+
+def test_prompt_tells_claude_not_to_trade_on_macro_or_social():
+    assert "NICHT wegen Makrodaten in Cash" in brain.SYSTEM and "Weder Kaufgrund noch Veto-Grund" in brain.SYSTEM
+    assert "bilanz.schwer" in brain.SYSTEM
+
+
+def test_research_schema_has_social_insider_and_macro_fields(tmp_path, monkeypatch):
+    from bot import research
+    item = research.SCHEMA["properties"]["notes"]["items"]["properties"]
+    assert {"social", "social_summary", "insider_web", "next_event"} <= set(item)
+    assert "macro_view" in research.SCHEMA["properties"]
+    monkeypatch.setattr(config, "DATA_DIR", str(tmp_path / "data"))
+    payload = json.dumps({"is_error": False, "structured_output": {"market": "m", "macro_view": "Zinsen stabil", "notes": [
+        {"isin": "S01", "sentiment": 0, "summary": "s", "social": -1, "insider_web": "Kauf CEO 2 Mio."}]}})
+    exe = tmp_path / "claude"
+    exe.write_text(f"#!/bin/sh\ncat >/dev/null\necho '{payload}'\n")
+    exe.chmod(exe.stat().st_mode | stat.S_IEXEC)
+    monkeypatch.setenv("PATH", f"{tmp_path}:{os.environ['PATH']}")
+    out = research.get(UNI, ["S01"], date(2026, 10, 5))
+    assert out["macro"] == "Zinsen stabil" and out["notes"]["S01"]["insider_web"].startswith("Kauf CEO")
+    again = research.get(UNI, ["S01"], date(2026, 10, 5))
+    assert again["cached"] is True and again["macro"] == "Zinsen stabil"

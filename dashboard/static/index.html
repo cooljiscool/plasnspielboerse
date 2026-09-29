@@ -254,6 +254,7 @@ async function loadLog() {
       el('div', {class: 'mute'}, 'Quelle: ' + ({claude_cli: 'Claude-Abo', api: 'Anthropic-API', rules: 'Regelstrategie'}[x.provider] || 'unbekannt')),
       x.regime ? el('div', {class: 'mute'}, 'Marktumfeld: ' + ({risk_on: 'freundlich', neutral: 'neutral', risk_off: 'schwach'}[x.regime.label] || x.regime.label) + ' (' + x.regime.score + ')') : '',
       x.research ? el('div', {class: x.research.error ? 'down' : 'mute'}, x.research.error ? 'Web-Recherche fehlgeschlagen: ' + x.research.error : 'Web-Recherche: ' + x.research.notes + ' Titel' + (x.research.cached ? ' (von heute früh)' : '')) : '',
+      (x.makro && (x.makro.warnsignale || []).length) ? el('div', {class: 'mute'}, 'Makro-Warnsignale (nur Information): ' + x.makro.warnsignale.join('; ')) : '',
       x.kronos ? el('div', {class: x.kronos.fehler ? 'down' : 'mute'}, x.kronos.fehler ? 'Kronos fehlgeschlagen: ' + x.kronos.fehler : 'Kronos: ' + x.kronos.titel + ' Prognosen (' + x.kronos.modell + ')') : '',
       x.fallback_reason ? el('div', {class: 'down'}, 'KI ausgefallen, Regeln genutzt: ' + x.fallback_reason) : '',
       ...(x.guard || []).map(g => el('div', {class: 'mute'}, 'Kontrolle: ' + g.aktion + ' (' + g.isin + '): ' + g.grund)),
