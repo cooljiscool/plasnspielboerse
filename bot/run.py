@@ -33,7 +33,8 @@ def main():
     if ctx:
         ctx.__enter__()
     try:
-        pf = executor.get_portfolio()
+        # Live: Depot von der Plattform lesen. Schlägt das fehl, wird nichts gehandelt (Exception bricht ab).
+        pf = executor.get_portfolio(pf) if config.LIVE else executor.get_portfolio()
         prices = {i: s["price"] for i, s in snap.items()}
         total = risk.portfolio_value(pf, prices)
         focus = list(pf["positions"]) + sorted(snap, key=lambda i: snap[i]["ret_20d"], reverse=True)[:10]
@@ -41,7 +42,13 @@ def main():
         proposal = brain.decide(pf, universe, snap, news, today, total)
         approved, rejected = risk.validate(proposal["orders"], pf, prices, universe, today)
         for o in approved:
+            o["name"] = universe[o["isin"]]["name"]
             executor.place(o, today)
+        if config.LIVE and approved:
+            # Kontrolle: Depot nach den Orders neu lesen und als Stand speichern.
+            pf = executor.get_portfolio(pf)
+            pf["buy_orders_executed"] += sum(o["action"] == "buy" for o in approved)
+            save("portfolio.json", pf)
     finally:
         if ctx:
             ctx.__exit__(None, None, None)

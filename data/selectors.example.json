@@ -1,0 +1,38 @@
+{
+  "_hinweis": "Vorlage. Kopieren nach data/selectors.json und alle Selektoren mit den Werten aus 'playwright codegen' ersetzen. Platzhalter in 'value': {isin} {name} {shares} {stop}.",
+  "login_url": "https://trading.planspiel-boerse.de/web/auth/login",
+  "user_field": "SELEKTOR_BENUTZERNAME",
+  "password_field": "SELEKTOR_PASSWORT",
+  "login_button": "SELEKTOR_LOGIN_KNOPF",
+  "logged_in_marker": "SELEKTOR_ELEMENT_NUR_NACH_LOGIN",
+  "portfolio": {
+    "url": "URL_DER_DEPOTANSICHT",
+    "cash_selector": "SELEKTOR_VERFUEGBARES_GELD",
+    "row_selector": "SELEKTOR_EINE_ZEILE_DER_POSITIONSTABELLE",
+    "isin_cell": "SELEKTOR_ISIN_ZELLE_IN_ZEILE",
+    "shares_cell": "SELEKTOR_STUECKZAHL_ZELLE_IN_ZEILE",
+    "avg_price_cell": "SELEKTOR_KAUFKURS_ZELLE_IN_ZEILE"
+  },
+  "order": {
+    "buy_steps": [
+      {"do": "click", "selector": "SELEKTOR_NEUE_ORDER"},
+      {"do": "fill", "selector": "SELEKTOR_SUCHFELD", "value": "{isin}"},
+      {"do": "click", "selector": "SELEKTOR_ERSTER_TREFFER"},
+      {"do": "click", "selector": "SELEKTOR_KAUFEN"},
+      {"do": "fill", "selector": "SELEKTOR_STUECKZAHL", "value": "{shares}"},
+      {"do": "click", "selector": "SELEKTOR_ORDER_ABSENDEN"},
+      {"do": "click", "selector": "SELEKTOR_BESTAETIGEN"}
+    ],
+    "sell_steps": [
+      {"do": "click", "selector": "SELEKTOR_NEUE_ORDER"},
+      {"do": "fill", "selector": "SELEKTOR_SUCHFELD", "value": "{isin}"},
+      {"do": "click", "selector": "SELEKTOR_ERSTER_TREFFER"},
+      {"do": "click", "selector": "SELEKTOR_VERKAUFEN"},
+      {"do": "fill", "selector": "SELEKTOR_STUECKZAHL", "value": "{shares}"},
+      {"do": "click", "selector": "SELEKTOR_ORDER_ABSENDEN"},
+      {"do": "click", "selector": "SELEKTOR_BESTAETIGEN"}
+    ],
+    "stop_steps": [],
+    "confirmation_marker": "SELEKTOR_ERFOLGSMELDUNG"
+  }
+}
