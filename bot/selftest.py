@@ -25,7 +25,7 @@ def main():
         return f"{len(universe)} Wertpapiere"
 
     def kurse():
-        n = len(market.snapshot(universe))
+        n = len(market.load(universe)[0])
         if n == 0:
             raise RuntimeError("keine Kursdaten geladen (Symbole prüfen)")
         return f"{n}/{len(universe)} mit Kurs"

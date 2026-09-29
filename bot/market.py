@@ -1,36 +1,51 @@
-"""Marktdaten über yfinance: Kurse, Momentum, Volatilität, Schlagzeilen."""
-import statistics
+"""Marktdaten über yfinance: Kurse (Open/High/Low/Close), Kennzahlen, Marktumfeld, Schlagzeilen."""
+import pandas as pd
+
+from . import signals
+
+INDEX = {"dax": "^GDAXI", "spx": "^GSPC", "vix": "^VIX"}
+STALE_DAYS = 6   # Titel ohne Kurs der letzten Tage (Delisting, Handelsaussetzung) werden ignoriert
 
 
-def snapshot(universe: dict) -> dict:
-    """universe: {isin: {name, yf, stars}} -> {isin: {price, ret_5d, ret_20d, ret_60d, vol_20d, news}}"""
+def download(symbols: list, period: str = "14mo", interval: str = "1d"):
+    """Gibt (close, high, low, open) als DataFrames mit einer Spalte je Symbol zurück."""
     import yfinance as yf
 
-    out = {}
-    symbols = {v["yf"]: isin for isin, v in universe.items() if v.get("yf")}
-    if not symbols:
-        return out
-    hist = yf.download(list(symbols), period="6mo", interval="1d", auto_adjust=True,
-                       progress=False, group_by="ticker", threads=True)
-    for sym, isin in symbols.items():
-        try:
-            closes = hist[sym]["Close"].dropna().tolist() if len(symbols) > 1 else hist["Close"].dropna().tolist()
-        except KeyError:
+    d = yf.download(symbols, period=period, interval=interval, auto_adjust=True, progress=False,
+                    group_by="ticker", threads=True)
+    if isinstance(d.columns, pd.MultiIndex):
+        out = [d.xs(f, axis=1, level=1) for f in ("Close", "High", "Low", "Open")]
+    else:  # ein einzelnes Symbol
+        out = [d[[f]].rename(columns={f: symbols[0]}) for f in ("Close", "High", "Low", "Open")]
+    return [o.dropna(how="all").ffill(limit=3) for o in out]
+
+
+def load(universe: dict):
+    """universe: {isin: {name, yf, stars}} -> (snap, regime).
+    snap = {isin: Kennzahlen (siehe signals.Frames.at)}, regime = Marktumfeld."""
+    syms = {v["yf"]: isin for isin, v in universe.items() if v.get("yf")}
+    if not syms:
+        return {}, signals.regime_at(signals.Frames(pd.DataFrame({"dax": [1.0]})), -1)
+    close, high, low, _ = download(list(syms) + list(INDEX.values()))
+    idx_cols = {k: s for k, s in INDEX.items() if s in close.columns}
+    idx = signals.Frames(close[list(idx_cols.values())].rename(columns={s: k for k, s in idx_cols.items()}))
+    regime = signals.regime_at(idx, -1)
+    cols = [s for s in syms if s in close.columns]
+    dax = close[INDEX["dax"]] if INDEX["dax"] in close.columns else None
+    fr = signals.Frames(close[cols], high[cols], low[cols], dax)
+    newest = close.index[-1]
+    snap = {}
+    for s in cols:
+        if (newest - close[s].dropna().index[-1]).days > STALE_DAYS:
             continue
-        if len(closes) < 61:
-            continue
-        rets = [closes[i] / closes[i - 1] - 1 for i in range(len(closes) - 20, len(closes))]
-        out[isin] = {
-            "price": round(closes[-1], 3),
-            "ret_5d": round(closes[-1] / closes[-6] - 1, 4),
-            "ret_20d": round(closes[-1] / closes[-21] - 1, 4),
-            "ret_60d": round(closes[-1] / closes[-61] - 1, 4),
-            "vol_20d": round(statistics.pstdev(rets) * (252 ** 0.5), 3),
-        }
-    return out
+        m = fr.at(-1, s)
+        if m:
+            snap[syms[s]] = m
+    return snap, regime
 
 
 def headlines(universe: dict, isins: list, per: int = 3) -> dict:
+    """Schlagzeilen über yfinance. Für deutsche Titel oft leer; die Web-Recherche ergänzt das."""
     import yfinance as yf
 
     out = {}

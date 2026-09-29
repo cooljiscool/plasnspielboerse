@@ -21,7 +21,8 @@ def test_full_dry_run(tmp_path, monkeypatch):
     (tmp_path / "data" / "universe.json").write_text(json.dumps(
         [{"isin": "A", "name": "Alpha", "yf": "A.DE", "stars": 1}, {"isin": "B", "name": "Beta", "yf": "B.DE"}]))
     snap = {i: {"price": 100.0, "ret_5d": 0.01, "ret_20d": 0.05, "ret_60d": 0.1, "vol_20d": 0.2} for i in "AB"}
-    monkeypatch.setattr(run.market, "snapshot", lambda u: snap)
+    monkeypatch.setattr(run.market, "load", lambda u: (snap, {"label": "risk_on", "score": "5/5", "exposure": 0.97, "positions": 6}))
+    monkeypatch.setattr(run.fundamentals, "get", lambda *a, **k: {})
     monkeypatch.setattr(run.market, "headlines", lambda u, i: {})
     monkeypatch.setattr(run.brain, "decide", lambda *a, **k: {
         "market_view": "test", "orders": [{"action": "buy", "isin": "A", "amount_eur": 9000, "reason": "x"}]})

@@ -3,7 +3,7 @@ import json
 import os
 from datetime import date, datetime
 
-from . import brain, config, market, risk
+from . import brain, config, fundamentals, market, research, risk, rules
 from .executor import DryRunExecutor, PlaywrightExecutor
 
 
@@ -27,19 +27,40 @@ def main():
         raise SystemExit("data/universe.json ist leer – Wertpapierliste der Plattform eintragen.")
     pf = load("portfolio.json", {"cash": 50000.0, "positions": {}, "buy_orders_executed": 0})
 
-    snap = market.snapshot(universe)
+    snap, regime = market.load(universe)
+    prev_pf = pf
     executor = PlaywrightExecutor() if config.LIVE else DryRunExecutor(pf)
     ctx = executor if config.LIVE else None
     if ctx:
         ctx.__enter__()
+    research_info = None
     try:
         # Live: Depot von der Plattform lesen. Schlägt das fehl, wird nichts gehandelt (Exception bricht ab).
         pf = executor.get_portfolio(pf) if config.LIVE else executor.get_portfolio()
         prices = {i: s["price"] for i, s in snap.items()}
+        for isin, pos in pf["positions"].items():   # Höchstkurs seit Kauf für den Trailing-Stop
+            before = prev_pf["positions"].get(isin, {}).get("peak")
+            pos["peak"] = max(pos.get("peak") or before or pos["avg_price"], prices.get(isin, pos["avg_price"]))
         total = risk.portfolio_value(pf, prices)
-        focus = list(pf["positions"]) + sorted(snap, key=lambda i: snap[i]["ret_20d"], reverse=True)[:10]
-        news = market.headlines(universe, list(dict.fromkeys(focus)))
-        proposal = brain.decide(pf, universe, snap, news, today, total)
+
+        # Engere Auswahl: Depottitel plus die stärksten nach Regelscore bekommen Fundamentaldaten und Recherche.
+        top = sorted(snap, key=lambda i: rules.score(snap[i], universe[i].get("stars", 0)), reverse=True)
+        shortlist = [i for i in dict.fromkeys([*pf["positions"], *top[:config.SHORTLIST]]) if i in snap]
+        try:
+            for isin, f in fundamentals.get(universe, snap, shortlist, today).items():
+                snap[isin].update({k: v for k, v in f.items() if k != "sector"})
+                if f.get("sector"):
+                    snap[isin]["sector"] = universe[isin]["sector"] = f["sector"]
+        except Exception as e:  # noqa: BLE001 – Fundamentaldaten sind Zusatz, kein Muss
+            print("Fundamentaldaten nicht verfügbar:", e)
+        provider = brain.resolve_provider()
+        news = market.headlines(universe, shortlist[:12]) if provider != "rules" else {}
+        if provider == "claude_cli" and config.RESEARCH:
+            research_info = research.get(universe, shortlist, today)
+            for isin, note in research_info["notes"].items():
+                if isin in snap and note.get("event_soon"):
+                    snap[isin]["event_soon"] = True
+        proposal = brain.decide(pf, universe, snap, news, today, total, regime, research_info)
         approved, rejected = risk.validate(proposal["orders"], pf, prices, universe, today)
         for o in approved:
             o["name"] = universe[o["isin"]]["name"]
@@ -60,7 +81,11 @@ def main():
     log = {"time": datetime.now().isoformat(timespec="seconds"), "live": config.LIVE, "total_before": total,
            "total_after": total_after, "cash": pf["cash"], "holdings": holdings,
            "market_view": proposal["market_view"], "provider": proposal.get("provider"),
-           "fallback_reason": proposal.get("fallback_reason"), "approved": approved,
+           "fallback_reason": proposal.get("fallback_reason"), "regime": regime,
+           "research": ({"error": research_info.get("error"), "cached": research_info.get("cached", False),
+                         "market": research_info.get("market"), "notes": len(research_info["notes"])}
+                        if research_info else None),
+           "approved": approved,
            "rejected": [{"order": o, "why": w} for o, w in rejected]}
     json.dump(log, open(os.path.join(config.LOG_DIR, datetime.now().strftime("%Y%m%d-%H%M") + ".json"), "w"),
               indent=2, ensure_ascii=False)

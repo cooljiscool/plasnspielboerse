@@ -1,0 +1,54 @@
+{
+  "rules": {
+    "windows": 76,
+    "median_return": 0.07332475886061685,
+    "mean_return": 0.09333345483786945,
+    "worst": -0.16201083712618425,
+    "best": 0.5167061830638209,
+    "beat_equal_weight": 0.4342105263157895,
+    "beat_dax": 0.5263157894736842,
+    "mean_percentile_vs_random": 0.48149122807017536,
+    "share_top25pct": 0.3157894736842105,
+    "median_fees_eur": 287.71155951536764,
+    "median_trades": 12.0
+  },
+  "_benchmarks": {
+    "median_equal_weight": 0.07656483065625419,
+    "median_dax": 0.05278944064715485
+  },
+  "frueher_alle_filter": {
+    "windows": 76,
+    "median_return": 0.0698396995743027,
+    "mean_return": 0.05835050556030528,
+    "worst": -0.16289464825730804,
+    "best": 0.3220988939972016,
+    "beat_equal_weight": 0.4342105263157895,
+    "beat_dax": 0.4605263157894737,
+    "mean_percentile_vs_random": 0.41039473684210526,
+    "share_top25pct": 0.18421052631578946,
+    "median_fees_eur": 883.0944704914759,
+    "median_trades": 38.0
+  },
+  "nur_momentum_60d": {
+    "windows": 76,
+    "median_return": 0.08134128539229635,
+    "mean_return": 0.07755311360345585,
+    "worst": -0.26206243904047366,
+    "best": 0.48660940030824906,
+    "beat_equal_weight": 0.4473684210526316,
+    "beat_dax": 0.5,
+    "mean_percentile_vs_random": 0.44763157894736844,
+    "share_top25pct": 0.34210526315789475,
+    "median_fees_eur": 792.3353876589279,
+    "median_trades": 33.0
+  },
+  "_full_period_rules": {
+    "return": 2.4594233562598147,
+    "max_drawdown": -0.32210448726072105,
+    "sharpe": 1.2650412462652403,
+    "fees": 3088.131658707012,
+    "trades": 90,
+    "from": "2023-07-10",
+    "to": "2026-09-29"
+  }
+}

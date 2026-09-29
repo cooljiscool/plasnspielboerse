@@ -55,6 +55,12 @@ def validate(proposed: list, pf: dict, prices: dict, universe: dict, today: date
             if amount < config.MIN_ORDER_EUR:
                 rejected.append((o, f"Order unter {config.MIN_ORDER_EUR:.0f} € (Gebühr)"))
                 continue
+            sector = universe[isin].get("sector")
+            if sector and held.get(isin, 0) == 0 and sum(
+                    1 for i, sh in held.items() if sh > 0 and universe.get(i, {}).get("sector") == sector
+            ) >= config.MAX_PER_SECTOR:
+                rejected.append((o, f"Branche {sector} bereits mit {config.MAX_PER_SECTOR} Titeln im Depot"))
+                continue
             already = held.get(isin, 0) * price
             room = config.POSITION_CAP * total - already
             amount = min(amount, room, cash - config.FEE_MIN_EUR - 1)

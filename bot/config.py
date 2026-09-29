@@ -17,13 +17,18 @@ GAME_END = date(2027, 1, 25)
 # zwischen zwei Läufen das 20-%-Limit nicht reißen) ---
 POSITION_CAP = 0.19
 MIN_ORDER_EUR = 5000.0      # darunter frisst die 15-€-Mindestgebühr überproportional
-MAX_ORDERS_PER_RUN = 4
+MAX_ORDERS_PER_RUN = 6
+MAX_PER_SECTOR = 2          # höchstens 2 Positionen je Branche (Streuung)
 MIN_HOLD_DAYS = 3           # verhindert Hin-und-Her-Handel (jede Runde kostet ~0,6 %)
 
 # --- Laufzeit ---
 MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-5-5")
 PROVIDER = os.environ.get("BOT_PROVIDER", "auto")   # auto | claude_cli | api | rules
 CLI_TIMEOUT = int(os.environ.get("BOT_CLI_TIMEOUT", "180"))
+RESEARCH = os.environ.get("BOT_RESEARCH", "1") == "1"   # Web-Recherche (nur Quelle claude_cli)
+RESEARCH_TIMEOUT = int(os.environ.get("BOT_RESEARCH_TIMEOUT", "480"))
+SHORTLIST = 15              # so viele Titel bekommen Fundamentaldaten und Web-Recherche
+LLM_CANDIDATES = 40         # so viele Kandidaten sieht Claude bei der Entscheidung
 LIVE = os.environ.get("BOT_LIVE", "0") == "1"   # ohne BOT_LIVE=1 wird nur simuliert
 DATA_DIR = os.environ.get("BOT_DATA_DIR", "data")
 LOG_DIR = os.environ.get("BOT_LOG_DIR", "logs")

@@ -130,6 +130,8 @@ svg{width:100%;height:auto;display:block}
       <option value="api">Anthropic-API (kostenpflichtig)</option>
       <option value="rules">Regelstrategie ohne KI (kostenlos)</option>
     </select>
+    <label><input type="checkbox" id="research" style="width:auto;margin:0 8px 0 0;vertical-align:middle">Web-Recherche für Claude (nur mit Abo-Token, einmal täglich, verbraucht mehr Abo-Limit)</label>
+    <div style="height:12px"></div>
     <label>Claude-Modell</label>
     <input id="model" autocapitalize="off">
   </div>
@@ -248,6 +250,8 @@ async function loadLog() {
     const c = el('div', {class: 'card'},
       el('div', {class: 'row'}, el('b', {}, fmtTime(x.time)), el('span', {class: 'pill' + (x.live ? ' live' : '')}, x.live ? 'LIVE' : 'Trockenlauf')),
       el('div', {class: 'mute'}, 'Quelle: ' + ({claude_cli: 'Claude-Abo', api: 'Anthropic-API', rules: 'Regelstrategie'}[x.provider] || 'unbekannt')),
+      x.regime ? el('div', {class: 'mute'}, 'Marktumfeld: ' + ({risk_on: 'freundlich', neutral: 'neutral', risk_off: 'schwach'}[x.regime.label] || x.regime.label) + ' (' + x.regime.score + ')') : '',
+      x.research ? el('div', {class: x.research.error ? 'down' : 'mute'}, x.research.error ? 'Web-Recherche fehlgeschlagen: ' + x.research.error : 'Web-Recherche: ' + x.research.notes + ' Titel' + (x.research.cached ? ' (von heute früh)' : '')) : '',
       x.fallback_reason ? el('div', {class: 'down'}, 'KI ausgefallen, Regeln genutzt: ' + x.fallback_reason) : '',
       el('p', {class: 'mute'}, x.market_view || ''));
     for (const o of x.approved || []) c.append(el('div', {class: 'pos'}, el('span', {class: 'tag ' + o.action}, o.action === 'buy' ? 'KAUF' : 'VERKAUF'),
@@ -281,13 +285,13 @@ $('btnLive').onclick = act(async () => {
 
 async function loadSettingsForm() {
   try {
-    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model; $('provider').value = st.provider;
+    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model; $('provider').value = st.provider; $('research').checked = st.research;
     $('f_selectors').value = (await api('/api/file/selectors')).text; $('f_universe').value = (await api('/api/file/universe')).text;
   } catch (e) {}
 }
 $('saveSettings').onclick = act(async () => {
   const secrets = {}; for (const k of ['PSB_USER', 'PSB_PASSWORD', 'CLAUDE_CODE_OAUTH_TOKEN', 'ANTHROPIC_API_KEY']) { secrets[k] = $(k).value; $(k).value = ''; }
-  S = await api('/api/settings', {times: $('times').value.split(',').map(s => s.trim()).filter(Boolean), model: $('model').value, provider: $('provider').value, secrets});
+  S = await api('/api/settings', {times: $('times').value.split(',').map(s => s.trim()).filter(Boolean), model: $('model').value, provider: $('provider').value, research: $('research').checked, secrets});
   renderStatus();
 }, 'Gespeichert');
 $('saveSelectors').onclick = act(() => api('/api/file/selectors', {text: $('f_selectors').value}), 'Selektoren gespeichert');

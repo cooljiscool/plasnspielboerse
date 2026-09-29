@@ -164,3 +164,10 @@ def test_oauth_token_reaches_bot_env_but_not_output(authed, app):
     assert env["CLAUDE_CODE_OAUTH_TOKEN"] == "sk-ant-oat01-abcdef" and env["BOT_PROVIDER"] == "claude_cli"
     open(app.runner.output_path, "w").write("Token sk-ant-oat01-abcdef ungültig")
     assert "abcdef" not in authed.get("/api/output").get_data(as_text=True)
+
+
+def test_research_toggle_reaches_bot_env(authed, app):
+    assert authed.post("/api/settings", headers=H, json={"research": False}).get_json()["research"] is False
+    assert app.runner._env(live=False)["BOT_RESEARCH"] == "0"
+    authed.post("/api/settings", headers=H, json={"research": True})
+    assert app.runner._env(live=False)["BOT_RESEARCH"] == "1"

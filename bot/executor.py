@@ -35,7 +35,7 @@ class DryRunExecutor:
                 pos["avg_price"] = (pos["avg_price"] * pos["shares"] + value) / total
                 pos["shares"] = total
             else:
-                pf["positions"][isin] = {"shares": sh, "avg_price": px, "bought": today.isoformat()}
+                pf["positions"][isin] = {"shares": sh, "avg_price": px, "bought": today.isoformat(), "peak": px}
             pf["buy_orders_executed"] = pf.get("buy_orders_executed", 0) + 1
         else:
             pf["cash"] += value - config.fee(value)

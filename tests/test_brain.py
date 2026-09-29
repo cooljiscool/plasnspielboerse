@@ -26,11 +26,11 @@ def test_rules_buys_top_momentum_up_to_six_positions():
     out = rules.decide(pf(), UNI, snapshot(), 50000.0)
     buys = [o for o in out["orders"] if o["action"] == "buy"]
     assert [o["isin"] for o in buys] == ["N", "M", "L", "K", "J", "I"]
-    assert all(abs(o["amount_eur"] - 50000 * 0.97 / 6) < 1 for o in buys)
+    assert all(o["amount_eur"] == round(50000 * 0.97 / 6) for o in buys)   # gleich gewichtet
 
 
 def test_rules_skips_falling_and_wild_stocks():
-    snap = snapshot(N={"price": 100.0, "ret_5d": 0, "ret_20d": -0.02, "ret_60d": 0.9, "vol_20d": 0.2},
+    snap = snapshot(N={"price": 100.0, "ret_5d": 0, "ret_20d": -0.15, "ret_60d": 0.9, "vol_20d": 0.2},
                     M={"price": 100.0, "ret_5d": 0, "ret_20d": 0.05, "ret_60d": 0.8, "vol_20d": 0.9})
     picked = [o["isin"] for o in rules.decide(pf(), UNI, snap, 50000.0)["orders"]]
     assert "N" not in picked and "M" not in picked
@@ -39,10 +39,10 @@ def test_rules_skips_falling_and_wild_stocks():
 def test_rules_stop_loss_and_hold():
     pos = {"A": {"shares": 50, "avg_price": 100.0, "bought": "2026-10-01"},
            "N": {"shares": 50, "avg_price": 100.0, "bought": "2026-10-01"}}
-    snap = snapshot(A={"price": 85.0, "ret_5d": 0, "ret_20d": 0.01, "ret_60d": 0.2, "vol_20d": 0.2})
+    snap = snapshot(A={"price": 70.0, "ret_5d": 0, "ret_20d": 0.01, "ret_60d": 0.2, "vol_20d": 0.2})
     orders = rules.decide(pf(pos), UNI, snap, 50000.0)["orders"]
     sells = {o["isin"]: o for o in orders if o["action"] == "sell"}
-    assert sells["A"]["stop"] is True and "Stop-Loss" in sells["A"]["reason"]
+    assert sells["A"]["stop"] is True and "Notfall-Stopp" in sells["A"]["reason"]
     assert "N" not in sells  # Spitzenreiter bleibt
 
 
@@ -106,3 +106,24 @@ def test_cli_error_flag_falls_back(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "PROVIDER", "claude_cli")
     out = run_decide()
     assert out["provider"] == "rules" and "Rate limit" in out["fallback_reason"]
+
+
+def test_rules_hold_winners_and_sell_ranking_losers():
+    pos = {"N": {"shares": 50, "avg_price": 100.0, "bought": "2026-10-01"},   # Rang 1 von 14
+           "A": {"shares": 50, "avg_price": 100.0, "bought": "2026-10-01"}}   # Rang 14 von 14 (untere Hälfte)
+    sells = {o["isin"] for o in rules.decide(pf(pos), UNI, snapshot(), 50000.0)["orders"] if o["action"] == "sell"}
+    assert sells == {"A"}
+
+
+def test_rules_defaults_follow_backtest():
+    assert rules.PARAMS["regime"] is False and rules.PARAMS["trailing"] is False and rules.PARAMS["vol_weight"] is False
+    m = {"ret_5d": 0.5, "ret_20d": 0.5, "ret_60d": 0.1, "ret_120d": 0.3, "vol_20d": 0.2}
+    assert rules.score(m) == 0.5 * 0.1 + 0.5 * 0.3   # kurzfristige Rendite zählt nicht
+
+
+def test_llm_context_contains_rules_baseline(monkeypatch):
+    captured = {}
+    monkeypatch.setattr(config, "PROVIDER", "claude_cli")
+    monkeypatch.setattr(brain, "_decide_cli", lambda ctx: captured.update(ctx) or {"market_view": "", "orders": []})
+    brain.decide(pf(), UNI, snapshot(), {}, date(2026, 10, 5), 50000.0)
+    assert captured["quant_vorschlag"]["orders"] and "Regelstrategie" in captured["quant_vorschlag"]["market_view"]
