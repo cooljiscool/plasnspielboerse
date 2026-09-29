@@ -30,6 +30,7 @@ rund 2 Minuten und 0,78 $, die Entscheidung 10 Sekunden und 0,16 $. Der erste La
 kommt aus dem Zwischenspeicher). Bei drei Läufen pro Börsentag sind das etwa 1,3 $ Rechenwert, bis Spielende grob 100 $. Wie viel davon dein Abo-Limit verbraucht, hängt vom Tarif ab; der Verbrauch
 jedes Laufs steht im Protokoll (`logs/*.json`, Feld `verbrauch`). **Sparen:** Web-Recherche im Dashboard ausschalten senkt den Verbrauch um rund vier Fünftel, kostet aber Nachrichten, Ereignis-Vetos und Prognosen.
 Läuft das Limit trotzdem aus, handelt der Bot mit der Regelstrategie weiter.
+**Anteil am Limit, gemessen:** Claude Code meldet die Auslastung der Limit-Fenster (5 Stunden und 7 Tage). Ein kompletter erster Tageslauf (Recherche und Entscheidung, 3,4 Minuten, 0,89 $ Rechenwert) bewegte sie vorher/nachher weder im 5-Stunden- noch im Wochenfenster um einen Prozentpunkt (Auflösung 1 Punkt, also unter 1 % je Lauf). Das ist eine Obergrenze, keine genaue Zahl. Genau siehst du es bei dir in claude.ai unter Einstellungen, Nutzung (oder mit `/usage` in Claude Code), vor und nach einem Lauf.
 
 Hinweise: Das Token gilt nur für Claude Code, nicht für die API. Der Bot ruft `claude -p` ohne Werkzeuge in einem leeren Ordner auf
 und entfernt einen eventuell gesetzten API-Key aus der Umgebung, damit nichts über die API abgerechnet wird. Bei drei Läufen pro
