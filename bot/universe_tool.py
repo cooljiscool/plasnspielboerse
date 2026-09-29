@@ -1,5 +1,6 @@
 """Baut data/universe.json.
 
+  python -m bot.universe_tool tested         # das getestete Universum (bot/universes.py: DAX, MDAX, Europa, USA) mit Namen und ISINs
   python -m bot.universe_tool build          # DAX/MDAX/TecDAX/SDAX aus Wikipedia + Symbolsuche (yfinance)
   python -m bot.universe_tool import x.csv   # eigene Liste: Spalten isin,name[,stars][,yf]
 
@@ -54,10 +55,59 @@ def build():
     return out
 
 
+_LEGAL = {"aktiengesellschaft", "ag", "se", "sa", "nv", "plc", "inc", "corporation", "corp", "company", "co", "kgaa", "kg", "gmbh",
+          "&", "and", "holding", "holdings", "group", "ltd", "spa", "asa", "oyj", "ab", "limited", "the"}
+
+
+def search_term(name: str) -> str:
+    """Suchbegriff für die Plattform: Name ohne Rechtsform, höchstens die ersten zwei Wörter
+    ("Siemens Aktiengesellschaft" -> "Siemens", "Eckert & Ziegler SE" -> "Eckert Ziegler")."""
+    words = [w for w in name.replace(",", " ").split() if w.lower().strip(".") .replace(".", "") not in _LEGAL]
+    return " ".join(words[:2]) or name
+
+
+def _lookup(sym: str) -> dict:
+    """Name und ISIN eines Yahoo-Symbols (best effort; fehlt etwas, bleibt das Symbol als Platzhalter)."""
+    import yfinance as yf
+
+    t, name, isin = yf.Ticker(sym), None, None
+    try:
+        info = t.info or {}
+        name = info.get("longName") or info.get("shortName")
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        isin = t.isin
+    except Exception:  # noqa: BLE001
+        pass
+    return {"name": name, "isin": isin if isin and isin != "-" else None}
+
+
+def build_tested(workers: int = 8, lookup=None, alive=None) -> list:
+    """Das Universum, an dem die Strategie getestet wurde (bot/universes.py). Titel ohne aktuelle Kurse (delistet) entfallen."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    from . import universes
+
+    group_of = {s: g for g, lst in universes.GROUPS.items() for s in lst}
+    syms = list(dict.fromkeys(universes.ALL))
+    if alive is None:
+        import yfinance as yf
+        recent = yf.download(syms, period="1mo", interval="1d", progress=False, group_by="ticker", threads=True, auto_adjust=True)
+        alive = {s for s in syms if s in recent.columns.get_level_values(0) and recent[s]["Close"].notna().any()}
+    syms = [s for s in syms if s in alive]
+    with ThreadPoolExecutor(workers) as ex:
+        info = list(ex.map(lookup or _lookup, syms))
+    return [{"isin": i["isin"] or s, "name": i["name"] or s, "search": search_term(i["name"] or s), "yf": s, "stars": 0,
+             "markt": group_of[s]} for s, i in zip(syms, info)]
+
+
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] not in ("build", "import"):
+    if len(sys.argv) < 2 or sys.argv[1] not in ("build", "import", "tested"):
         raise SystemExit(__doc__)
-    if sys.argv[1] == "build":
+    if sys.argv[1] == "tested":
+        rows = build_tested()
+    elif sys.argv[1] == "build":
         rows = build()
     else:
         rows = [{"isin": r["isin"], "name": r["name"], "yf": r.get("yf") or None, "stars": int(r.get("stars") or 0)}

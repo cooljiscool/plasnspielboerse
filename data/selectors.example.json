@@ -1,5 +1,5 @@
 {
-  "_hinweis": "Vorlage. Kopieren nach data/selectors.json und alle Selektoren mit den Werten aus 'playwright codegen' ersetzen. Platzhalter in 'value': {isin} {name} {shares} {stop}.",
+  "_hinweis": "Vorlage. Kopieren nach data/selectors.json und alle Selektoren mit den Werten aus 'playwright codegen' ersetzen. Platzhalter in 'value': {isin} {name} {search} {shares} {stop}. {search} ist der bereinigte Suchbegriff (z. B. 'Siemens'), verlässlicher ist {isin}, sobald data/universe.json echte ISINs aus der Plattformliste enthält.",
   "login_url": "https://trading.planspiel-boerse.de/web/auth/login",
   "user_field": "SELEKTOR_BENUTZERNAME",
   "password_field": "SELEKTOR_PASSWORT",
@@ -16,7 +16,7 @@
   "order": {
     "buy_steps": [
       {"do": "click", "selector": "SELEKTOR_NEUE_ORDER"},
-      {"do": "fill", "selector": "SELEKTOR_SUCHFELD", "value": "{isin}"},
+      {"do": "fill", "selector": "SELEKTOR_SUCHFELD", "value": "{search}"},
       {"do": "click", "selector": "SELEKTOR_ERSTER_TREFFER"},
       {"do": "click", "selector": "SELEKTOR_KAUFEN"},
       {"do": "fill", "selector": "SELEKTOR_STUECKZAHL", "value": "{shares}"},
@@ -25,7 +25,7 @@
     ],
     "sell_steps": [
       {"do": "click", "selector": "SELEKTOR_NEUE_ORDER"},
-      {"do": "fill", "selector": "SELEKTOR_SUCHFELD", "value": "{isin}"},
+      {"do": "fill", "selector": "SELEKTOR_SUCHFELD", "value": "{search}"},
       {"do": "click", "selector": "SELEKTOR_ERSTER_TREFFER"},
       {"do": "click", "selector": "SELEKTOR_VERKAUFEN"},
       {"do": "fill", "selector": "SELEKTOR_STUECKZAHL", "value": "{shares}"},

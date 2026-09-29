@@ -5,7 +5,6 @@ from datetime import date
 
 import numpy as np
 import pandas as pd
-import pytest
 
 from bot import brain, config, fundamentals, research, risk, rules, signals
 

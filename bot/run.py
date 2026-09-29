@@ -75,6 +75,7 @@ def main():
         approved, rejected = risk.validate(proposal["orders"], pf, prices, universe, today)
         for o in approved:
             o["name"] = universe[o["isin"]]["name"]
+            o["search"] = universe[o["isin"]].get("search") or o["name"]
             executor.place(o, today)
         if config.LIVE and approved:
             # Kontrolle: Depot nach den Orders neu lesen.

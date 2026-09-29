@@ -116,7 +116,8 @@ class PlaywrightExecutor:
 
     def place(self, order: dict, today: date) -> None:
         key = "buy_steps" if order["action"] == "buy" else "sell_steps"
-        values = {"isin": order["isin"], "name": order.get("name", ""), "shares": order["shares"],
+        values = {"isin": order["isin"], "name": order.get("name", ""), "search": order.get("search") or order.get("name", ""),
+                  "shares": order["shares"],
                   "stop": f'{order["stop_price"]:.2f}'.replace(".", ",") if order.get("stop_price") else ""}
         self._run_steps(self.sel["order"][key], values)
         self.page.wait_for_selector(self.sel["order"]["confirmation_marker"])

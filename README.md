@@ -172,12 +172,14 @@ Handel über Stuttgart, Luxemburg, Wien · Stop-Orders bis 14 Tage.
 ### 2. Wertpapieruniversum
 Die Aktien der Plattform kommen aus Indizes (DAX, MDAX, SDAX, TecDAX, EuroStoxx 50, Dow Jones, Nasdaq 100, FTSE MIB,
 Global Challenges Index) plus Fonds/ETFs/Anleihen (offizielle Liste: planspiel-boerse.de, Bereich Wertpapiere).
-- Schnellstart: `python -m bot.universe_tool build` erzeugt `data/universe.json` für DAX/MDAX/TecDAX/SDAX.
-  Die Zuordnung Name → Börsensymbol ist eine Heuristik. Prüfe die Ausgabe, besonders Zeilen mit „KEIN SYMBOL“.
-- Genauer: eigene CSV (`isin,name,stars,yf`) aus der Instrumentensuche der Plattform, dann
-  `python -m bot.universe_tool import meine_liste.csv`. **Sterne** (1 = Deka-Kriterien, 2 = GCX) übernimmst du aus der Plattform,
-  sonst wird die Nachhaltigkeitswertung nicht bedient.
-- Ohne ISIN (Build-Modus) suchst du in der Order-Klickfolge nach `{name}` statt `{isin}`.
+- **Schon dabei:** `data/universe.json` enthält das Universum, an dem die Strategie getestet wurde (rund 210 Titel aus DAX, MDAX, Europa und USA,
+  mit Namen und ISINs von Yahoo). Neu erzeugen: `python -m bot.universe_tool tested`. Die Strategie wählt zwischen Märkten aus,
+  ein größeres, gemischtes Universum passt also besser als ein einzelner Index.
+- **Abgleich mit der Plattform (wichtig):** Nicht jeder Titel ist im Spiel handelbar (Mindestkurs 1 €, nur die Werte der Indizes und Fonds). Tausche
+  `data/universe.json` gegen die Liste der Plattform aus, sobald du sie hast: eigene CSV mit den Spalten `isin,name,stars,yf`
+  (`yf` = Yahoo-Symbol für die Kurse), dann `python -m bot.universe_tool import meine_liste.csv`. Titel, die die Plattform nicht kennt, würden bei der
+  Order scheitern. **Sterne** (1 = Deka-Kriterien, 2 = GCX) übernimmst du aus der Plattform, sonst wird die Nachhaltigkeitswertung nicht bedient.
+- Ohne echte ISIN steht das Yahoo-Symbol im Feld `isin`. Dann suchst du in der Order-Klickfolge nach `{name}` statt `{isin}`.
 
 ### 3. Selektoren aufzeichnen (der einzige manuelle Teil)
 1. `playwright codegen https://trading.planspiel-boerse.de/web/auth/login` öffnen.

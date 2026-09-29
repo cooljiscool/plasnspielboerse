@@ -1,7 +1,6 @@
 import json
 import os
 import stat
-import time
 from datetime import datetime
 
 import pytest

@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 
 from . import backtest as bt
-from . import rules, signals
+from . import rules
 
 # --- Bewertungsformeln (Ranking der Kandidaten) ---
 SCORES = {
