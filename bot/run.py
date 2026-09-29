@@ -3,7 +3,7 @@ import json
 import os
 from datetime import date, datetime
 
-from . import brain, config, fundamentals, journal, kronos_signal, macro, market, research, risk, rules, statements
+from . import brain, config, fundamentals, journal, kronos_signal, macro, market, research, risk, rules, social, statements
 from .executor import DryRunExecutor, PlaywrightExecutor
 
 
@@ -83,6 +83,11 @@ def main():
                             snap[isin][key] = extra[key]
             except Exception as e:  # noqa: BLE001 – Zusatzdaten
                 print("Bilanzdaten nicht verfügbar:", e)
+            try:
+                for isin, s in social.get(universe, shortlist).items():
+                    snap[isin]["social"] = s   # Privatanleger-Stimmung (StockTwits, nur US-Titel)
+            except Exception as e:  # noqa: BLE001
+                print("Social-Media-Stimmung nicht verfügbar:", e)
         proposal = brain.decide(pf, universe, snap, news, today, total, regime, research_info, history, macro_info)
         approved, rejected = risk.validate(proposal["orders"], pf, prices, universe, today)
         for o in approved:

@@ -107,7 +107,7 @@ nicht steuern. Meine erste Version mit vielen ungeprüften Zusatzregeln lag bei 
 | **Zinsen und Konjunktur** | FRED, EZB (frei, ohne Schlüssel) | Zinskurve, Kreditaufschläge (Baa), 10-jährige Rendite, Fed-Zins, EZB-Einlagesatz, Arbeitslosigkeit (Sahm-Regel), Inflation | **Ja**, über 22 Jahre | keine Verbesserung (Tabelle unten); Claude sieht die Lage und soll deswegen **nicht** in Cash gehen |
 | **Bilanzen im Detail** | Yahoo (letzte Quartale) | Nettoverschuldung zu EBITDA, Zinsdeckung, Liquidität, Eigenkapital, freier Cashflow, Marge, Piotroski-Score | Nein, Yahoo hat keine Historie mit Veröffentlichungsstand | Nur ein **schweres** Warnsignal zählt als Beleg für ein Veto von Claude |
 | **Insider-Käufe** | Yahoo (nur US-Aktien), Web-Recherche (BaFin, SEC) | Käufe und Verkäufe der Führungskräfte der letzten 6 bzw. 3 Monate | Nein | nur Information (Verkäufe sind oft planmäßig) |
-| **Social-Media-Stimmung** | Web-Recherche über dein Abo | Foren, Reddit, StockTwits, X, sofern konkrete Beiträge gefunden werden | Nein | nur Information, weder Kauf- noch Veto-Grund (leicht manipulierbar) |
+| **Social-Media-Stimmung** | StockTwits (öffentlich, ohne Schlüssel, nur US-Aktien) und Web-Recherche über dein Abo | Anteil „Bullish“ zu „Bearish“ in den letzten 30 Beiträgen (nur Zahlen, kein Fremdtext), dazu Funde aus Foren, Reddit und X | Nein (die Schnittstelle liefert keine Vergangenheit) | nur Information, weder Kauf- noch Veto-Grund (leicht manipulierbar, teils Gegenindikator; der Bullish-Anteil liegt bei fast allen Titeln über 70 %, in einer Stichprobe von 6 großen US-Titeln bei 73 bis 92 %, ein hoher Wert allein sagt also nichts). Reddit sperrt Programme direkt (403), das wird nicht umgangen. |
 
 Fehlt etwas (Banken haben kein EBITDA, Yahoo kennt keine deutschen Insider-Geschäfte, französische Firmen melden halbjährlich), bleibt das Feld leer, geschätzt wird nichts.
 
@@ -185,7 +185,7 @@ liest der nächste Lauf das Depot neu und arbeitet vom tatsächlichen Stand weit
 Der GitHub-Workflow ist jetzt nur noch manuell startbar, damit nicht zwei Zeitpläne gleichzeitig handeln.
 
 **Ehrlicher Stand:** Datenabruf, Kennzahlen, Regelstrategie, Risikoschicht, Backtest, Trockenlauf, Dashboard und Zeitplan sind
-getestet (`pytest`, 96 Tests) und liefen mit echten Yahoo-Daten. **Nicht getestet** sind die Live-Ausführung auf der
+getestet (`pytest`, 101 Tests) und liefen mit echten Yahoo-Daten. **Nicht getestet** sind die Live-Ausführung auf der
 Plattform (braucht deinen Team-Login) und die Aufrufe über dein Claude-Abo samt Web-Recherche (braucht dein Token). Dafür gibt es
 den Selbsttest (Schritt 5), der ohne Order prüft, ob alles funktioniert. Erst danach live gehen.
 
@@ -245,5 +245,5 @@ Alternative ohne Dashboard: GitHub Actions (`.github/workflows/trade.yml`, Secre
 ## Dateien
 `bot/run.py` Ablauf · `bot/signals.py` Kennzahlen · `bot/fundamentals.py` Fundamentaldaten · `bot/research.py` Web-Recherche ·
 `bot/brain.py` Claude-Entscheidung mit Schutzgeländer · `bot/journal.py` Gedächtnis · `bot/rules.py` Regelstrategie ·
-`bot/lab.py` Test in Planspiel-Jahren · `bot/backtest.py` Backtest-Grundlage · `bot/universes.py` Testtitel · `bot/macro.py` Zinsen und Konjunktur · `bot/statements.py` Bilanzen und Insider · `bot/kronos_signal.py` Kronos (optional) · `bot/risk.py` Risikoregeln · `bot/executor.py` Trockenlauf und Plattform ·
+`bot/lab.py` Test in Planspiel-Jahren · `bot/backtest.py` Backtest-Grundlage · `bot/universes.py` Testtitel · `bot/macro.py` Zinsen und Konjunktur · `bot/statements.py` Bilanzen und Insider · `bot/social.py` Stimmung · `bot/kronos_signal.py` Kronos (optional) · `bot/risk.py` Risikoregeln · `bot/executor.py` Trockenlauf und Plattform ·
 `bot/universe_tool.py` Universum · `bot/selftest.py` Prüfung · `.github/workflows/trade.yml` Zeitplan (Werktags 3× UTC).

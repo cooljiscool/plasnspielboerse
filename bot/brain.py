@@ -37,7 +37,9 @@ Weitere Daten im Kontext. Keine davon ist im Test als nützlich belegt, sie sind
   zählt als belegter negativer Befund. Leichte Warnungen sind Information.
 - insider (Käufe und Verkäufe der Führungskräfte, nur US-Aktien) und recherche.insider_web (BaFin, SEC): Verkäufe sind oft planmäßig und ein schwaches Signal, Käufe mehrerer Insider
   sind schwach positiv. Kein Grund für ein Veto.
-- recherche.social und social_summary (Stimmung in Foren und sozialen Medien): laut und leicht zu manipulieren. Weder Kaufgrund noch Veto-Grund.
+- social (Privatanleger-Stimmung auf StockTwits, nur US-Aktien, Momentaufnahme der letzten Stunden, nur Zahlen) und recherche.social / social_summary (Stimmung in Foren und sozialen Medien
+  aus dem Web): laut, leicht zu manipulieren, teils ein Gegenindikator. Der Bullish-Anteil liegt bei fast allen Titeln über 60 %, ein hoher
+  Wert allein sagt also nichts, nur deutliche Abweichungen fallen auf. Weder Kaufgrund noch Veto-Grund.
 
 Vorgehen:
 1. Ausgangspunkt ist "quant_vorschlag" (Ranking nach mittelfristigem Momentum, 6 gleich große Positionen, Größe nach Marktschwankung). Übernimm ihn,
