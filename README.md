@@ -145,12 +145,17 @@ Rechenzeit ohne Grafikkarte: Kronos-small etwa 0,7 s je Titel, Kronos-mini etwa 
 | Kronos-mini, ungesehene Daten (ab Sept. 2025) | +0,008 (nicht von null verschieden) | +0,066 (klar positiv) |
 | Kronos-mini, 2023–2024 (evtl. im Training) | −0,005 | +0,087 |
 | Kronos-small, ungesehene Daten (ab Sept. 2025) | −0,037 (10 Tage), −0,050 (20 Tage, t = −2,1) | +0,066 / +0,071 |
-| Kronos-small, 2023–2024 (evtl. im Training) | Messung läuft noch | |
+| Kronos-small, 2023–2024 (evtl. im Training) | −0,048 (10 Tage), −0,059 (20 Tage, t = −2,0) | +0,087 / +0,118 |
 
 Beide Modelle haben damit **keine Vorhersagekraft** gezeigt. Kronos-small liegt sogar leicht im Minus (die Reihenfolge der Prognosen war eher umgekehrt zur späteren
 Rendite). Neben dem Momentum bringt es keinen Zusatznutzen (Koeffizient +0,17 Prozentpunkte, t = 0,2), und als Neusortierung der 15 Momentum-Favoriten
 verbessert es die Auswahl nicht (Mix 50/50: −0,22 Prozentpunkte gegenüber reinem Momentum, t = −0,6). Die Prognosen sind zudem stark verzerrt:
-im Schnitt −5,4 % über 10 Tage bei tatsächlich +0,8 %, in einer Spanne von −63 % bis +55 %. Die Trainingsdaten von Kronos haben kein veröffentlichtes Enddatum. Ein fairer Test ist deshalb nur für Zeiträume nach Erscheinen des Papiers
+im Schnitt −5,4 % über 10 Tage bei tatsächlich +0,8 %, in einer Spanne von −63 % bis +55 %.
+
+Ein Detail, das gegen voreilige Schlüsse hilft: Im früheren Zeitraum (2023–2024, evtl. im Training) hatte Kronos-small neben dem Momentum bei 20 Tagen einen positiven Zusatzbeitrag
+(+2,15 Prozentpunkte, t = 2,3), in den ungesehenen Daten aber nicht (+0,07, t = 0,1), und das Vorzeichen der Neusortierung der Favoriten wechselte zwischen beiden Zeiträumen
+(+0,65 gegen −0,23 Prozentpunkte). Ein Effekt, der nur dort auftritt, wo das Modell die Daten womöglich kennt, ist kein verlässliches Signal. Bei vier Zusatztests je Zeitraum
+ist ein einzelner t-Wert über 2 zudem auch Zufall. Die Trainingsdaten von Kronos haben kein veröffentlichtes Enddatum. Ein fairer Test ist deshalb nur für Zeiträume nach Erscheinen des Papiers
 (August 2025) möglich, das sind nur rund 13 Monate. Solange ein Test keinen Nutzen zeigt, bleibt `kronos_weight` auf 0 und Kronos ausgeschaltet.
 
 ## Dashboard fürs Handy
