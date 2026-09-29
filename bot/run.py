@@ -152,7 +152,7 @@ def main():
            "market_view": proposal["market_view"], "provider": proposal.get("provider"),
            "fallback_reason": proposal.get("fallback_reason"), "guard": proposal.get("guard"), "kronos": kronos_info, "regime": regime,
            "makro": ({"warnsignale": macro_info.get("warnsignale", [])} if macro_info else None),
-           "daten": data_info or None,
+           "daten": data_info or None, "verbrauch": {"recherche": (research_info or {}).get("verbrauch"), "entscheidung": proposal.get("verbrauch")},
            "research": ({"error": research_info.get("error"), "warning": research_info.get("warning"), "cached": research_info.get("cached", False),
                          "market": research_info.get("market"), "notes": len(research_info["notes"])}
                         if research_info else None),

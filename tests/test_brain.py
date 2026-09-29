@@ -78,13 +78,14 @@ def run_decide():
 
 def test_cli_provider_parses_structured_output_and_drops_api_key(tmp_path, monkeypatch):
     envfile = tmp_path / "env.txt"
-    payload = json.dumps({"is_error": False, "structured_output": {
+    payload = json.dumps({"is_error": False, "total_cost_usd": 0.0123, "duration_ms": 9400, "num_turns": 1, "structured_output": {
         "market_view": "gut", "orders": [{"action": "buy", "isin": "N", "amount_eur": 9000, "reason": "x"}]}})
     fake_claude(tmp_path, monkeypatch, f"cat >/dev/null\nenv | grep -c ANTHROPIC_API_KEY > {envfile}\necho '{payload}'\n")
     monkeypatch.setattr(config, "PROVIDER", "claude_cli")
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-should-not-leak")
     out = run_decide()
     assert out["provider"] == "claude_cli" and out["orders"][0]["isin"] == "N" and "fallback_reason" not in out
+    assert out["verbrauch"] == {"kosten_usd": 0.012, "dauer_s": 9, "runden": 1}
     assert envfile.read_text().strip() == "0"  # API-Key wurde nicht an die CLI weitergegeben
 
 

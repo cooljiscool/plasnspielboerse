@@ -240,8 +240,8 @@ def test_research_schema_and_prompt_ask_for_scenarios_and_risk_matrix():
     item = research.SCHEMA["properties"]["notes"]["items"]["properties"]
     assert {"szenarien", "risikomatrix"} <= set(item) and set(item["szenarien"]["properties"]) == {"bull", "base", "bear"}
     assert set(item["risikomatrix"]["items"]["required"]) == {"risiko", "wahrscheinlichkeit", "auswirkung"}
-    assert "Szenario" in research.SYSTEM and "Risikomatrix" not in research.SYSTEM and "Wahrscheinlichkeit (1-5)" in research.SYSTEM
-    assert "Schätzungen, keine Fakten" in research.SYSTEM
+    assert "Szenario" in research.SYSTEM and "Wahrscheinlichkeit (1-5)" in research.SYSTEM and "Schätzungen, keine Fakten" in research.SYSTEM
+    assert "nicht durch Weglassen" in research.SYSTEM      # sonst fehlen Prognosen, und die Prognose-Bilanz sammelt keine Daten
 
 
 def test_cut_analyst_estimates_count_as_negative_evidence_but_raised_ones_do_not():
@@ -299,3 +299,18 @@ def test_decide_passes_forecast_record_to_claude(monkeypatch):
     monkeypatch.setattr(brain, "_decide_cli", lambda ctx: captured.update(ctx) or {"market_view": "", "orders": []})
     brain.decide(pf(), UNI, snap(), {}, date(2026, 10, 5), 50000.0, None, None, None, None, {"nach_28_tagen": {"n": 31}})
     assert captured["prognose_bilanz"] == {"nach_28_tagen": {"n": 31}}
+
+
+def test_fixed_price_takeover_offer_counts_as_negative_evidence():
+    s = snap()
+    base = baseline(s)
+    veto = base["orders"][0]["isin"]
+    out = {"orders": [o for o in base["orders"] if o["isin"] != veto]}
+    research = {"notes": {veto: {"sentiment": 1, "summary": "Uber-Angebot 41,50 EUR, Kurs klebt daran", "uebernahme_angebot": True}}}
+    kept, notes = brain.guard(base, out, s, UNI, research)
+    assert veto not in {o["isin"] for o in kept} and any(n["aktion"] == "Veto akzeptiert" for n in notes)
+    research["notes"][veto]["uebernahme_angebot"] = False
+    kept, notes = brain.guard(base, out, s, UNI, research)
+    assert veto in {o["isin"] for o in kept}
+    from bot import research as r
+    assert "uebernahme_angebot" in r.SCHEMA["properties"]["notes"]["items"]["properties"] and "uebernahme_angebot" in brain.SYSTEM

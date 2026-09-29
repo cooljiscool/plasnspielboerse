@@ -142,7 +142,7 @@ def breadth_exposure(threshold=0.40, off_exposure=0.5, target=0.20, floor=0.4, n
 
 
 def drawdown_exposure(dd=0.10, off_exposure=0.5, target=0.20, floor=0.4, n=6):
-    """Schutzschalter (Skill "Drawdown Circuit Breaker"): liegt das Depot mehr als `dd` unter seinem Höchststand, höchstens `off_exposure` investiert."""
+    """Schutzschalter (übliche Risikomanagement-Regel): liegt das Depot mehr als `dd` unter seinem Höchststand, höchstens `off_exposure` investiert."""
     base = mktvol_exposure(target, floor, n)
 
     def f(regime):
@@ -252,6 +252,21 @@ def _macro_report(hist):
         print(f"{name:46}{active:>9} von {len(w)}{s['median'] * 100:>+8.1f}%{s['pct'] * 100:>6.0f}%{s['worst'] * 100:>+19.1f}%")
 
 
+def _overlay_report(hist):
+    from . import universes
+    d = bt.Data.from_frames(hist["close"], hist["high"], hist["low"], hist["open"], list(dict.fromkeys(universes.ALL)))
+    w = planspiel_windows(d.dates)
+    print(f"Überlagerungen (bei Auslösung höchstens 50 % investiert), {len(w)} Planspiel-Jahre, Markt alle\n")
+    print(f"{'Überlagerung':52}{'Median':>9}{'Rang':>7}{'schlechtestes Jahr':>20}")
+    cases = [("ohne (Standard, mit Volatilitäts-Skalierung)", mktvol_exposure(0.20, 0.4))]
+    cases += [(f"Marktbreite (Anteil über SMA200) unter {t:.0%}", breadth_exposure(t)) for t in (0.30, 0.40, 0.50)]
+    cases += [(f"Marktbreite (Anteil über SMA50) unter {t:.0%}", breadth_exposure(t, key="breadth50")) for t in (0.30, 0.40)]
+    cases += [(f"Schutzschalter: Depot {t:.0%} unter Höchststand", drawdown_exposure(t)) for t in (0.08, 0.10, 0.15)]
+    for name, exposure in cases:
+        s = summarize(evaluate(d, w, make("mom_blend", keep_frac=0.7, exposure=exposure)))
+        print(f"{name:52}{s['median'] * 100:>+8.1f}%{s['pct'] * 100:>6.0f}%{s['worst'] * 100:>+19.1f}%")
+
+
 def main():
     import argparse
     import os
@@ -263,10 +278,13 @@ def main():
     ap.add_argument("--refresh", action="store_true", help="Kurshistorie neu laden")
     ap.add_argument("--years", action="store_true", help="Ergebnis je Planspiel-Jahr ausgeben")
     ap.add_argument("--macro", action="store_true", help="Zins- und Konjunktur-Warnsignale als Überlagerung testen (Markt alle)")
+    ap.add_argument("--overlays", action="store_true", help="Marktbreite und Schutzschalter bei Depotrückgang als Überlagerung testen (Markt alle)")
     a = ap.parse_args()
     hist = load_history(os.path.join(config.DATA_DIR, "cache", "history.pkl"), a.refresh)
     if a.macro:
         return _macro_report(hist)
+    if a.overlays:
+        return _overlay_report(hist)
     groups = {**universes.GROUPS, "alle": list(dict.fromkeys(universes.ALL))}
     strategies = {"rules (Standard, jetzt)": rules.decide, "frühere Version (alle Filter)": bt.alt_all_filters,
                   "nur 60-Tage-Momentum": bt.momentum_only}

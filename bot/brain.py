@@ -58,7 +58,7 @@ Vorgehen:
    sofern du keinen konkreten Grund zur Abweichung hast. Jede Abweichung braucht einen benannten Grund in "reason".
 2. Prüfe jeden vorgeschlagenen Kauf wie ein Anwalt des Teufels: Nenne in "bear_case" das stärkste Gegenargument (Gewinnwarnung, Rechtsstreit,
    Übernahme mit schlechten Konditionen, Termin in den nächsten Tagen, Datenfehler wie ein Aktiensplit). Nur ein belegter negativer Befund
-   (recherche.sentiment -1 oder -2, event_soon, days_to_earnings 0-3, bilanz.schwer, analysten.schaetzungen_gesenkt) rechtfertigt, einen Kauf zu streichen und durch den nächsten Titel zu ersetzen.
+   (recherche.sentiment -1 oder -2, event_soon, uebernahme_angebot, days_to_earnings 0-3, bilanz.schwer, analysten.schaetzungen_gesenkt) rechtfertigt, einen Kauf zu streichen und durch den nächsten Titel zu ersetzen.
    Bloße Vorsicht, hohe Bewertung (pe, fwd_pe), niedriges Wachstum oder Analystenurteil reichen nicht, sie sind nur Zusatzinformationen.
 3. Verkaufe eine Position nur bei belegter Verschlechterung der Lage oder wenn der Vorschlag sie verkauft. Nicht wegen kleiner Kursschwankungen.
    Gehe nicht in Cash, weil dir der Markt teuer oder unsicher vorkommt: die Größe nach Marktschwankung ist im Vorschlag bereits eingerechnet.
@@ -149,11 +149,11 @@ def build_context(pf, universe, snap, news, today, total, regime=None, research=
 
 
 def _negative(isin: str, snap: dict, research: dict) -> bool:
-    """Belegter negativer Befund: schlechte Nachrichtenlage, anstehender Termin oder Gewinnmeldung in den nächsten Tagen, schweres Bilanz-Warnsignal
-    oder deutlich gesenkte Analystenschätzungen (gemessene Fakten). Claudes eigene Szenarien und Risikoeinschätzungen zählen nicht: sonst könnte er Vetos mit seiner eigenen Meinung begründen."""
+    """Belegter negativer Befund: schlechte Nachrichtenlage, anstehender Termin oder Gewinnmeldung in den nächsten Tagen, festes Übernahmeangebot (Kurs klebt daran),
+    schweres Bilanz-Warnsignal oder deutlich gesenkte Analystenschätzungen (gemessene Fakten). Claudes eigene Szenarien und Risikoeinschätzungen zählen nicht: sonst könnte er Vetos mit seiner eigenen Meinung begründen."""
     note = ((research or {}).get("notes") or {}).get(isin, {})
     m = snap.get(isin, {})
-    return (note.get("sentiment", 0) <= -1 or bool(note.get("event_soon")) or 0 <= m.get("days_to_earnings", 99) <= 3
+    return (note.get("sentiment", 0) <= -1 or bool(note.get("event_soon")) or bool(note.get("uebernahme_angebot")) or 0 <= m.get("days_to_earnings", 99) <= 3
             or bool((m.get("bilanz") or {}).get("schwer")) or bool((m.get("analysten") or {}).get("schaetzungen_gesenkt")))
 
 
@@ -227,7 +227,10 @@ def _decide_cli(context: dict) -> dict:
     out = data.get("structured_output")
     if out is None:  # Rückfall: JSON im Textfeld
         out = json.loads(data["result"])
-    return _valid(out)
+    out = _valid(out)
+    out["verbrauch"] = {"kosten_usd": round(float(data.get("total_cost_usd") or 0), 3), "dauer_s": round(float(data.get("duration_ms") or 0) / 1000),
+                        "runden": int(data.get("num_turns") or 0)}   # Rechenwert zu API-Preisen, mit Abo zählt es gegen das Nutzungslimit
+    return out
 
 
 def decide(pf: dict, universe: dict, snap: dict, news: dict, today: date, total: float,

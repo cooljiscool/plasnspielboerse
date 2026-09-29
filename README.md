@@ -25,6 +25,12 @@ vermerkt den Grund rot im Tab Protokoll. Er fällt also nie wegen der KI aus.
 2. Im Dashboard, Tab Einstellungen, in **Claude-Abo-Token** einfügen und speichern.
 3. Selbsttest im Tab Steuerung: bei „Entscheidungsquelle“ muss `claude_cli (Abo) antwortet` stehen.
 
+**Verbrauch, gemessen** (Trockenlauf mit echten Daten; Rechenwert zu API-Preisen, mit Abo wird nichts abgerechnet, es zählt gegen dein Nutzungslimit): Die Recherche (5 Aufrufe, 15 Titel) brauchte
+rund 2 Minuten und 0,78 $, die Entscheidung 10 Sekunden und 0,16 $. Der erste Lauf eines Tages kostet also rund 0,94 $, weitere Läufe desselben Tages nur die Entscheidung (rund 0,16 $, die Recherche
+kommt aus dem Zwischenspeicher). Bei drei Läufen pro Börsentag sind das etwa 1,3 $ Rechenwert, bis Spielende grob 100 $. Wie viel davon dein Abo-Limit verbraucht, hängt vom Tarif ab; der Verbrauch
+jedes Laufs steht im Protokoll (`logs/*.json`, Feld `verbrauch`). **Sparen:** Web-Recherche im Dashboard ausschalten senkt den Verbrauch um rund vier Fünftel, kostet aber Nachrichten, Ereignis-Vetos und Prognosen.
+Läuft das Limit trotzdem aus, handelt der Bot mit der Regelstrategie weiter.
+
 Hinweise: Das Token gilt nur für Claude Code, nicht für die API. Der Bot ruft `claude -p` ohne Werkzeuge in einem leeren Ordner auf
 und entfernt einen eventuell gesetzten API-Key aus der Umgebung, damit nichts über die API abgerechnet wird. Bei drei Läufen pro
 Tag ist der Verbrauch für dein Abo gering. Behandle das Token wie ein Passwort.
@@ -37,17 +43,22 @@ Pro Lauf, in dieser Reihenfolge:
    Prüfungen aus DAX, S&P und VIX) wird angezeigt und an Claude gegeben, steuert die Regeln aber nicht (siehe Backtest).
 2. **Fundamentaldaten und Termine** für die engere Auswahl (Depot plus die 15 stärksten): Branche, KGV, Wachstum, Marge,
    Analystenurteil, Kursziel und Termin der nächsten Gewinnmeldung (Yahoo, einmal pro Tag zwischengespeichert).
-3. **Web-Recherche** (nur mit Abo-Token, einmal pro Tag): Claude sucht im Web die Nachrichten der letzten 7 Tage zu den Titeln
-   der Auswahl und der allgemeinen Marktlage. Diese Stufe liefert nur strukturierte Fakten (Stimmung, Auslöser, Risiken, Termine).
-4. **Entscheidung** durch eine zweite Claude-Anfrage **ohne Werkzeuge**: Sie bekommt Kennzahlen, Fundamentaldaten, Recherche-Notizen
+3. **Web-Recherche** (nur mit Abo-Token, einmal pro Tag, in Dreier-Paketen): Claude sucht im Web die Nachrichten der letzten 7 Tage zu den Titeln
+   der Auswahl und der allgemeinen Marktlage. Diese Stufe liefert nur strukturierte Fakten (Stimmung, Auslöser, Risiken, Termine, laufende Übernahmeangebote)
+   und je Titel eine Szenario-Einschätzung mit Risikomatrix (Abschnitt „Prognose-Bilanz“). **Warum Pakete:** Bei 15 Titeln in einem Aufruf suchte Claude im Test nur oberflächlich
+   (zu 13 von 15 Titeln „keine belastbaren Nachrichten“, auch bei AMD und Intel, und nur 1 von 15 Prognosen). In Dreier-Paketen lieferte er zu allen 15 Titeln Nachrichten und
+   Prognosen, in etwa 2 Minuten. Bricht ein Paket ab (Limit, Netz), bleiben die fertigen erhalten, und der nächste Lauf am selben Tag holt nur die fehlenden Titel.
+4. **Zusatzdaten für Claude** (nur mit KI, Tabelle im nächsten Abschnitt): Bilanzen, Insider-Geschäfte (SEC), Analystenschätzungen, Reddit- und StockTwits-Stimmung, Zinsen und
+   Konjunktur, Risikoprofil, dazu die Bilanz früherer Prognosen. Sie steuern nicht die Regeln, sondern gehen als Information an Claude.
+5. **Entscheidung** durch eine zweite Claude-Anfrage **ohne Werkzeuge**: Sie bekommt Kennzahlen, Fundamentaldaten, Recherche-Notizen
    und den **Vorschlag der Regelstrategie** als Ausgangspunkt und weicht nur mit benanntem Grund ab (z. B. Gewinnwarnung,
    Termin in den nächsten Tagen). Die Trennung verhindert, dass Text aus dem Web direkt Orders auslöst. Fällt Claude aus, gilt der Regelvorschlag.
    Ein **Schutzgeländer in Code** (`brain.guard`) prüft Claudes Antwort: Käufe außerhalb der 25 besten Titel des Rankings und Verkäufe ohne belegten
    negativen Befund werden verworfen, ein ohne Beleg gestrichener Kauf wird wiederhergestellt. Claude bekommt außerdem seine letzten Orders samt
    Ergebnis (`verlauf`) und soll zu jedem Kauf das stärkste Gegenargument nennen (`bear_case`).
-5. **Risikoschicht in Code** (`bot/risk.py`, gilt für jede Quelle): max. 19 % je Titel, min. 5.000 € je Order, max. 6 Orders je Lauf,
+6. **Risikoschicht in Code** (`bot/risk.py`, gilt für jede Quelle): max. 19 % je Titel, min. 5.000 € je Order, max. 6 Orders je Lauf,
    max. 2 Titel je Branche, Penny-Stock-Sperre, Mindesthaltedauer, Gebühren und Cash-Prüfung.
-6. **Ausführung** und Kontrolle, dann Protokoll.
+7. **Ausführung** und Kontrolle, dann Protokoll (mit Verbrauch der KI-Aufrufe).
 
 **Regelstrategie** (`bot/rules.py`, kostenlos, auch Rückfall): Ranking nach dem Mittel aus 60-Tage-, 120-Tage- und 12-1-Monats-Rendite, 6 gleich
 große Positionen, gehalten wird, solange ein Titel in den oberen 70 % des Rankings bleibt. **Volatilitäts-Skalierung:** Schwankt der Markt stark
@@ -93,21 +104,33 @@ Krisenjahre gegenüber dem Durchschnitt aller Titel: 2008 −9,5 % gegen −30,9
 - **[TradingAgents](https://github.com/TauricResearch/TradingAgents):** Gegenargument-Prüfung (`bear_case`), Erinnerung an frühere Entscheidungen samt Ergebnis (`verlauf`).
   **[Anthropics Finanz-Werkzeuge](https://github.com/anthropics/financial-services):** Katalysatorkalender und Vorab-Analyse vor Gewinnmeldungen
   (Feld `next_event` in der Recherche). Mehrere Analysten-Agenten mit Debatte habe ich nicht übernommen: mehr Aufrufe des Abo-Limits ohne Beleg für Nutzen.
+- **Trading-Skills für Claude:** [tradermonty/claude-trading-skills](https://github.com/tradermonty/claude-trading-skills) (u. a. Marktbreite-Analyse, Szenario-Analyse, Steuerung der Investitionsquote),
+  [quant-sentiment-ai/claude-equity-research](https://github.com/quant-sentiment-ai/claude-equity-research) (Berichtsaufbau mit Katalysator- und Risikoanalyse) und die Equity-Research-Bausteine
+  von [anthropics/financial-services](https://github.com/anthropics/financial-services) (Szenarien vor Gewinnmeldungen, Katalysatorkalender, Thesen-Verfolgung). Übernommen habe ich die Ideen, die in den
+  Rahmen passen: **Szenarien mit Wahrscheinlichkeiten und eine Risikomatrix** (aber mit Prognose-Bilanz, damit sich zeigt, ob sie taugen) und den Katalysatorkalender. Was sich testen ließ, habe ich getestet:
+  **Marktbreite** als Signal für weniger Investition und ein **Schutzschalter** bei Depotrückgang senkten beide den Rang (Tabelle unten), sind also nicht eingebaut. Die Skill-Pakete selbst
+  binde ich nicht ein: Sie sind für interaktive Analyse gebaut, viele Aufrufe kosten Abo-Limit, und ihre Ergebnisse wären wie die Modellprognosen nicht an der Vergangenheit prüfbar.
 - **Planspiel-Sieger** setzten laut [Presseberichten](https://www.dsgv.de/newsroom/presse/20220131_PM_Spielende_Planspiel_Boerse_03.html) auf Trend und starke Titel (US-Großwerte, Halbleiter,
   Rüstung) und stiegen um etwa 25 bis 40 %. Das deckt sich mit der Momentum-Auswahl. Jahreszeitliche Muster (Weihnachtsrally, Januar-Effekt) sind nur schwach belegt
   und wurden nicht eingebaut.
 
-### Weitere Daten: Zinsen, Konjunktur, Bilanzen, Insider, Social Media
+### Weitere Daten: Zinsen, Konjunktur, Bilanzen, Insider, Analysten, Stimmung, Risiko
 
 Der Bot betrachtet zusätzlich diese Daten. **Nur Claude sieht sie, die feste Berechnung nutzt sie nicht.** Grund: Was sich nicht an der Vergangenheit prüfen lässt, darf die Auswahl
-nicht steuern. Meine erste Version mit vielen ungeprüften Zusatzregeln lag bei 46 % Rang, die einfache bei 81 %.
+nicht steuern. Meine erste Version mit vielen ungeprüften Zusatzregeln lag bei 46 % Rang, die einfache bei 81 %. Als Grund für ein Veto (Kauf streichen) zählt nur ein gemessener Befund:
+Nachrichtenlage −1 oder −2, Termin oder Gewinnmeldung in den nächsten Tagen, festes Übernahmeangebot, schweres Bilanz-Warnsignal oder deutlich gesenkte Analystenschätzungen.
+Claudes eigene Meinung (Szenarien, Risikoeinschätzung) zählt nie, sonst könnte er Vetos mit seiner eigenen Vermutung begründen.
 
 | Daten | Quelle | Was genau | Getestet? | Wirkung |
 |---|---|---|---|---|
 | **Zinsen und Konjunktur** | FRED, EZB (frei, ohne Schlüssel) | Zinskurve, Kreditaufschläge (Baa), 10-jährige Rendite, Fed-Zins, EZB-Einlagesatz, Arbeitslosigkeit (Sahm-Regel), Inflation | **Ja**, über 22 Jahre | keine Verbesserung (Tabelle unten); Claude sieht die Lage und soll deswegen **nicht** in Cash gehen |
 | **Bilanzen im Detail** | Yahoo (letzte Quartale) | Nettoverschuldung zu EBITDA, Zinsdeckung, Liquidität, Eigenkapital, freier Cashflow, Marge, Piotroski-Score | Nein, Yahoo hat keine Historie mit Veröffentlichungsstand | Nur ein **schweres** Warnsignal zählt als Beleg für ein Veto von Claude |
-| **Insider-Käufe** | Yahoo (nur US-Aktien), Web-Recherche (BaFin, SEC) | Käufe und Verkäufe der Führungskräfte der letzten 6 bzw. 3 Monate | Nein | nur Information (Verkäufe sind oft planmäßig) |
-| **Social-Media-Stimmung** | StockTwits (öffentlich, ohne Schlüssel, nur US-Aktien) und Web-Recherche über dein Abo | Anteil „Bullish“ zu „Bearish“ in den letzten 30 Beiträgen (nur Zahlen, kein Fremdtext), dazu Funde aus Foren, Reddit und X | Nein (die Schnittstelle liefert keine Vergangenheit) | nur Information, weder Kauf- noch Veto-Grund (leicht manipulierbar, teils Gegenindikator; der Bullish-Anteil liegt bei fast allen Titeln über 70 %, in einer Stichprobe von 6 großen US-Titeln bei 73 bis 92 %, ein hoher Wert allein sagt also nichts). Reddit sperrt Programme direkt (403), das wird nicht umgangen. |
+| **Insider-Geschäfte (SEC)** | SEC EDGAR, Meldung „Form 4“ (offiziell, kostenlos, nur US-Aktien) | offene Marktkäufe und -verkäufe der Führungskräfte der letzten 90 Tage, geplante Verkäufe (Rule 10b5-1) getrennt gezählt, „Cluster“ = mehrere Führungskräfte kaufen innerhalb von 30 Tagen | Nein (ein Test über 22 Jahre wäre möglich, hätte aber sehr wenige Ereignisse je Titel) | nur Information: Cluster-Käufe gelten in der Forschung als schwach positiv, Verkäufe sind kaum aussagekräftig. **Braucht deinen Namen und deine E-Mail** (verlangt die SEC im Abruf), im Dashboard unter Einstellungen; ohne sie bleibt das aus. Dazu: Yahoo-Überblick und Web-Recherche (BaFin für deutsche Titel). |
+| **Analysten-Schätzungen** | Yahoo | Änderung der Gewinnschätzungen (30 und 90 Tage), Zahl der Erhöhungen und Senkungen, Heraufstufungen und Herabstufungen, Anteil der Kaufempfehlungen, Streuung der Kursziele | Nein, Yahoo liefert nur den heutigen Stand, keine Historie | Die Richtung der Schätzungsänderungen („Earnings Revisions“) zählt zu den am besten belegten Signalen der Forschung. **Nur ein deutlicher Rückgang** (Schätzung fürs laufende Jahr −5 % in 30 Tagen, mindestens 3 Senkungen, höchstens 1 Erhöhung) zählt als Beleg für ein Veto, alles andere ist Information. |
+| **Social-Media-Stimmung** | StockTwits (öffentlich, ohne Schlüssel, nur US-Aktien), **Reddit-Erwähnungen über ApeWisdom** (frei, US-Aktien) und Web-Recherche über dein Abo | StockTwits: Anteil „Bullish“ zu „Bearish“ in den letzten 30 Beiträgen (nur Zahlen, kein Fremdtext). Reddit: Rang und Zahl der Erwähnungen in 24 Stunden, „auffällig“ bei Rang bis 20 oder verdoppelten Erwähnungen. Dazu Funde aus Foren und X | Nein (keine Vergangenheit abrufbar) | nur Information, weder Kauf- noch Veto-Grund (leicht manipulierbar, oft ein Gegenindikator oder zu spät; der Bullish-Anteil liegt bei fast allen Titeln über 70 %, in einer Stichprobe von 6 großen US-Titeln bei 73 bis 92 %). Reddit selbst sperrt Programme (403), das wird nicht umgangen. |
+| **Risikoprofil** | eigene Rechnung aus den Kursen | Jahresschwankung, größter Rückgang der letzten 12 Monate, 10-Tage-Verlust, der in 95 % der Zeiträume nicht überschritten wurde (Value at Risk), Stufe 1 bis 5 | Teilweise: Gewichtung nach Volatilität ist getestet und senkte den Rang | nur Einordnung für Claude, kein Grund zur Abweichung; die Positionsgröße berücksichtigt die Marktschwankung schon |
+| **Szenarien und Risikomatrix** | Claude über die Websuche | Aufwärts-, Basis- und Abwärtsszenario für 3 Monate mit Wahrscheinlichkeit und Rendite; die wichtigsten Risiken nach Wahrscheinlichkeit × Auswirkung. Der Code rechnet daraus die erwartete Rendite und eine Risikoeinschätzung aus | Nicht an der Vergangenheit prüfbar, **wird ab dem ersten Lauf gemessen** (nächster Abschnitt) | nur Information; erst eine positive Bilanz erlaubt Claude, sie zur Wahl zwischen ähnlich platzierten Titeln zu nutzen |
+| **Quiver Quantitative** (optional, kostenpflichtig) | Quiver-Schnittstelle, US-Aktien | Kongress-Handel, Regierungsaufträge, Lobbyausgaben, Wikipedia-Aufrufe, außerbörslicher Leerverkaufsanteil | Nein; **nicht einmal die Anbindung ist gegen die echte Schnittstelle geprüft** (ohne bezahlten Schlüssel nicht möglich) | nur Information, weder Kauf- noch Veto-Grund. Abschnitt „Quiver Quantitative und Liquid“ |
 
 Fehlt etwas (Banken haben kein EBITDA, Yahoo kennt keine deutschen Insider-Geschäfte, französische Firmen melden halbjährlich), bleibt das Feld leer, geschätzt wird nichts.
 
@@ -127,6 +150,70 @@ Fehlt etwas (Banken haben kein EBITDA, Yahoo kennt keine deutschen Insider-Gesch
 Jede Makro-Warnung kostet Rendite und Rang und hilft im schlechtesten Jahr nur wenig (am meisten die Inflationswarnung, −9,9 % auf −6,0 %). Die Aussagekraft ist begrenzt: Die Signale waren nur
 in 1 bis 4 von 22 Jahren aktiv. Richtig ist also: **kein Beleg für einen Nutzen**, nicht: sicher nutzlos. Wer das Risiko im schlechtesten Fall senken will und dafür etwas Rendite opfert,
 kann in `bot/lab.py` (`macro_exposure`) eine Überlagerung einschalten. Nachrechnen: `python -m bot.lab --macro`.
+
+**Zwei weitere Überlagerungen aus den Trading-Skills** (gleiche Testanlage wie oben, bei Auslösung höchstens 50 % investiert; Nachrechnen: `python -m bot.lab --overlays`):
+
+| Überlagerung | Median | Rang | schlechtestes Jahr |
+|---|---|---|---|
+| **ohne (Standard, mit Volatilitäts-Skalierung)** | **+17,4 %** | **81 %** | **−9,9 %** |
+| Marktbreite (Anteil der Titel über ihrer 200-Tage-Linie) unter 30 % | +16,6 % | 80 % | −9,9 % |
+| … unter 40 % | +16,6 % | 76 % | −13,9 % |
+| … unter 50 % | +16,6 % | 74 % | −8,9 % |
+| Marktbreite (über der 50-Tage-Linie) unter 30 % | +16,9 % | 76 % | −14,1 % |
+| … unter 40 % | +16,9 % | 72 % | −18,3 % |
+| Schutzschalter: Depot 8 % unter dem Höchststand | +15,0 % | 74 % | −10,9 % |
+| … 10 % unter dem Höchststand | +17,4 % | 76 % | −13,9 % |
+| … 15 % unter dem Höchststand | +17,4 % | 80 % | −9,9 % |
+
+Keine der beiden Überlagerungen verbessert den Rang, mehrere verschlechtern sogar das schlechteste Jahr: Wer nach einem Rückgang Positionen abbaut, verpasst die Erholung.
+Der Schutzschalter mit 15 % löste nur selten aus und liegt deshalb nahe am Standard. Beide sind nicht eingebaut. Auch hier gilt: kein Beleg für einen Nutzen, nicht: sicher nutzlos.
+
+### Prognose-Bilanz: taugen Claudes Prognosen? (`python -m bot.track`)
+
+Die Recherche liefert je Titel ein **Aufwärts-, Basis- und Abwärtsszenario** für die nächsten 3 Monate (mit Wahrscheinlichkeit und Rendite) und eine **Risikomatrix** (die wichtigsten Risiken mit
+Wahrscheinlichkeit 1 bis 5 mal Auswirkung 1 bis 5). Der Code rechnet daraus im Protokoll sichtbar die **erwartete Rendite** (Wahrscheinlichkeiten müssen zusammen 90 bis 110 ergeben, sonst
+wird sie verworfen) und eine **Risikoeinschätzung** (höchstes Produkt: ab 15 von 25 „hoch“, ab 8 „mittel“) aus. Das sind Schätzungen eines Sprachmodells und an der Vergangenheit nicht prüfbar.
+
+Damit sich trotzdem zeigt, ob sie etwas taugen, speichert der Bot **jede Prognose** (`data/forecasts.json`) und trägt nach 14, 28 und 56 Tagen ein, wie der Kurs sich entwickelt hat.
+`python -m bot.track` zeigt Trefferquote der Richtung und **Rangkorrelation** (ordnet Claude die Titel in der richtigen Reihenfolge?) sowie das mittlere Ergebnis der oberen und unteren Hälfte.
+Ab 30 ausgewerteten Prognosen bekommt Claude diese Bilanz in den Kontext (`prognose_bilanz`) und hat die Anweisung: Fehlt sie oder liegt die Rangkorrelation bei null oder darunter, tragen die
+Prognosen keine Entscheidung; ist sie klar positiv, dürfen sie höchstens zwischen ähnlich platzierten Titeln der Top 25 entscheiden. Als Grund für ein Veto zählen sie nie.
+Die ersten belastbaren Zahlen gibt es nach rund 4 bis 5 Wochen Betrieb (bis dahin fehlen 28 Tage Kursentwicklung). Richtige Erwartung: Vorhersagen einzelner Kurse über 3 Monate sind
+auch für Fachleute schwer, es kann sein, dass die Bilanz „wertlos“ zeigt. Dann haben die Prognosen nichts gekostet außer Abo-Limit.
+
+### Quiver Quantitative und Liquid (optional, beides mit Vorbehalt)
+
+**Quiver Quantitative** ([quiverquant.com](https://www.quiverquant.com)) liefert Alternativdaten zu US-Aktien. Die Schnittstelle ist kostenpflichtig (nach meiner Recherche ab 30 $ im Monat,
+welche Datensätze dabei sind, hängt vom Tarif ab). Ohne Schlüssel ruft der Bot nichts ab. Mit Schlüssel (Dashboard, Einstellungen, „Quiver-Schlüssel“, oder `QUIVER_API_TOKEN`) holt er für die
+US-Titel der engeren Auswahl fünf Datensätze (Kongress-Handel, Regierungsaufträge, Lobbyausgaben, Wikipedia-Aufrufe, außerbörslicher Leerverkaufsanteil, `bot/quiver.py`), fasst sie zu
+Zahlen zusammen und gibt sie als Information an Claude. **Ehrlich:** Ich konnte die Anbindung nicht gegen die echte Schnittstelle prüfen, dazu braucht es einen bezahlten Schlüssel.
+Endpunkte und Anmeldung stammen aus dem öffentlichen Quellcode des Pakets `quiverquant`, die Feldnamen der Antworten werden tolerant gelesen. Sieh beim ersten Lauf ins Protokoll (Zeile
+„Zusatzdaten für Claude“). **Mein Rat: sparen.** Der Kongress-Handel ist in der Forschung nach dem STOCK Act nur schwach und umstritten belegt, und die besser belegte Insider-Quelle (SEC Form 4)
+ist kostenlos und schon eingebaut.
+
+**Liquid** ([liquid.trade](https://liquid.trade)) ist eine Handelsplattform für **echtes Geld** (Perpetuals, Spot, Prognosemärkte,
+nach eigener Darstellung 500+ Märkte), kein Planspiel und keine Aktien des Planspiels. Der Bot kann darüber das Planspiel nicht handeln. Die einzige programmierbare Schnittstelle ist der
+„Co-Invest“-Server nach dem MCP-Standard (`https://coinvest.liquid.trade/mcp`): Anmeldung per OAuth 2.1, zwei Umfänge (`read` und `trade`), jede Änderung braucht einen Bestätigungs-Tipp von dir,
+dazu ein Übungsmodus mit 10.000 $. Eine öffentliche REST-Schnittstelle gibt es laut Liquid nicht. Die Werkzeugliste holt der Server erst nach der Anmeldung aus dem Backend, ich konnte sie nicht sehen.
+
+Was ich gebaut habe (`bot/mcp.py`), ist deshalb eine **allgemeine, optionale Nur-Lese-Anbindung** für die Recherche-Stufe: Falls Liquid Werkzeuge für Marktdaten anbietet (Preise, Finanzierungsraten,
+Stimmung), kann Claude sie beim Recherchieren nachschlagen. Handeln kann der Bot darüber nie. Die Sperren, die zusammenwirken:
+1. Ohne Einstellung wird **gar kein** MCP-Server geladen (`--strict-mcp-config` mit leerer Liste), auch nicht die, die du sonst für Claude eingerichtet hast. Die Entscheidungsstufe lädt nie einen.
+2. Freigegeben ist nur, was du einzeln mit vollem Namen einträgst, ohne Platzhalter. Der Name muss mit `get`, `list`, `search`, `read`, `fetch`, `query` oder `describe` beginnen und darf kein Wort wie
+   `place`, `buy`, `sell`, `trade`, `transfer`, `close`, `cancel`, `set`, `update`, `withdraw` enthalten. Alles andere wird abgelehnt.
+3. In der Konfiguration sind nur Server über https erlaubt, keine lokalen Programme.
+4. `--permission-mode dontAsk`: Alles, was nicht freigegeben ist, wird abgelehnt. **Nachgeprüft** mit einem Attrappen-Server (ein lesendes und ein „handelndes“ Werkzeug), Claude sollte beide aufrufen:
+   die CLI meldete `place_order` unter `permission_denials`, der Server sah nur den lesenden Aufruf. `python scripts/check_mcp_denial.py` wiederholt das auf deinem Rechner (ein Aufruf, rund ein Cent Nutzungslimit), sinnvoll nach jedem Update der CLI.
+5. **Erteile bei der Anmeldung nur den Umfang „read“.** Das ist die wichtigste Sperre, denn sie liegt außerhalb meines Codes.
+Eine falsche Einstellung führt nicht zum Abbruch, sondern zu einer Recherche ohne MCP, mit Hinweis im Protokoll.
+
+**Nicht gegen Liquid getestet**, weil dafür deine Anmeldung nötig ist: Geprüft sind die Sperren (Namensregeln in Tests, Rechteverwaltung der CLI mit der Attrappe), nicht die Verbindung zu Liquid. **Nutzen: gering**, höchstens Stimmung oder Marktlage
+aus einem anderen Markt, Aktien des Planspiels sind dort nicht handelbar. Mein Rat: für das Planspiel nicht einrichten. Wenn du es doch willst:
+1. `claude mcp add --transport http liquid https://coinvest.liquid.trade/mcp`, dann in Claude Code `/mcp`, „liquid“ wählen und anmelden, **nur „read“ erteilen**. (Im Docker-Container geschieht das im
+   Container, `docker compose exec dashboard claude`, und geht beim Neubau verloren.)
+2. Die Werkzeugnamen ansehen (`/mcp`, Form `mcp__liquid__…`) und nur **Marktdaten-Werkzeuge** wählen, keine Konto- oder Depot-Abfragen (sonst gehen deine privaten Kontodaten in die Recherche).
+3. Datei `data/mcp_readonly.json`: `{"mcpServers": {"liquid": {"type": "http", "url": "https://coinvest.liquid.trade/mcp"}}}`.
+4. In `.env`: `BOT_RESEARCH_MCP_CONFIG=data/mcp_readonly.json` und `BOT_RESEARCH_MCP_TOOLS=mcp__liquid__<werkzeug1>,mcp__liquid__<werkzeug2>`. Dashboard neu starten.
 
 ### Kronos (optional, standardmäßig aus)
 
@@ -167,8 +254,8 @@ Das Dashboard ist eine kleine Web-App, die zusammen mit dem Bot auf einem Rechne
 |---|---|
 | Übersicht | Depotwert, Verlauf, Cash, Positionen mit Gewinn/Verlust, Zähler für die Mindest-Käufe |
 | Steuerung | **Start** (Zeitplan an), **Stopp** (Notaus, bricht laufenden Lauf ab), Jetzt ausführen, Selbsttest, Umschalter Trockenlauf/Live, Ausgabe |
-| Protokoll | Jede Entscheidung mit Begründung, ausgeführte und abgelehnte Orders |
-| Einstellungen | Planspiel-Login, Anthropic-Key, Uhrzeiten, Modell, `selectors.json`, `universe.json` |
+| Protokoll | Jede Entscheidung mit Begründung, geladene Zusatzdaten, ausgeführte und abgelehnte Orders (Verbrauch der KI-Aufrufe steht im JSON-Protokoll in `logs/`) |
+| Einstellungen | Planspiel-Login, Claude-Token, SEC-Kontakt, Quiver-Schlüssel (optional), Uhrzeiten, Modell, `selectors.json`, `universe.json` |
 
 **Starten (Docker):**
 1. Auf dem Dauerrechner Docker installieren, Repository klonen, `cp .env.example .env` und in `.env` ein langes
@@ -190,9 +277,11 @@ liest der nächste Lauf das Depot neu und arbeitet vom tatsächlichen Stand weit
 Der GitHub-Workflow ist jetzt nur noch manuell startbar, damit nicht zwei Zeitpläne gleichzeitig handeln.
 
 **Ehrlicher Stand:** Datenabruf, Kennzahlen, Regelstrategie, Risikoschicht, Backtest, Trockenlauf, Dashboard und Zeitplan sind
-getestet (`pytest`, 101 Tests) und liefen mit echten Yahoo-Daten. **Nicht getestet** sind die Live-Ausführung auf der
-Plattform (braucht deinen Team-Login) und die Aufrufe über dein Claude-Abo samt Web-Recherche (braucht dein Token). Dafür gibt es
-den Selbsttest (Schritt 5), der ohne Order prüft, ob alles funktioniert. Erst danach live gehen.
+getestet (`pytest`, 211 Tests) und liefen mit echten Yahoo-Daten. Die Aufrufe von `claude -p` (Recherche in Paketen, Entscheidung mit Schutzgeländer, Schema, Websuche) habe ich
+in der Entwicklungsumgebung mit dem echten Claude Code durchgespielt, ein vollständiger Trockenlauf mit echten Daten ist gelaufen. **Nicht getestet** sind die Live-Ausführung auf der
+Plattform (braucht deinen Team-Login und die aufgezeichneten Selektoren), die Anmeldung mit *deinem* Token aus `claude setup-token` (der Aufruf ist derselbe, das Token kenne ich nicht),
+die SEC-Abfrage mit deinen Kontaktdaten (mit einer Attrappe getestet, früher mit echten Daten geprüft), Quiver und Liquid. Dafür gibt es den Selbsttest (Schritt 5), der ohne Order prüft,
+ob alles funktioniert. Erst danach live gehen.
 
 Regeln, auf denen der Code beruht (planspiel-boerse.de/regeln.html)
 0,3 % Gebühr (mind. 15 €) · max. 20 % pro Wertpapier · kein Leerverkauf, keine Hebelprodukte, Penny Stocks < 1 € gesperrt ·
@@ -207,6 +296,8 @@ Handel über Stuttgart, Luxemburg, Wien · Stop-Orders bis 14 Tage.
 - **Automatisierung schriftlich bestätigen lassen.** Die Regeln erwähnen nur manuelle Eingabe, weder Erlaubnis noch Verbot.
 - **Kein API-Key nötig:** Für die KI nutzt du dein Claude-Abo (Abschnitt oben). Ohne Abo läuft die kostenlose Regelstrategie.
 - Python 3.11 und Git lokal installieren; dann `pip install -r requirements.txt && playwright install chromium`.
+- **Optional, aber empfohlen:** Im Dashboard (Einstellungen) bei „Kontakt für die SEC-Insiderdaten“ deinen Namen und deine E-Mail-Adresse eintragen (z. B. `Max Muster max@example.org`). Die SEC verlangt
+  eine solche Kennung bei automatischen Abfragen. Ohne sie ruft der Bot die kostenlosen Insider-Meldungen nicht ab (Umgebungsvariable `SEC_USER_AGENT`). Die Adresse wird nur an die SEC gesendet.
 
 ### 2. Wertpapieruniversum
 Die Aktien der Plattform kommen aus Indizes (DAX, MDAX, SDAX, TecDAX, EuroStoxx 50, Dow Jones, Nasdaq 100, FTSE MIB,
@@ -245,10 +336,11 @@ Alternative ohne Dashboard: GitHub Actions (`.github/workflows/trade.yml`, Secre
 ## Sicherheitsnetz
 - Kann das Depot nicht gelesen werden, wird nicht gehandelt. Nach jeder Order wird das Depot neu gelesen.
 - Positionsgrenze 19 %, Mindestorder 5.000 €, max. 6 Orders pro Lauf, max. 2 Titel je Branche, Mindesthaltedauer 3 Tage (Notfall-Stopps ausgenommen).
+- Die KI-Aufrufe laufen ohne Werkzeuge (Entscheidung) bzw. nur mit Websuche (Recherche), in einem leeren Ordner, ohne API-Key und **ohne MCP-Server**, außer den einzeln freigegebenen Nur-Lese-Werkzeugen (siehe oben).
 - Zugangsdaten nur im Dashboard-Ordner `state/` bzw. als GitHub-Secrets, nie im Repo.
 
 ## Dateien
 `bot/run.py` Ablauf · `bot/signals.py` Kennzahlen · `bot/fundamentals.py` Fundamentaldaten · `bot/research.py` Web-Recherche ·
 `bot/brain.py` Claude-Entscheidung mit Schutzgeländer · `bot/journal.py` Gedächtnis · `bot/rules.py` Regelstrategie ·
-`bot/lab.py` Test in Planspiel-Jahren · `bot/backtest.py` Backtest-Grundlage · `bot/universes.py` Testtitel · `bot/macro.py` Zinsen und Konjunktur · `bot/statements.py` Bilanzen und Insider · `bot/social.py` Stimmung · `bot/kronos_signal.py` Kronos (optional) · `bot/risk.py` Risikoregeln · `bot/executor.py` Trockenlauf und Plattform ·
+`bot/lab.py` Test in Planspiel-Jahren · `bot/backtest.py` Backtest-Grundlage · `bot/universes.py` Testtitel · `bot/macro.py` Zinsen und Konjunktur · `bot/statements.py` Bilanzen und Insider · `bot/social.py` Stimmung (StockTwits, Reddit) · `bot/edgar.py` Insider-Geschäfte (SEC) · `bot/analysts.py` Analystenschätzungen · `bot/quiver.py` Quiver (optional) · `bot/track.py` Prognose-Bilanz · `bot/mcp.py` Nur-Lese-MCP (optional) · `bot/kronos_signal.py` Kronos (optional) · `bot/risk.py` Risikoregeln · `bot/executor.py` Trockenlauf und Plattform ·
 `bot/universe_tool.py` Universum · `bot/selftest.py` Prüfung · `.github/workflows/trade.yml` Zeitplan (Werktags 3× UTC).
