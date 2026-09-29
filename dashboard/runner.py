@@ -10,8 +10,10 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 TZ = ZoneInfo("Europe/Berlin")
-SECRET_KEYS = ("ANTHROPIC_API_KEY", "PSB_USER", "PSB_PASSWORD")
-DEFAULTS = {"enabled": False, "live": False, "times": ["09:20", "13:30", "19:40"], "model": "claude-sonnet-5-5"}
+SECRET_KEYS = ("CLAUDE_CODE_OAUTH_TOKEN", "ANTHROPIC_API_KEY", "PSB_USER", "PSB_PASSWORD")
+PROVIDERS = ("auto", "claude_cli", "api", "rules")
+DEFAULTS = {"enabled": False, "live": False, "times": ["09:20", "13:30", "19:40"], "model": "claude-sonnet-5-5",
+            "provider": "auto"}
 TIME_RE = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
 SLOT_WINDOW = timedelta(minutes=10)
 
@@ -106,7 +108,7 @@ class Runner:
     def _env(self, live: bool) -> dict:
         s = self.store.settings()
         env = {**os.environ, **self.store.secrets(), "BOT_LIVE": "1" if live else "0",
-               "ANTHROPIC_MODEL": s["model"], "BOT_DATA_DIR": self.data_dir, "BOT_LOG_DIR": self.log_dir,
+               "ANTHROPIC_MODEL": s["model"], "BOT_PROVIDER": s["provider"], "BOT_DATA_DIR": self.data_dir, "BOT_LOG_DIR": self.log_dir,
                "PYTHONUNBUFFERED": "1"}
         return env
 
@@ -188,6 +190,7 @@ class Runner:
         s = self.store.settings()
         nxt = next_run(datetime.now(TZ), s["times"]) if s["enabled"] else None
         return {"enabled": s["enabled"], "live": s["live"], "times": s["times"], "model": s["model"],
+                "provider": s["provider"],
                 "running": self.running(), "last": self.last,
                 "next_run": nxt.isoformat(timespec="minutes") if nxt else None,
                 "secrets": self.store.secret_status()}

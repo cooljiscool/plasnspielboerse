@@ -32,12 +32,17 @@ def main():
 
     ok = [check("Universum", uni), check("Marktdaten", kurse)]
 
-    def claude():
-        import anthropic
-        r = anthropic.Anthropic().messages.create(model=config.MODEL, max_tokens=10,
-                                                  messages=[{"role": "user", "content": "ok?"}])
-        return r.model
-    ok.append(check("Claude-API", claude))
+    def entscheider():
+        from . import brain
+        provider = brain.resolve_provider()
+        if provider == "rules":
+            return "Regelstrategie ohne KI (kostenlos). Für KI: CLAUDE_CODE_OAUTH_TOKEN oder ANTHROPIC_API_KEY setzen"
+        if provider == "claude_cli":
+            out = brain._decide_cli({"aufgabe": "Selbsttest: gib eine leere Orderliste zurück", "kandidaten": {}})
+            return f"claude_cli (Abo) antwortet, {len(out['orders'])} Orders"
+        out = brain._decide_api({"aufgabe": "Selbsttest: gib eine leere Orderliste zurück", "kandidaten": {}})
+        return f"api antwortet, {len(out['orders'])} Orders"
+    ok.append(check("Entscheidungsquelle", entscheider))
 
     if os.environ.get("PSB_USER"):
         from .executor import PlaywrightExecutor

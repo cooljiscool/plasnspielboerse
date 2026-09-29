@@ -29,9 +29,11 @@ button{font:inherit;font-weight:600;border-radius:12px;border:1px solid var(--li
 button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 button.danger{background:var(--down);color:#fff;border-color:var(--down)}
 button:disabled{opacity:.5}
-input,textarea{font:inherit;width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);margin:4px 0 12px}
+input,textarea,select{font:inherit;width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);margin:4px 0 12px}
 textarea{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;min-height:220px}
 label{font-size:14px;color:var(--mute)}
+select{appearance:auto}
+code{font-size:12px}
 pre{background:#0b1117;color:#d6e2ee;padding:12px;border-radius:10px;overflow:auto;max-height:320px;font-size:12px;white-space:pre-wrap;word-break:break-word;margin:0}
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:9}
 nav button{border:0;border-radius:0;background:none;color:var(--mute);min-height:58px;font-size:12.5px;flex:1;min-width:0;padding:0 2px;width:auto}
@@ -112,13 +114,22 @@ svg{width:100%;height:auto;display:block}
     <input id="PSB_USER" autocomplete="off" autocapitalize="off" placeholder="leer lassen = unverändert">
     <label>Planspiel-Passwort <span id="s_PSB_PASSWORD" class="mute"></span></label>
     <input id="PSB_PASSWORD" type="password" autocomplete="new-password" placeholder="leer lassen = unverändert">
-    <label>Anthropic-API-Key <span id="s_ANTHROPIC_API_KEY" class="mute"></span></label>
+    <label>Claude-Abo-Token (aus <code>claude setup-token</code>) <span id="s_CLAUDE_CODE_OAUTH_TOKEN" class="mute"></span></label>
+    <input id="CLAUDE_CODE_OAUTH_TOKEN" type="password" autocomplete="new-password" placeholder="leer lassen = unverändert">
+    <label>Anthropic-API-Key (optional, kostenpflichtig) <span id="s_ANTHROPIC_API_KEY" class="mute"></span></label>
     <input id="ANTHROPIC_API_KEY" type="password" autocomplete="new-password" placeholder="leer lassen = unverändert">
   </div>
   <h2>Zeitplan &amp; Modell</h2>
   <div class="card">
     <label>Uhrzeiten (Mo–Fr, Berliner Zeit, kommagetrennt)</label>
     <input id="times" placeholder="09:20, 13:30, 19:40">
+    <label>Entscheidungsquelle</label>
+    <select id="provider">
+      <option value="auto">automatisch (Abo-Token, sonst API-Key, sonst Regeln)</option>
+      <option value="claude_cli">Claude-Abo (claude -p)</option>
+      <option value="api">Anthropic-API (kostenpflichtig)</option>
+      <option value="rules">Regelstrategie ohne KI (kostenlos)</option>
+    </select>
     <label>Claude-Modell</label>
     <input id="model" autocapitalize="off">
   </div>
@@ -236,6 +247,8 @@ async function loadLog() {
   for (const x of d.decisions) {
     const c = el('div', {class: 'card'},
       el('div', {class: 'row'}, el('b', {}, fmtTime(x.time)), el('span', {class: 'pill' + (x.live ? ' live' : '')}, x.live ? 'LIVE' : 'Trockenlauf')),
+      el('div', {class: 'mute'}, 'Quelle: ' + ({claude_cli: 'Claude-Abo', api: 'Anthropic-API', rules: 'Regelstrategie'}[x.provider] || 'unbekannt')),
+      x.fallback_reason ? el('div', {class: 'down'}, 'KI ausgefallen, Regeln genutzt: ' + x.fallback_reason) : '',
       el('p', {class: 'mute'}, x.market_view || ''));
     for (const o of x.approved || []) c.append(el('div', {class: 'pos'}, el('span', {class: 'tag ' + o.action}, o.action === 'buy' ? 'KAUF' : 'VERKAUF'),
       `${o.name || o.isin} · ${o.shares} Stk`, el('div', {class: 'mute'}, o.reason || '')));
@@ -268,13 +281,13 @@ $('btnLive').onclick = act(async () => {
 
 async function loadSettingsForm() {
   try {
-    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model;
+    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model; $('provider').value = st.provider;
     $('f_selectors').value = (await api('/api/file/selectors')).text; $('f_universe').value = (await api('/api/file/universe')).text;
   } catch (e) {}
 }
 $('saveSettings').onclick = act(async () => {
-  const secrets = {}; for (const k of ['PSB_USER', 'PSB_PASSWORD', 'ANTHROPIC_API_KEY']) { secrets[k] = $(k).value; $(k).value = ''; }
-  S = await api('/api/settings', {times: $('times').value.split(',').map(s => s.trim()).filter(Boolean), model: $('model').value, secrets});
+  const secrets = {}; for (const k of ['PSB_USER', 'PSB_PASSWORD', 'CLAUDE_CODE_OAUTH_TOKEN', 'ANTHROPIC_API_KEY']) { secrets[k] = $(k).value; $(k).value = ''; }
+  S = await api('/api/settings', {times: $('times').value.split(',').map(s => s.trim()).filter(Boolean), model: $('model').value, provider: $('provider').value, secrets});
   renderStatus();
 }, 'Gespeichert');
 $('saveSelectors').onclick = act(() => api('/api/file/selectors', {text: $('f_selectors').value}), 'Selektoren gespeichert');

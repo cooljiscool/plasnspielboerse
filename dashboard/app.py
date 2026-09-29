@@ -10,7 +10,7 @@ from functools import wraps
 
 from flask import Flask, jsonify, request, send_from_directory, session
 
-from .runner import Runner, Store, valid_times
+from .runner import PROVIDERS, Runner, Store, valid_times
 
 BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 EDITABLE = {"selectors": "selectors.json", "universe": "universe.json"}
@@ -107,7 +107,8 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
         if want:
             if body.get("confirm") != "LIVE":
                 return jsonify(error='Zur Bestätigung "LIVE" eingeben'), 400
-            missing = [k for k, v in store.secret_status().items() if not v]
+            have = store.secret_status()
+            missing = [k for k in ("PSB_USER", "PSB_PASSWORD") if not have[k]]
             if missing:
                 return jsonify(error="Zugangsdaten fehlen: " + ", ".join(missing)), 400
             if not os.path.exists(os.path.join(data_dir, "selectors.json")):
@@ -130,6 +131,10 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
             if not model.replace("-", "").replace(".", "").replace("_", "").isalnum():
                 return jsonify(error="ungültiger Modellname"), 400
             changes["model"] = model
+        if body.get("provider"):
+            if body["provider"] not in PROVIDERS:
+                return jsonify(error="ungültige Entscheidungsquelle"), 400
+            changes["provider"] = body["provider"]
         if changes:
             store.save_settings(**changes)
         if isinstance(body.get("secrets"), dict):
@@ -155,7 +160,8 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
         latest = entries[-1] if entries else None
         return jsonify(portfolio=pf, series=series, latest=latest,
                        holdings=(latest or {}).get("holdings", {}),
-                       decisions=[{k: e.get(k) for k in ("time", "live", "market_view", "approved", "rejected")}
+                       decisions=[{k: e.get(k) for k in ("time", "live", "market_view", "provider", "fallback_reason",
+                                                    "approved", "rejected")}
                                   for e in reversed(entries[-30:])])
 
     @app.get("/api/output")

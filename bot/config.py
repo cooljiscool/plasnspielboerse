@@ -22,6 +22,8 @@ MIN_HOLD_DAYS = 3           # verhindert Hin-und-Her-Handel (jede Runde kostet ~
 
 # --- Laufzeit ---
 MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-5-5")
+PROVIDER = os.environ.get("BOT_PROVIDER", "auto")   # auto | claude_cli | api | rules
+CLI_TIMEOUT = int(os.environ.get("BOT_CLI_TIMEOUT", "180"))
 LIVE = os.environ.get("BOT_LIVE", "0") == "1"   # ohne BOT_LIVE=1 wird nur simuliert
 DATA_DIR = os.environ.get("BOT_DATA_DIR", "data")
 LOG_DIR = os.environ.get("BOT_LOG_DIR", "logs")

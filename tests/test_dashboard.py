@@ -60,7 +60,8 @@ def test_secrets_stored_privately_and_never_returned(authed, app):
                                                                    "ANTHROPIC_API_KEY": "sk-ant-abc123"}})
     body = r.get_data(as_text=True)
     assert "geheim-xyz" not in body and "sk-ant-abc123" not in body
-    assert r.get_json()["secrets"] == {"ANTHROPIC_API_KEY": True, "PSB_USER": True, "PSB_PASSWORD": True}
+    assert r.get_json()["secrets"] == {"ANTHROPIC_API_KEY": True, "PSB_USER": True, "PSB_PASSWORD": True,
+                                       "CLAUDE_CODE_OAUTH_TOKEN": False}
     path = os.path.join(app.store.dir, "secrets.json")
     assert stat.S_IMODE(os.stat(path).st_mode) == 0o600
     # leeres Feld ändert nichts
@@ -143,3 +144,23 @@ def test_scheduler_fires_once_per_slot(app, monkeypatch):
     app.store.save_settings(enabled=True)
     app.runner.tick(datetime(2026, 10, 10, 9, 21, tzinfo=TZ), "")  # Samstag
     assert calls == ["run"]
+
+
+def test_provider_setting_validated(authed):
+    assert authed.post("/api/settings", headers=H, json={"provider": "gpt"}).status_code == 400
+    assert authed.post("/api/settings", headers=H, json={"provider": "claude_cli"}).get_json()["provider"] == "claude_cli"
+
+
+def test_live_does_not_require_ai_credentials(authed, app, tmp_path):
+    app.store.update_secrets({"PSB_USER": "u", "PSB_PASSWORD": "p"})  # kein KI-Token nötig (Regelstrategie)
+    (tmp_path / "data" / "selectors.json").write_text("{}")
+    assert authed.post("/api/live", headers=H, json={"live": True, "confirm": "LIVE"}).status_code == 200
+
+
+def test_oauth_token_reaches_bot_env_but_not_output(authed, app):
+    app.store.update_secrets({"CLAUDE_CODE_OAUTH_TOKEN": "sk-ant-oat01-abcdef"})
+    app.store.save_settings(provider="claude_cli")
+    env = app.runner._env(live=False)
+    assert env["CLAUDE_CODE_OAUTH_TOKEN"] == "sk-ant-oat01-abcdef" and env["BOT_PROVIDER"] == "claude_cli"
+    open(app.runner.output_path, "w").write("Token sk-ant-oat01-abcdef ungültig")
+    assert "abcdef" not in authed.get("/api/output").get_data(as_text=True)

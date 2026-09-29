@@ -59,7 +59,8 @@ def main():
     os.makedirs(config.LOG_DIR, exist_ok=True)
     log = {"time": datetime.now().isoformat(timespec="seconds"), "live": config.LIVE, "total_before": total,
            "total_after": total_after, "cash": pf["cash"], "holdings": holdings,
-           "market_view": proposal["market_view"], "approved": approved,
+           "market_view": proposal["market_view"], "provider": proposal.get("provider"),
+           "fallback_reason": proposal.get("fallback_reason"), "approved": approved,
            "rejected": [{"order": o, "why": w} for o, w in rejected]}
     json.dump(log, open(os.path.join(config.LOG_DIR, datetime.now().strftime("%Y%m%d-%H%M") + ".json"), "w"),
               indent=2, ensure_ascii=False)
