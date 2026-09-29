@@ -30,14 +30,14 @@ def load(universe: dict):
     idx_cols = {k: s for k, s in INDEX.items() if s in close.columns}
     idx = signals.Frames(close[list(idx_cols.values())].rename(columns={s: k for k, s in idx_cols.items()}))
     regime = signals.regime_at(idx, -1)
-    cols = [s for s in syms if s in close.columns]
+    cols = [s for s in syms if s in close.columns and close[s].notna().any()]   # delistete Symbole liefern leere Spalten
     dax = close[INDEX["dax"]] if INDEX["dax"] in close.columns else None
     fr = signals.Frames(close[cols], high[cols], low[cols], dax)
     regime["mkt_vol_60d"] = fr.market_at(-1)["vol_60d"]   # Schwankung des Marktdurchschnitts der Auswahl (Volatilitäts-Skalierung)
     newest = close.index[-1]
     snap = {}
     for s in cols:
-        if (newest - close[s].dropna().index[-1]).days > STALE_DAYS:
+        if (newest - close[s].dropna().index[-1]).days > STALE_DAYS:   # Kurs zu alt: Titel ignorieren
             continue
         m = fr.at(-1, s)
         if m:
