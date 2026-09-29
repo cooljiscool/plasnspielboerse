@@ -134,6 +134,41 @@ Einzelne Märkte im amtlichen Universum: DAX 50 %, MDAX 54 %, SDAX 65 %, Europa 
   die bisherigen Regeln). Ausnahme nach unten: nur Europa ohne deutsche Indizes (52 %) und nur Nasdaq 100 (60 %) sind schwächer.
 - Grenzen wie zuvor: heutige Indexmitglieder (Überlebens-Verzerrung, die Zahlen sind eher zu gut), keine Fundamentaldaten, Termine und Web-Recherche im Test. Ob Claude die Ergebnisse verbessert, zeigt nur der Trockenlauf und später die Prognose-Bilanz.
 
+**Trefferquote: Wie oft liegt die Auswahl richtig?** (`python -m bot.lab --trefferquote --years`, ca. 2 Minuten, amtliches Universum in Euro, nur die Regeln, nicht Claudes Recherche.)
+„Richtig“ kann dreierlei heißen, deshalb wird jedes einzeln gemessen: (1) *Steigt der gekaufte Titel?* Anteil der Käufe (die 6 stärksten kaufbaren Titel nach dem Score) im Plus nach 10 bis 80 Handelstagen, verglichen mit einem
+beliebigen Titel, und Anteil der Käufe, die besser laufen als der mittlere Titel. (2) *Wie viel steigt er?* Überrendite der Käufe gegenüber allen Titeln. (3) *Was wurde aus den Positionen im Spiel?* Alle Positionen der 22 Planspiel-Jahre von Kauf bis Verkauf.
+
+Käufe an beliebigen Tagen seit 2004, überlappungsfrei (Startpunkte im Abstand der Haltedauer, vier Startversätze; überlappende Zeiträume würden die Sicherheit zu hoch ausweisen):
+
+| Haltedauer | Käufe | Käufe im Plus | alle Titel im Plus | Käufe besser als mittlerer Titel | Ø Überrendite | t-Wert |
+|---|---|---|---|---|---|---|
+| 10 Tage | 3.483 | 54 % | 54 % | 51 % | +0,4 % | 2,3 |
+| 20 Tage | 1.738 | 55 % | 56 % | 51 % | +0,9 % | 2,8 |
+| 40 Tage | 866 | 57 % | 58 % | 53 % | +2,2 % | 3,2 |
+| 80 Tage | 430 | 62 % | 61 % | 55 % | +5,3 % | 3,1 |
+
+Nur zum Start der 22 Planspiel-Jahre (132 Käufe am 1.10.): im Plus 49 / 47 / 58 / 63 % nach 10 / 20 / 40 / 80 Tagen (alle Titel 52 / 52 / 59 / 66 %), besser als der mittlere Titel 46 / 49 / 48 / 52 %, Überrendite −0,4 / +0,6 / −0,3 / +3,0 % (t-Wert höchstens 1,4).
+Die Positionen der Regeln in den 22 Planspiel-Jahren (154 Käufe, sonst bewertet zum Schlusskurs am 25.1.):
+
+| Positionen | Anzahl | im Plus | Ø Gewinn | Ø Verlust | Ø je Position |
+|---|---|---|---|---|---|
+| alle | 154 | 64 % | +23,5 % | −15,5 % | +9,3 % |
+| bis zum Ende gehalten | 130 | 75 % | +23,5 % | −9,5 % | +15,4 % |
+| vorzeitig verkauft (Notfall-Stopp bei −25 % oder Rangabstieg) | 24 | 0 % | – | −23,4 % | −23,4 % |
+
+**Was das heißt, ohne Schönfärberei:**
+- **Als reine Richtungsprognose ist die Auswahl nicht besser als ein beliebiger Titel.** Von 100 Käufen liegen nach 80 Tagen rund 62 im Plus, bei einem Zufallstitel 61; den mittleren Titel schlagen 55 von 100, also knapp mehr als bei einer Münze. Nach 10 Tagen
+  ist es ein Münzwurf. Die Regeln sagen nicht voraus, welche Aktie steigt, sondern kaufen Titel mit etwas höherer erwarteter Rendite.
+- **Der Vorteil steckt in der Größe, nicht in der Zahl der Treffer:** im Mittel +5,3 % über 80 Tage gegenüber einem Zufallstitel, überlappungsfrei mit t-Wert um 3 (in allen vier Reihen über 2). Der Zusammenhang zwischen Score und späterer Rendite
+  ist klar, aber klein (Rangkorrelation +0,02 bis +0,04): Einzelkurse lassen sich über Wochen kaum vorhersagen, ein kleiner Vorsprung im Schnitt reicht aber für einen Rang über 50 %.
+- **Im echten Planspiel-Fenster ist der Vorsprung nicht abgesichert.** An den 22 Starttagen liegen die Käufe im Plus sogar seltener als ein Zufallstitel (63 gegen 66 % nach 80 Tagen); 22 Zeitpunkte sind zu wenig für einen sicheren Schluss (t-Wert 1,4),
+  und in den letzten elf Jahren war es schwächer als in den ersten elf (im Plus nach 80 Tagen 67 % gegen 65 % aller Titel, dann 59 % gegen 66 %; besser als der mittlere Titel 61 %, dann nur 42 %). Passt zum Rang von 67 %, im Mittel 61 %, und zu den Tiefpunkten in Wendejahren.
+- **Wenige große Treffer tragen das Ergebnis.** Die besten 10 % der Positionen machen 61 % des Gesamtergebnisses aller Positionen aus; Gewinner sind im Schnitt +23,5 %, Verlierer −15,5 %. Ohne Ausreißer nach oben ist das Ergebnis dünn. Deshalb werden Gewinner nicht vorzeitig verkauft.
+- **Verkauft wird nur mit Verlust.** Alle 24 vorzeitigen Verkäufe (Notfall-Stopp, Rangabstieg) liegen im Minus; Gewinne laufen bis zum Ende. Die 130 bis zum Ende gehaltenen Positionen liegen zu 75 % im Plus, im Ganzen 64 %: Eine Trefferquote über die
+  „abgeschlossenen“ Trades allein wäre irreführend (0 %). Je Jahr liegt sie zwischen 27 % (2008/09) und 100 % (2009/10, 2012/13, 2019/20).
+- **Vorbehalte:** Parameter und Test nutzen dieselben 22 Jahre (Anpassung an die Vergangenheit), heutige Indexmitglieder (Überlebens-Verzerrung, die Zahlen sind eher zu gut). **Claudes eigene Prognosen** (Szenarien mit Bandbreiten je Titel) sind darin nicht enthalten und
+  historisch nicht prüfbar; ihre Trefferquote zeigt erst `python -m bot.track` nach rund 4 bis 5 Wochen Betrieb (Stand jetzt: 0 gespeicherte Prognosen).
+
 **Die zweite Wertung: Nachhaltigkeit.** Laut Regeln zählt dort der *Nachhaltigkeitsertrag*, die aufsummierten Kursgewinne und -verluste aller im Depot gehandelten Wertpapiere mit Stern (im amtlichen Universum die 50 Titel des
 Global Challenges Index; bei Gleichstand gewinnt das Depot mit weniger Kaufaufträgen). Sie hängt also davon ab, wie viel Geld in Sterntiteln steckt, nicht vom Depot insgesamt. Bisher gab der Bot Sterntiteln nur einen Bonus von einem Punkt im Ranking, kaum
 spürbar: In den Tests handelte die Strategie nur in 6 von 22 Jahren überhaupt einen Sterntitel, die Nachhaltigkeitswertung lief also praktisch ohne den Bot. **Neu ist eine Einstellung** (Dashboard, Einstellungen, „Nachhaltigkeitswertung: Plätze im Depot für Titel mit Stern“,

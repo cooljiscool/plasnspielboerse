@@ -239,13 +239,95 @@ def evaluate_nh(h, windows, strat, nh_cols, step: int = 2) -> pd.DataFrame:
     return pd.DataFrame(rows).set_index("year")
 
 
+# --- Trefferquote: Wie oft liegt die Auswahl richtig? ---
+HIT_HORIZONS = (10, 20, 40, 80)   # Haltedauer in Handelstagen; 80 entspricht ungefähr einem Planspiel
+SPLIT_YEAR = 2015                 # frühe gegen späte Planspiel-Jahre (wie in `split_summary`)
+
+
+def forward_returns(d, i: int, h: int, k: int = 6):
+    """Am Tag i: Renditen der k Käufe der Regeln (die stärksten kaufbaren Titel), Renditen aller Titel und Rangkorrelation (Spearman) von Score und Rendite,
+    jeweils bis Tag i+h. None, wenn zu wenig Kurse vorliegen."""
+    if i + h >= len(d.dates):
+        return None
+    snap = d.snap(i)
+    cols = list(snap)
+    ranked = sorted(cols, key=lambda c: rules.score(snap[c]), reverse=True)
+    picks = [c for c in ranked if rules.can_buy(snap[c], "risk_on", rules.PARAMS)][:k]
+    p, at = d.fr.a["price"], [d.fr.col_index[c] for c in cols]
+    ret = pd.Series(p[i + h, at] / p[i, at] - 1, index=cols).dropna()
+    pick = ret.reindex(picks).dropna()
+    if pick.empty or len(ret) < 20:
+        return None
+    score = pd.Series({c: rules.score(snap[c]) for c in ret.index})
+    return {"pick": pick.to_numpy(), "alle": ret.to_numpy(), "ic": float(score.rank().corr(ret.rank()))}
+
+
+def hit_stats(results: list) -> dict:
+    """Kennzahlen aus den Ergebnissen von `forward_returns` (eines je Startpunkt): Anteil der Käufe im Plus, Anteil aller Titel im Plus, Anteil der Käufe über dem
+    mittleren Titel, mittlere Überrendite der Käufe gegenüber allen Titeln (t-Wert über die Startpunkte) und mittlere Rangkorrelation. None ohne Ergebnisse."""
+    if not results:
+        return None
+    plus = np.concatenate([r["pick"] > 0 for r in results])
+    above = np.concatenate([r["pick"] > np.median(r["alle"]) for r in results])
+    ex = np.array([r["pick"].mean() - r["alle"].mean() for r in results])
+    sd = ex.std(ddof=1) if len(ex) > 1 else 0.0
+    return {"kaeufe": len(plus), "starts": len(ex), "plus": float(plus.mean()), "alle_plus": float(np.mean([(r["alle"] > 0).mean() for r in results])),
+            "ueber_median": float(above.mean()), "ueberrendite": float(ex.mean()), "t": float(ex.mean() / (sd / np.sqrt(len(ex)))) if sd > 0 else 0.0,
+            "ic": float(np.nanmean([r["ic"] for r in results]))}
+
+
+def position_outcomes(d, windows, strat, step: int = 2) -> pd.DataFrame:
+    """Was aus den Positionen der Strategie wurde: eine Zeile je gekaufter Position mit Einstand, Ausstieg (Verkaufskurs, sonst Schlusskurs am letzten Tag des
+    Zeitraums), Haltedauer in Tagen und offen (am Ende noch gehalten). Verkäufe zählen zum Eröffnungskurs des Tages nach der Entscheidung, wie in `simulate`."""
+    rows = []
+    for y, s, e in windows:
+        held, calls = {}, [0]
+
+        def watch(pf, uni, snap, total, regime=None):
+            i = s + step * calls[0]   # simulate ruft die Strategie am Starttag und dann alle `step` Tage auf
+            calls[0] += 1
+            now = {c: (p["avg_price"], p["bought"]) for c, p in pf["positions"].items()}
+            for c, (price, bought) in held.items():
+                if c not in now:   # seit dem letzten Aufruf verkauft
+                    rows.append(_exit(d, y, c, price, bought, i - step + 1, False))
+            held.clear()
+            held.update(now)
+            return strat(pf, uni, snap, total, regime)
+
+        sim = bt.simulate(d, s, e, watch, step)
+        last = s + step * (calls[0] - 1)
+        for c, (price, bought) in held.items():   # Stand nach dem letzten Aufruf: entweder bis zum Ende gehalten oder danach noch verkauft
+            rows.append(_exit(d, y, c, price, bought, e, True) if c in sim["held_value"] else _exit(d, y, c, price, bought, last + 1, False))
+    return pd.DataFrame(rows, columns=["jahr", "isin", "einstand", "ausstieg", "tage", "offen"])
+
+
+def _exit(d, year: int, c: str, price: float, bought: str, bar: int, still_open: bool) -> tuple:
+    """Ausstieg einer Position an Handelstag `bar`: offene Positionen zum Schlusskurs, verkaufte zum Eröffnungskurs (fehlt er, zum Schlusskurs des Vortags)."""
+    if still_open:
+        out = d.px(bar, c)
+    else:
+        out = d.open[bar, d.fr.col_index[c]]
+        out = d.px(bar - 1, c) if np.isnan(out) else out
+    return (year, c, price, float(out), (d.dates[bar].date() - pd.Timestamp(bought).date()).days, still_open)
+
+
+def summarize_positions(df: pd.DataFrame) -> dict:
+    """Kennzahlen zu den Positionen aus `position_outcomes`: Anteil im Plus, mittlerer Gewinn und Verlust, Ergebnis je Position und Anteil der besten 10 % am gesamten Gewinn."""
+    r = (df.ausstieg / df.einstand - 1).to_numpy()
+    win, loss = r[r > 0], r[r <= 0]
+    best = np.sort(r)[::-1][:max(1, len(r) // 10)]
+    return {"n": len(r), "plus": float((r > 0).mean()), "gewinn": float(win.mean()) if len(win) else 0.0, "verlust": float(loss.mean()) if len(loss) else 0.0,
+            "mittel": float(r.mean()), "median": float(np.median(r)), "tage": float(df.tage.mean()),
+            "anteil_beste": float(best.sum() / r.sum()) if r.sum() > 0 else float("nan")}
+
+
 def summarize(df: pd.DataFrame) -> dict:
     return {"n": len(df), "median": df.ret.median(), "mean": df.ret.mean(), "positive": (df.ret > 0).mean(),
             "worst": df.ret.min(), "excess_ew": (df.ret - df.ew).mean(), "beat_ew": (df.ret > df.ew).mean(),
             "pct": df.pct.mean(), "top10": (df.pct >= 0.9).mean(), "fees": df.fees.median()}
 
 
-def split_summary(df: pd.DataFrame, split_year: int = 2015) -> dict:
+def split_summary(df: pd.DataFrame, split_year: int = SPLIT_YEAR) -> dict:
     return {"alle": summarize(df), "früh": summarize(df[df.index < split_year]), "spät": summarize(df[df.index >= split_year])}
 
 
@@ -302,8 +384,8 @@ def _overlay_report(hist):
         print(f"{name:52}{s['median'] * 100:>+8.1f}%{s['pct'] * 100:>6.0f}%{s['worst'] * 100:>+19.1f}%")
 
 
-def _official_report(refresh: bool, years: bool):
-    """Die Strategien auf dem amtlichen Universum (data/universe.json aus `python -m bot.universe_tool official`), Kurse in Euro, gruppiert nach Markt."""
+def _official_rows() -> list:
+    """Das amtliche Universum aus data/universe.json. Ohne die Felder markt und currency (Import mit `python -m bot.universe_tool official`) bricht der Test ab."""
     import json
     import os
 
@@ -311,20 +393,78 @@ def _official_report(refresh: bool, years: bool):
     rows = json.load(open(os.path.join(config.DATA_DIR, "universe.json")))
     if not all(r.get("markt") and r.get("currency") for r in rows):
         raise SystemExit("data/universe.json stammt nicht aus `python -m bot.universe_tool official` (Felder markt und currency fehlen)")
-    hist = load_history(os.path.join(config.DATA_DIR, "cache", "history_official.pkl"), refresh, [r["yf"] for r in rows], {r["yf"]: r["currency"] for r in rows})
+    return rows
+
+
+def _official_history(rows: list, refresh: bool):
+    import os
+
+    from . import config
+    return load_history(os.path.join(config.DATA_DIR, "cache", "history_official.pkl"), refresh, [r["yf"] for r in rows], {r["yf"]: r["currency"] for r in rows})
+
+
+def _official_report(refresh: bool, years: bool):
+    """Die Strategien auf dem amtlichen Universum (data/universe.json aus `python -m bot.universe_tool official`), Kurse in Euro, gruppiert nach Markt."""
+    rows = _official_rows()
+    hist = _official_history(rows, refresh)
     groups = {g: [r["yf"] for r in rows if r["markt"] == g] for g in ("dax", "mdax", "sdax", "europa", "us")}
     groups["alle"] = [r["yf"] for r in rows]
     _run_groups(hist, groups, years, f"Amtliches Universum ({len(rows)} Titel), Kurse in Euro")
 
 
+def _hit_report(refresh: bool, years: bool):
+    """Wie oft liegt die Auswahl richtig? Trefferquote der Käufe und Ergebnis der tatsächlichen Positionen am amtlichen Universum in Euro (nur Auswertung der Regeln)."""
+    rows = _official_rows()
+    hist = _official_history(rows, refresh)
+    d = bt.Data.from_frames(hist["close"], hist["high"], hist["low"], hist["open"], [r["yf"] for r in rows])
+    n, w = len(d.dates), planspiel_windows(d.dates)
+    head = f"{'Haltedauer':>11}{'Käufe':>8}{'Startpunkte':>13}{'im Plus':>9}{'alle Titel':>12}{'über Median':>13}{'Überrendite':>13}{'t-Wert':>8}{'Rangkorr.':>11}"
+
+    def hits(starts, h):
+        return hit_stats([r for r in (forward_returns(d, i, h) for i in starts) if r])
+
+    def row(h, s, extra=""):
+        if s is None:
+            return f"{h:>6} Tage   zu wenig Kursdaten{extra}"
+        return (f"{h:>6} Tage{s['kaeufe']:>8.0f}{s['starts']:>13.0f}{s['plus'] * 100:>8.0f}%{s['alle_plus'] * 100:>11.0f}%{s['ueber_median'] * 100:>12.0f}%"
+                f"{s['ueberrendite'] * 100:>+12.1f}%{s['t']:>8.1f}{s['ic']:>+11.3f}{extra}")
+    print(f"Amtliches Universum ({len(d.cols)} Titel), Kurse in Euro, Käufe = die 6 stärksten kaufbaren Titel nach dem Score der Regeln. „im Plus“: Anteil der Käufe mit Kursgewinn nach der\n"
+          f"Haltedauer; „alle Titel“: dasselbe für alle Titel (Vergleich: ein Zufallstitel); „über Median“: Anteil der Käufe, die besser laufen als der mittlere Titel; Überrendite: Ø Käufe minus Ø alle Titel.\n")
+    print(f"A) Käufe zum Start der {len(w)} Planspiel-Zeiträume (1.10.)\n{head}")
+    for h in HIT_HORIZONS:
+        print(row(h, hits([s for _, s, _ in w], h)), flush=True)
+    last = HIT_HORIZONS[-1]
+    for name, part in ((f"bis {SPLIT_YEAR - 1}", [x for x in w if x[0] < SPLIT_YEAR]), (f"ab {SPLIT_YEAR}", [x for x in w if x[0] >= SPLIT_YEAR])):
+        print(row(last, hits([s for _, s, _ in part], last), f"   (nur Jahre {name})"))
+    print(f"\nB) Käufe an beliebigen Tagen seit {d.dates[260].year}, überlappungsfrei (Startpunkte im Abstand der Haltedauer, gemittelt über 4 Startversätze)\n{head}")
+    for h in HIT_HORIZONS:
+        runs = [x for x in (hits(range(o, n - h - 1, h), h) for o in list(range(260, 260 + h, max(1, h // 4)))[:4]) if x]
+        mean = {k: float(np.mean([x[k] for x in runs])) for k in runs[0]} if runs else None
+        print(row(h, mean, f"   (t über 2 in {sum(x['t'] > 2 for x in runs)} von {len(runs)} Reihen)" if runs else ""), flush=True)
+    out = position_outcomes(d, w, rules.decide)
+    print(f"\nC) Was aus den Positionen der Regeln in den {len(w)} Planspiel-Zeiträumen wurde (Kauf bis Verkauf, sonst bewertet zum Schlusskurs am 25.1.)")
+    if out.empty:
+        return print("  keine Positionen")
+    for label, df in (("alle Positionen", out), ("bis zum Ende gehalten", out[out.offen]), ("vorzeitig verkauft", out[~out.offen])):
+        if df.empty:
+            continue
+        s = summarize_positions(df)
+        print(f"  {label:24}{s['n']:>4} Positionen | im Plus {s['plus'] * 100:3.0f}% | Ø Gewinn {s['gewinn'] * 100:+5.1f}%, Ø Verlust {s['verlust'] * 100:+6.1f}% | "
+              f"Ø je Position {s['mittel'] * 100:+5.1f}% (Median {s['median'] * 100:+5.1f}%) | Ø Haltedauer {s['tage']:.0f} Tage")
+    best = summarize_positions(out)["anteil_beste"]
+    if best == best:
+        print(f"  Die besten 10 % der Positionen machen {best * 100:.0f} % des Gesamtergebnisses aller Positionen aus: wenige große Treffer tragen es.")
+    if years:
+        print("\n  je Planspiel-Jahr (Positionen | im Plus | Ø je Position):")
+        for y, df in out.groupby("jahr"):
+            s = summarize_positions(df)
+            print(f"  {y}/{str(y + 1)[2:]}: {s['n']:>3} | {s['plus'] * 100:>3.0f}% | {s['mittel'] * 100:>+6.1f}%")
+
+
 def _nh_report(refresh: bool):
     """Gesamtwertung gegen Nachhaltigkeitswertung: Wie viele Plätze für Sterntitel reserviert werden (nh_slots), am amtlichen Universum in Euro."""
-    import json
-    import os
-
-    from . import config
-    rows = json.load(open(os.path.join(config.DATA_DIR, "universe.json")))
-    hist = load_history(os.path.join(config.DATA_DIR, "cache", "history_official.pkl"), refresh, [r["yf"] for r in rows], {r["yf"]: r["currency"] for r in rows})
+    rows = _official_rows()
+    hist = _official_history(rows, refresh)
     d = bt.Data.from_frames(hist["close"], hist["high"], hist["low"], hist["open"], [r["yf"] for r in rows])
     stars = {r["yf"]: r["stars"] for r in rows}
     for c in d.cols:
@@ -374,7 +514,10 @@ def main():
     ap.add_argument("--official", action="store_true", help="Strategien auf dem amtlichen Universum (data/universe.json) testen, Kurse in Euro")
     ap.add_argument("--nachhaltigkeit", action="store_true", help="Gesamtwertung gegen Nachhaltigkeitswertung bei reservierten Plätzen für Sterntitel (amtliches Universum, Euro)")
     ap.add_argument("--overlays", action="store_true", help="Marktbreite und Schutzschalter bei Depotrückgang als Überlagerung testen (Markt alle)")
+    ap.add_argument("--trefferquote", action="store_true", help="Wie oft liegt die Auswahl richtig? Trefferquote der Käufe und Ergebnis der Positionen (amtliches Universum, Euro)")
     a = ap.parse_args()
+    if a.trefferquote:
+        return _hit_report(a.refresh, a.years)
     if a.official:
         return _official_report(a.refresh, a.years)
     if a.nachhaltigkeit:
