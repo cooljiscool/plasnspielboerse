@@ -113,10 +113,13 @@ Rechenzeit ohne Grafikkarte: Kronos-small etwa 0,7 s je Titel, Kronos-mini etwa 
 |---|---|---|
 | Kronos-mini, ungesehene Daten (ab Sept. 2025) | +0,008 (nicht von null verschieden) | +0,066 (klar positiv) |
 | Kronos-mini, 2023–2024 (evtl. im Training) | −0,005 | +0,087 |
-| Kronos-small | Messung läuft noch, Ergebnis siehe unten | |
+| Kronos-small, ungesehene Daten (ab Sept. 2025) | −0,037 (10 Tage), −0,050 (20 Tage, t = −2,1) | +0,066 / +0,071 |
+| Kronos-small, 2023–2024 (evtl. im Training) | Messung läuft noch | |
 
-Kronos-mini hat damit **keine Vorhersagekraft** gezeigt und verbessert die Auswahl der Momentum-Favoriten nicht (leicht schlechter in den ungesehenen Daten,
-nicht signifikant). Die Trainingsdaten von Kronos haben kein veröffentlichtes Enddatum. Ein fairer Test ist deshalb nur für Zeiträume nach Erscheinen des Papiers
+Beide Modelle haben damit **keine Vorhersagekraft** gezeigt. Kronos-small liegt sogar leicht im Minus (die Reihenfolge der Prognosen war eher umgekehrt zur späteren
+Rendite). Neben dem Momentum bringt es keinen Zusatznutzen (Koeffizient +0,17 Prozentpunkte, t = 0,2), und als Neusortierung der 15 Momentum-Favoriten
+verbessert es die Auswahl nicht (Mix 50/50: −0,22 Prozentpunkte gegenüber reinem Momentum, t = −0,6). Die Prognosen sind zudem stark verzerrt:
+im Schnitt −5,4 % über 10 Tage bei tatsächlich +0,8 %, in einer Spanne von −63 % bis +55 %. Die Trainingsdaten von Kronos haben kein veröffentlichtes Enddatum. Ein fairer Test ist deshalb nur für Zeiträume nach Erscheinen des Papiers
 (August 2025) möglich, das sind nur rund 13 Monate. Solange ein Test keinen Nutzen zeigt, bleibt `kronos_weight` auf 0 und Kronos ausgeschaltet.
 
 ## Dashboard fürs Handy
