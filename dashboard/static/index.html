@@ -132,6 +132,8 @@ svg{width:100%;height:auto;display:block}
     </select>
     <label><input type="checkbox" id="research" style="width:auto;margin:0 8px 0 0;vertical-align:middle">Web-Recherche für Claude (nur mit Abo-Token, einmal täglich, verbraucht mehr Abo-Limit)</label>
     <div style="height:12px"></div>
+    <label><input type="checkbox" id="kronos" style="width:auto;margin:0 8px 0 0;vertical-align:middle">Kronos-Prognose (optional, braucht einmalig <code>scripts/setup_kronos.sh</code>)</label>
+    <div style="height:12px"></div>
     <label>Claude-Modell</label>
     <input id="model" autocapitalize="off">
   </div>
@@ -252,6 +254,7 @@ async function loadLog() {
       el('div', {class: 'mute'}, 'Quelle: ' + ({claude_cli: 'Claude-Abo', api: 'Anthropic-API', rules: 'Regelstrategie'}[x.provider] || 'unbekannt')),
       x.regime ? el('div', {class: 'mute'}, 'Marktumfeld: ' + ({risk_on: 'freundlich', neutral: 'neutral', risk_off: 'schwach'}[x.regime.label] || x.regime.label) + ' (' + x.regime.score + ')') : '',
       x.research ? el('div', {class: x.research.error ? 'down' : 'mute'}, x.research.error ? 'Web-Recherche fehlgeschlagen: ' + x.research.error : 'Web-Recherche: ' + x.research.notes + ' Titel' + (x.research.cached ? ' (von heute früh)' : '')) : '',
+      x.kronos ? el('div', {class: x.kronos.fehler ? 'down' : 'mute'}, x.kronos.fehler ? 'Kronos fehlgeschlagen: ' + x.kronos.fehler : 'Kronos: ' + x.kronos.titel + ' Prognosen (' + x.kronos.modell + ')') : '',
       x.fallback_reason ? el('div', {class: 'down'}, 'KI ausgefallen, Regeln genutzt: ' + x.fallback_reason) : '',
       ...(x.guard || []).map(g => el('div', {class: 'mute'}, 'Kontrolle: ' + g.aktion + ' (' + g.isin + '): ' + g.grund)),
       el('p', {class: 'mute'}, x.market_view || ''));
@@ -286,13 +289,13 @@ $('btnLive').onclick = act(async () => {
 
 async function loadSettingsForm() {
   try {
-    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model; $('provider').value = st.provider; $('research').checked = st.research;
+    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model; $('provider').value = st.provider; $('research').checked = st.research; $('kronos').checked = st.kronos;
     $('f_selectors').value = (await api('/api/file/selectors')).text; $('f_universe').value = (await api('/api/file/universe')).text;
   } catch (e) {}
 }
 $('saveSettings').onclick = act(async () => {
   const secrets = {}; for (const k of ['PSB_USER', 'PSB_PASSWORD', 'CLAUDE_CODE_OAUTH_TOKEN', 'ANTHROPIC_API_KEY']) { secrets[k] = $(k).value; $(k).value = ''; }
-  S = await api('/api/settings', {times: $('times').value.split(',').map(s => s.trim()).filter(Boolean), model: $('model').value, provider: $('provider').value, research: $('research').checked, secrets});
+  S = await api('/api/settings', {times: $('times').value.split(',').map(s => s.trim()).filter(Boolean), model: $('model').value, provider: $('provider').value, research: $('research').checked, kronos: $('kronos').checked, secrets});
   renderStatus();
 }, 'Gespeichert');
 $('saveSelectors').onclick = act(() => api('/api/file/selectors', {text: $('f_selectors').value}), 'Selektoren gespeichert');

@@ -27,6 +27,12 @@ PROVIDER = os.environ.get("BOT_PROVIDER", "auto")   # auto | claude_cli | api | 
 CLI_TIMEOUT = int(os.environ.get("BOT_CLI_TIMEOUT", "180"))
 RESEARCH = os.environ.get("BOT_RESEARCH", "1") == "1"   # Web-Recherche (nur Quelle claude_cli)
 RESEARCH_TIMEOUT = int(os.environ.get("BOT_RESEARCH_TIMEOUT", "480"))
+KRONOS = os.environ.get("BOT_KRONOS", "0") == "1"       # Kronos-Prognose (optional, braucht PyTorch, siehe scripts/setup_kronos.sh)
+KRONOS_SIZE = os.environ.get("BOT_KRONOS_SIZE", "small")   # mini | small | base
+KRONOS_DIR = os.environ.get("KRONOS_DIR", "vendor/Kronos")
+KRONOS_HORIZON = int(os.environ.get("BOT_KRONOS_HORIZON", "10"))
+KRONOS_CONTEXT = int(os.environ.get("BOT_KRONOS_CONTEXT", "256"))
+KRONOS_SAMPLES = int(os.environ.get("BOT_KRONOS_SAMPLES", "1"))
 SHORTLIST = 15              # so viele Titel bekommen Fundamentaldaten und Web-Recherche
 LLM_CANDIDATES = 40         # so viele Kandidaten sieht Claude bei der Entscheidung
 LIVE = os.environ.get("BOT_LIVE", "0") == "1"   # ohne BOT_LIVE=1 wird nur simuliert

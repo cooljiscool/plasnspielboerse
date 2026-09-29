@@ -20,6 +20,23 @@ def download(symbols: list, period: str = "14mo", interval: str = "1d"):
     return [o.dropna(how="all").ffill(limit=3) for o in out]
 
 
+def download_ohlcv(symbols: list, period: str = "2y") -> dict:
+    """{Symbol: DataFrame(open, high, low, close, volume)} inklusive Handelsvolumen (für Kronos)."""
+    import yfinance as yf
+
+    d = yf.download(symbols, period=period, interval="1d", auto_adjust=True, progress=False, group_by="ticker", threads=True)
+    out = {}
+    for s in symbols:
+        try:
+            x = (d[s] if isinstance(d.columns, pd.MultiIndex) else d)[["Open", "High", "Low", "Close", "Volume"]]
+        except KeyError:
+            continue
+        x = x.rename(columns=str.lower).dropna(how="all").ffill(limit=5)
+        if len(x):
+            out[s] = x
+    return out
+
+
 def load(universe: dict):
     """universe: {isin: {name, yf, stars}} -> (snap, regime).
     snap = {isin: Kennzahlen (siehe signals.Frames.at)}, regime = Marktumfeld."""

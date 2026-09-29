@@ -44,6 +44,20 @@ def main():
         return f"api antwortet, {len(out['orders'])} Orders"
     ok.append(check("Entscheidungsquelle", entscheider))
 
+    if config.KRONOS:
+        def kronos():
+            from . import kronos_signal
+            good, why = kronos_signal.available()
+            if not good:
+                raise RuntimeError(why)
+            syms = [u["yf"] for u in list(universe.values())[:3] if u.get("yf")]
+            frames = market.download_ohlcv(syms, "2y")
+            out = kronos_signal.KronosSignal().forecast(frames)
+            if not out:
+                raise RuntimeError("keine Prognose (zu wenig Historie?)")
+            return f"{config.KRONOS_SIZE} liefert Prognosen: " + ", ".join(f"{k} {v:+.1%}" for k, v in out.items())
+        ok.append(check("Kronos", kronos))
+
     if os.environ.get("PSB_USER"):
         from .executor import PlaywrightExecutor
 

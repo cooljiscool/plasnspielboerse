@@ -16,7 +16,7 @@ from . import config, signals
 
 PARAMS = {"trend_filter": False, "rsi_filter": True, "hard_stop": True, "trailing": False, "trend_break": False,
           "sma50_sell": False, "vol_weight": False, "regime": False, "earnings_blackout": True, "vol_scale": True,
-          "keep_frac": 0.7, "n_positions": 6, "min_score": None}
+          "keep_frac": 0.7, "n_positions": 6, "min_score": None, "kronos_weight": 0.0}
 
 VOL_TARGET = 0.20        # Zielschwankung des Marktes; darüber sinkt die investierte Quote
 VOL_FLOOR = 0.40         # mindestens 40 % investiert
@@ -66,6 +66,20 @@ def can_buy(m: dict, regime_label: str = "risk_on", P: dict = None) -> bool:
     return True
 
 
+def kronos_reorder(ranked: list, snap: dict, weight: float, k: int = 15) -> list:
+    """Zweite Meinung: Innerhalb der k stärksten Momentum-Titel entscheidet zu `weight` die Kronos-Prognose über die Reihenfolge.
+    Titel außerhalb der k und Titel ohne Prognose bleiben unverändert (Momentum bleibt die Auswahl, Kronos sortiert nur um)."""
+    top = ranked[:k]
+    have = [i for i in top if "kronos_ret" in snap[i]]
+    if weight <= 0 or len(have) < 5:
+        return ranked
+    pos = {i: r for r, i in enumerate(have)}                                          # Momentum-Rang innerhalb der Gruppe
+    kr = {i: r for r, i in enumerate(sorted(have, key=lambda i: snap[i]["kronos_ret"], reverse=True))}
+    blended = sorted(have, key=lambda i: (1 - weight) * pos[i] + weight * kr[i])
+    slots = iter(blended)
+    return [next(slots) if i in pos else i for i in top] + ranked[k:]
+
+
 def trail_pct(m: dict) -> float:
     """Abstand des Trailing-Stops: 2,5 ATR, mindestens 8 %, höchstens 15 %."""
     return min(0.15, max(0.08, 2.5 * m.get("atr_pct", 0.03)))
@@ -96,6 +110,8 @@ def decide(pf: dict, universe: dict, snap: dict, total: float, regime: dict = No
     if P["vol_scale"] and shown.get("mkt_vol_60d"):
         exposure, n_target = vol_scaled(shown["mkt_vol_60d"], n_target, total)
     ranked = sorted(snap, key=lambda i: score_fn(snap[i], universe[i].get("stars", 0)), reverse=True)
+    if P.get("kronos_weight"):
+        ranked = kronos_reorder(ranked, snap, P["kronos_weight"])
     rank = {isin: r for r, isin in enumerate(ranked)}
     keep_rank = max(MIN_KEEP, int(P["keep_frac"] * len(ranked)))
     orders, sold = [], set()

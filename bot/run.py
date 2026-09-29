@@ -3,7 +3,7 @@ import json
 import os
 from datetime import date, datetime
 
-from . import brain, config, fundamentals, journal, market, research, risk, rules
+from . import brain, config, fundamentals, journal, kronos_signal, market, research, risk, rules
 from .executor import DryRunExecutor, PlaywrightExecutor
 
 
@@ -34,6 +34,7 @@ def main():
     if ctx:
         ctx.__enter__()
     research_info = None
+    kronos_info = None
     try:
         # Live: Depot von der Plattform lesen. Schlägt das fehl, wird nichts gehandelt (Exception bricht ab).
         pf = executor.get_portfolio(pf) if config.LIVE else executor.get_portfolio()
@@ -53,6 +54,15 @@ def main():
                     snap[isin]["sector"] = universe[isin]["sector"] = f["sector"]
         except Exception as e:  # noqa: BLE001 – Fundamentaldaten sind Zusatz, kein Muss
             print("Fundamentaldaten nicht verfügbar:", e)
+        kronos_info = None
+        if config.KRONOS:   # optional: Prognose des Basismodells Kronos für die engere Auswahl
+            try:
+                ks = kronos_signal.get(universe, shortlist, today)
+                for isin, v in ks.items():
+                    snap[isin]["kronos_ret"] = v
+                kronos_info = {"titel": len(ks), "modell": config.KRONOS_SIZE, "horizont": config.KRONOS_HORIZON}
+            except Exception as e:  # noqa: BLE001 – Zusatzsignal, darf den Lauf nicht stoppen
+                kronos_info = {"fehler": str(e)[:200]}
         provider = brain.resolve_provider()
         news = market.headlines(universe, shortlist[:12]) if provider != "rules" else {}
         if provider == "claude_cli" and config.RESEARCH:
@@ -82,7 +92,7 @@ def main():
     log = {"time": datetime.now().isoformat(timespec="seconds"), "live": config.LIVE, "total_before": total,
            "total_after": total_after, "cash": pf["cash"], "holdings": holdings,
            "market_view": proposal["market_view"], "provider": proposal.get("provider"),
-           "fallback_reason": proposal.get("fallback_reason"), "guard": proposal.get("guard"), "regime": regime,
+           "fallback_reason": proposal.get("fallback_reason"), "guard": proposal.get("guard"), "kronos": kronos_info, "regime": regime,
            "research": ({"error": research_info.get("error"), "cached": research_info.get("cached", False),
                          "market": research_info.get("market"), "notes": len(research_info["notes"])}
                         if research_info else None),

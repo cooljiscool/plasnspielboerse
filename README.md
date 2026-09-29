@@ -97,6 +97,28 @@ Krisenjahre gegenüber dem Durchschnitt aller Titel: 2008 −9,5 % gegen −30,9
   Rüstung) und stiegen um etwa 25 bis 40 %. Das deckt sich mit der Momentum-Auswahl. Jahreszeitliche Muster (Weihnachtsrally, Januar-Effekt) sind nur schwach belegt
   und wurden nicht eingebaut.
 
+### Kronos (optional, standardmäßig aus)
+
+[Kronos](https://github.com/shiyu-coder/Kronos) ist ein quelloffenes Basismodell (MIT-Lizenz) für Kerzendaten, trainiert auf über 12 Milliarden Kerzen von 45 Börsen
+([Paper](https://arxiv.org/abs/2508.02739)). Der Bot kann es als zweite Meinung nutzen: Für die engere Auswahl berechnet Kronos eine Prognose über 10 Handelstage
+(`kronos_ret`), sie geht an Claude und kann (`rules.PARAMS["kronos_weight"]`) die Reihenfolge der 15 Momentum-Favoriten verändern. Die Auswahl selbst bleibt beim Momentum.
+
+**Einrichten:** `sh scripts/setup_kronos.sh` (PyTorch nur für CPU, Kronos-Code nach `vendor/Kronos`), dann im Dashboard „Kronos-Prognose“ einschalten
+oder `BOT_KRONOS=1` setzen. Docker: `docker compose build --build-arg WITH_KRONOS=1`. Die Gewichte lädt der Bot beim ersten Lauf von Hugging Face.
+Rechenzeit ohne Grafikkarte: Kronos-small etwa 0,7 s je Titel, Kronos-mini etwa 0,14 s.
+
+**Ergebnis der Messung (60 Titel, 10 Tage voraus, Rangkorrelation zwischen Prognose und tatsächlicher Rendite):**
+
+| Modell und Zeitraum | Kronos | Momentum zum Vergleich |
+|---|---|---|
+| Kronos-mini, ungesehene Daten (ab Sept. 2025) | +0,008 (nicht von null verschieden) | +0,066 (klar positiv) |
+| Kronos-mini, 2023–2024 (evtl. im Training) | −0,005 | +0,087 |
+| Kronos-small | Messung läuft noch, Ergebnis siehe unten | |
+
+Kronos-mini hat damit **keine Vorhersagekraft** gezeigt und verbessert die Auswahl der Momentum-Favoriten nicht (leicht schlechter in den ungesehenen Daten,
+nicht signifikant). Die Trainingsdaten von Kronos haben kein veröffentlichtes Enddatum. Ein fairer Test ist deshalb nur für Zeiträume nach Erscheinen des Papiers
+(August 2025) möglich, das sind nur rund 13 Monate. Solange ein Test keinen Nutzen zeigt, bleibt `kronos_weight` auf 0 und Kronos ausgeschaltet.
+
 ## Dashboard fürs Handy
 
 Das Dashboard ist eine kleine Web-App, die zusammen mit dem Bot auf einem Rechner läuft, der dauerhaft an ist
@@ -129,7 +151,7 @@ liest der nächste Lauf das Depot neu und arbeitet vom tatsächlichen Stand weit
 Der GitHub-Workflow ist jetzt nur noch manuell startbar, damit nicht zwei Zeitpläne gleichzeitig handeln.
 
 **Ehrlicher Stand:** Datenabruf, Kennzahlen, Regelstrategie, Risikoschicht, Backtest, Trockenlauf, Dashboard und Zeitplan sind
-getestet (`pytest`, 65 Tests) und liefen mit echten Yahoo-Daten. **Nicht getestet** sind die Live-Ausführung auf der
+getestet (`pytest`, 74 Tests) und liefen mit echten Yahoo-Daten. **Nicht getestet** sind die Live-Ausführung auf der
 Plattform (braucht deinen Team-Login) und die Aufrufe über dein Claude-Abo samt Web-Recherche (braucht dein Token). Dafür gibt es
 den Selbsttest (Schritt 5), der ohne Order prüft, ob alles funktioniert. Erst danach live gehen.
 
@@ -187,5 +209,5 @@ Alternative ohne Dashboard: GitHub Actions (`.github/workflows/trade.yml`, Secre
 ## Dateien
 `bot/run.py` Ablauf · `bot/signals.py` Kennzahlen · `bot/fundamentals.py` Fundamentaldaten · `bot/research.py` Web-Recherche ·
 `bot/brain.py` Claude-Entscheidung mit Schutzgeländer · `bot/journal.py` Gedächtnis · `bot/rules.py` Regelstrategie ·
-`bot/lab.py` Test in Planspiel-Jahren · `bot/backtest.py` Backtest-Grundlage · `bot/universes.py` Testtitel · `bot/risk.py` Risikoregeln · `bot/executor.py` Trockenlauf und Plattform ·
+`bot/lab.py` Test in Planspiel-Jahren · `bot/backtest.py` Backtest-Grundlage · `bot/universes.py` Testtitel · `bot/kronos_signal.py` Kronos (optional) · `bot/risk.py` Risikoregeln · `bot/executor.py` Trockenlauf und Plattform ·
 `bot/universe_tool.py` Universum · `bot/selftest.py` Prüfung · `.github/workflows/trade.yml` Zeitplan (Werktags 3× UTC).

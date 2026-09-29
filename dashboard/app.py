@@ -135,8 +135,9 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
             if body["provider"] not in PROVIDERS:
                 return jsonify(error="ungültige Entscheidungsquelle"), 400
             changes["provider"] = body["provider"]
-        if isinstance(body.get("research"), bool):
-            changes["research"] = body["research"]
+        for flag in ("research", "kronos"):
+            if isinstance(body.get(flag), bool):
+                changes[flag] = body[flag]
         if changes:
             store.save_settings(**changes)
         if isinstance(body.get("secrets"), dict):
@@ -162,7 +163,7 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
         latest = entries[-1] if entries else None
         return jsonify(portfolio=pf, series=series, latest=latest,
                        holdings=(latest or {}).get("holdings", {}),
-                       decisions=[{k: e.get(k) for k in ("time", "live", "market_view", "provider", "fallback_reason", "guard", "regime", "research",
+                       decisions=[{k: e.get(k) for k in ("time", "live", "market_view", "provider", "fallback_reason", "guard", "kronos", "regime", "research",
                                                     "approved", "rejected")}
                                   for e in reversed(entries[-30:])])
 
