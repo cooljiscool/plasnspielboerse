@@ -173,3 +173,23 @@ def test_testorder_reports_failures_and_unknown_isins(monkeypatch, tmp_path, cap
     out = capsys.readouterr().out
     assert "FAIL" in out and "type2" in out and "debug" in out
     assert selftest.testorder("XX0000000000") == 1
+
+
+def test_login_is_retried_when_the_page_ignores_the_first_click():
+    class P(Page):
+        tries = 0
+        def goto(self, url): self.calls.append(("goto", url, {}))
+        def wait_for_timeout(self, ms): pass
+        def wait_for_selector(self, sel, **kw):
+            self.calls.append(("wait", sel, kw))
+            if sel == "#in":
+                self.tries += 1
+                if self.tries < 3:
+                    raise TimeoutError(sel)
+    ex = executor({"login_url": "u", "user_field": "#u", "password_field": "#p", "login_button": "#b", "logged_in_marker": "#in"}, P())
+    ex.user, ex.password = "a", "b"
+    ex._login()
+    assert [c for c in ex.page.calls if c[0] == "goto"].__len__() == 3
+    ex.page.tries = -10
+    with pytest.raises(TimeoutError):
+        ex._login()                      # nach drei Versuchen gibt er auf

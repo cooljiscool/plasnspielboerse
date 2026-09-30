@@ -10,6 +10,7 @@ from . import config
 ISIN_RE = re.compile(r"\b[A-Z]{2}[A-Z0-9]{9}\d\b")
 PLACEHOLDER_RE = re.compile(r"\{(\w+)\}")
 LOAD_TRIES, LOAD_WAIT_MS = 8, 1500   # so oft (und mit dieser Pause) wird ein halb geladenes Depot neu gelesen
+LOGIN_TRIES, LOGIN_WAIT_MS = 3, 12000   # Anmeldeversuche und Wartezeit je Versuch
 OPTIONAL_TIMEOUT_MS = 4000   # so lange wird auf einen Schritt mit "optional": true gewartet (etwa ein Bestätigungsfenster, das nicht immer erscheint)
 
 
@@ -92,12 +93,7 @@ class PlaywrightExecutor:
         self.page = self.browser.new_context(viewport={"width": 1400, "height": 1000}, locale="de-DE", timezone_id="Europe/Berlin").new_page()
         self.page.set_default_timeout(20000)
         try:
-            self.page.goto(self.sel["login_url"])
-            self._run_steps(self.sel.get("pre_login_steps", []), {})
-            self.page.fill(self.sel["user_field"], self.user)
-            self.page.fill(self.sel["password_field"], self.password)
-            self.page.click(self.sel["login_button"])
-            self.page.wait_for_selector(self.sel["logged_in_marker"])
+            self._login()
             self._select_depot()
         except Exception:
             self._dump("login")
@@ -106,6 +102,24 @@ class PlaywrightExecutor:
             self._pw.stop()
             raise
         return self
+
+    def _login(self) -> None:
+        """Anmelden, bis zu dreimal: Die Seite nimmt den Klick manchmal nicht an (Formular noch nicht bereit) und bleibt dann ohne Meldung auf dem Login stehen."""
+        for attempt in range(LOGIN_TRIES):
+            self.page.goto(self.sel["login_url"])
+            self._run_steps(self.sel.get("pre_login_steps", []), {})
+            self.page.wait_for_selector(self.sel["login_button"])
+            self.page.wait_for_timeout(1500)
+            self.page.fill(self.sel["user_field"], self.user)
+            self.page.fill(self.sel["password_field"], self.password)
+            self.page.click(self.sel["login_button"])
+            try:
+                self.page.wait_for_selector(self.sel["logged_in_marker"], timeout=LOGIN_WAIT_MS)
+                return
+            except Exception as e:  # noqa: BLE001
+                if type(e).__name__ != "TimeoutError" or attempt == LOGIN_TRIES - 1:
+                    raise
+                self.page.wait_for_timeout(3000)
 
     def _select_depot(self) -> None:
         """Wählt nach der Anmeldung das Depot, in dem gehandelt wird (config.DEPOT: test oder echt), und prüft es an einem Erkennungsmerkmal. Ohne Abschnitt `depot_switch`
