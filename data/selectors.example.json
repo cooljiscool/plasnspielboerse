@@ -1,5 +1,5 @@
 {
-  "_hinweis": "Vorlage. Kopieren nach data/selectors.json und alle Selektoren mit den Werten aus 'playwright codegen' ersetzen. Platzhalter in 'value': {isin} {name} {search} {shares} {stop}. {search} ist bei der amtlichen Wertpapierliste (python -m bot.universe_tool official) die ISIN und damit eindeutig; nimmt das Suchfeld der Plattform keine ISIN an, {name} verwenden.",
+  "_hinweis": "Vorlage für eine andere Plattform oder Änderungen. Für das Planspiel Börse liegt die fertige Datei als data/selectors.json im Repo (aus dem echten Quelltext abgeleitet). Schritte: do = click|fill|press|select|wait|goto, selector (auch mit Platzhaltern), value, optional (true: Schritt entfällt, wenn das Element nicht erscheint), state (bei wait: attached|visible|hidden|detached). Platzhalter in selector und value: {isin} {name} {search} {shares} {stop} {tab} ({tab} = Reiter aus order.tabs, wird aus den Indizes des Titels gewählt). {search} ist bei der amtlichen Wertpapierliste (python -m bot.universe_tool official) die ISIN und damit eindeutig.",
   "login_url": "https://trading.planspiel-boerse.de/web/auth/login",
   "user_field": "SELEKTOR_BENUTZERNAME",
   "password_field": "SELEKTOR_PASSWORT",

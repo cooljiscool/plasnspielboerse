@@ -94,6 +94,7 @@ svg{width:100%;height:auto;display:block}
     <button class="danger" id="btnStop">■ Stopp<br><small>Notaus</small></button>
     <button id="btnRun">Jetzt ausführen</button>
     <button id="btnTest">Selbsttest</button>
+    <button id="btnTestOrder">Test-Order<br><small>1 Stück im Testdepot kaufen und verkaufen</small></button>
     <button id="btnUni" style="grid-column:1/-1">Wertpapierliste des Planspiels laden<br><small>amtliche Liste von planspiel-boerse.de, dauert 1 bis 2 Minuten</small></button>
   </div>
   <h2>Modus</h2>
@@ -320,6 +321,7 @@ $('btnStart').onclick = act(async () => { S = await api('/api/control', {action:
 $('btnStop').onclick = act(async () => { if (!confirm('Alles stoppen? Ein laufender Vorgang wird abgebrochen.')) return; S = await api('/api/control', {action: 'stop'}); renderStatus(); }, 'Gestoppt');
 $('btnRun').onclick = act(async () => { if (S.live && !confirm('LIVE: Jetzt echte Orders erzeugen?')) return; S = await api('/api/control', {action: 'run'}); renderStatus(); }, 'Lauf gestartet');
 $('btnUni').onclick = act(async () => { if (!confirm('Die Wertpapierliste (data/universe.json) wird durch die aktuelle amtliche Liste ersetzt. Fortfahren?')) return; S = await api('/api/control', {action: 'universe'}); renderStatus(); }, 'Wertpapierliste wird geladen');
+$('btnTestOrder').onclick = act(async () => { if (!confirm('Im Test-Depot wird 1 Stück BASF gekauft und wieder verkauft (zählt nicht für den Rang). Fortfahren?')) return; S = await api('/api/control', {action: 'testorder'}); renderStatus(); }, 'Test-Order gestartet');
 $('btnTest').onclick = act(async () => { S = await api('/api/control', {action: 'selftest'}); renderStatus(); }, 'Selbsttest gestartet');
 $('btnDepot').onclick = act(async () => {
   if (S.depot === 'echt') { S = await api('/api/depot', {depot: 'test'}); }

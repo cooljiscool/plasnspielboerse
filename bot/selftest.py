@@ -74,7 +74,63 @@ def extras(check):
         check("Zusatzdaten MCP (nur lesen)", mcp_check, optional=True)
 
 
+def testorder(isin: str = "DE000BASF111", shares: int = 1) -> int:
+    """Geführte Testorder, ausschließlich im Test-/Trainingsdepot: ein Stück kaufen, im Depot nachsehen, wieder verkaufen. Prüft damit die Schritte für Kauf und Verkauf
+    auf der echten Plattform und zeigt, was sie nach dem Ordern meldet. Das Wettbewerbsdepot wird nie angefasst (config.DEPOT wird hier fest auf "test" gesetzt)."""
+    from datetime import date
+
+    from .executor import PlaywrightExecutor
+
+    config.DEPOT = "test"
+    universe = {u["isin"]: u for u in load("universe.json", [])}
+    if isin not in universe:
+        print(f"[FAIL] {isin} steht nicht in data/universe.json (erst Wertpapierliste laden)")
+        return 1
+    u = universe[isin]
+    base = {"isin": isin, "name": u["name"], "search": u.get("search") or u["name"], "shares": shares, "indices": u.get("indices") or []}
+
+    def shown(ex):
+        """Sichtbarer Text der Bestätigung bzw. Maske nach dem Ordern (kurz), damit man sieht, was die Plattform meldet."""
+        try:
+            return " | ".join(t.replace("\n", " ") for t in ex.page.locator("mat-dialog-container, .mat-mdc-snack-bar-container, app-order").all_inner_texts())[:700]
+        except Exception:  # noqa: BLE001
+            return ""
+
+    try:
+        with PlaywrightExecutor() as ex:
+            print(f"[ OK ] Anmeldung und Testdepot gewählt (Browser: {config.BROWSER})")
+            before = ex.get_portfolio()
+            print(f"[ OK ] Depot gelesen: {before['cash']:.2f} € frei, {len(before['positions'])} Positionen")
+            msg = ex.place({**base, "action": "buy"}, date.today())
+            print(f"[ OK ] Kauf von {shares} x {u['name']} abgeschickt. Rückmeldung der Plattform: {msg or '(leer)'}")
+            print(f"       Seite danach: {shown(ex)}")
+            after = ex.get_portfolio(before)
+            gained = after["positions"].get(isin, {}).get("shares", 0) - before["positions"].get(isin, {}).get("shares", 0)
+            if gained < shares:
+                print(f"[WARN] Die Position erscheint noch nicht im Depot (Börse geschlossen oder Order noch offen?). Später erneut versuchen, der Verkauf wird nicht geprüft. Barbestand jetzt {after['cash']:.2f} €")
+                return 0
+            print(f"[ OK ] Position im Depot: {after['positions'][isin]['shares']} Stück zu {after['positions'][isin]['avg_price']:.2f} €")
+            msg = ex.place({**base, "action": "sell"}, date.today())
+            print(f"[ OK ] Verkauf abgeschickt. Rückmeldung der Plattform: {msg or '(leer)'}")
+            print(f"       Seite danach: {shown(ex)}")
+            end = ex.get_portfolio(after)
+            left = end["positions"].get(isin, {}).get("shares", 0)
+            print(f"[{' OK ' if left == before['positions'].get(isin, {}).get('shares', 0) else 'WARN'}] Nach dem Verkauf {left} Stück im Depot, Barbestand {end['cash']:.2f} €")
+    except Exception as e:  # noqa: BLE001
+        print(f"[FAIL] {e}")
+        print(f"       Bild und Seitenquelltext der Fehlerstelle liegen in {os.path.join(config.LOG_DIR, 'debug')}")
+        return 1
+    return 0
+
+
 def main():
+    if "--testorder" in sys.argv:
+        for k in ("PSB_USER", "PSB_PASSWORD"):
+            if not os.environ.get(k):
+                print(f"[FAIL] {k} ist nicht gesetzt (Dashboard, Tab Einstellungen)")
+                sys.exit(1)
+        rest = [a for a in sys.argv[1:] if not a.startswith("--")]
+        sys.exit(testorder(*rest[:1]))
     universe = {u["isin"]: u for u in load("universe.json", [])}
     def uni():
         if not universe:
@@ -124,7 +180,7 @@ def main():
         def plattform():
             with PlaywrightExecutor() as ex:
                 pf = ex.get_portfolio()
-                return json.dumps({"depot": "Wettbewerbsdepot" if config.DEPOT == "echt" else "Testdepot", "cash": pf["cash"], "positionen": len(pf["positions"])})
+                return json.dumps({"depot": "Wettbewerbsdepot" if config.DEPOT == "echt" else "Testdepot", "browser": config.BROWSER, "cash": pf["cash"], "positionen": len(pf["positions"])})
         ok.append(check("Plattform-Login + Depot lesen", plattform))
     else:
         print("[ -- ] Plattform: PSB_USER/PSB_PASSWORD nicht gesetzt, übersprungen")

@@ -37,7 +37,7 @@ Dann `sh start.sh`: Es legt `.env` mit einem zufälligen Passwort fürs Handy-Da
 
 ## 4. Dashboard starten
 Erledigt `sh start.sh` (nutzt `docker compose up -d --build`).
-Das dauert beim ersten Mal einige Minuten. Danach läuft das Dashboard auf Port 8080 (`http://localhost:8080` auf dem Rechner). Ohne Docker: `pip install -r requirements.txt && playwright install chromium && DASHBOARD_PASSWORD=... python -m dashboard.app` (Python 3.11).
+Das dauert beim ersten Mal einige Minuten. Danach läuft das Dashboard auf Port 8080 (`http://localhost:8080` auf dem Rechner). Ohne Docker: `pip install -r requirements.txt && playwright install firefox && DASHBOARD_PASSWORD=... python -m dashboard.app` (Python 3.11).
 
 ## 5. Vom Handy erreichen (ohne den Port ins offene Internet zu stellen)
 1. **Tailscale** (kostenlos) auf dem Rechner und dem Handy installieren, mit demselben Konto anmelden.
@@ -59,58 +59,23 @@ Im Tab Einstellungen bei „Kontakt für die SEC-Insiderdaten“ deinen Namen un
 ## 9. Wertpapierliste laden
 Tab **Steuerung**, Knopf **Wertpapierliste des Planspiels laden** (1 bis 2 Minuten, Ausgabe erscheint darunter). Wiederhole das kurz vor dem Start und gelegentlich danach, weil sich die Liste ändern kann.
 
-## 10. Selektoren aufzeichnen (Schritt für Schritt, ca. 30 bis 45 Minuten)
-Der Bot bedient die Planspiel-Seite wie ein Mensch. Ein **Selektor** ist die Angabe, wo er klickt oder tippt („das Feld für den Benutzernamen“). Du ermittelst sie einmal mit dem Playwright-Recorder und trägst sie in `data/selectors.json` ein.
+## 10. Selektoren: schon fertig, nur prüfen (ca. 5 Minuten)
+Der Bot bedient die Planspiel-Seite wie ein Mensch. Die dafür nötige Datei `data/selectors.json` („wo klickt er, wo tippt er“) ist **bereits im Repo**. Sie wurde aus dem echten Seitenquelltext des Planspiels abgeleitet (Anmeldung, Depotwechsel, Barbestand, Positionstabelle, Marktübersicht, Kaufmaske) und Zeile für Zeile gegen diese Seiten geprüft. Du musst nichts aufzeichnen.
 
-**A. Vorbereiten (auf deinem Rechner, nicht im Docker-Container)**
-1. Python 3.11 installieren, im Repo-Ordner: `pip install playwright` und `playwright install chromium`.
-2. `cp data/selectors.example.json data/selectors.json` (Windows: Datei kopieren und umbenennen) und in einem Editor öffnen.
+**Was du tust:**
+1. **Browser:** Der Bot nutzt Firefox (im Docker-Image schon enthalten). Ohne Docker: `playwright install firefox`. Grund: Im Chromium von Playwright wies die Plattform die Anmeldung ab, in Firefox klappte sie. Wer doch Chrome will: Umgebungsvariable `BOT_BROWSER=chrome` (oder `chromium`).
+2. Im Dashboard, Tab Einstellungen, Planspiel-Benutzername (E-Mail) und Passwort eintragen.
+3. Tab Steuerung, **Selbsttest**: Es muss `[ OK ] Plattform-Login + Depot lesen` erscheinen (mit Barbestand 50.000 €, bevor du etwas gekauft hast).
+4. Tab Steuerung, **Test-Order**: Der Bot kauft 1 Stück BASF im **Trainings-Depot** (zählt nicht für den Rang), liest das Depot, verkauft es wieder und schreibt dazu, was die Plattform nach dem „Ordern“ meldet. Alles `[ OK ]`: fertig. Läuft die Börse gerade nicht, erscheint `[WARN]` (Order noch offen): dann zu den Handelszeiten wiederholen.
 
-**B. Recorder starten**
-3. `playwright codegen --target python https://trading.planspiel-boerse.de/web/auth/login`. Es öffnen sich zwei Fenster: der Browser und der „Playwright Inspector“ mit dem mitgeschriebenen Code.
+**Was noch nicht am echten Objekt gesehen wurde** (steht auch in der Datei): die Meldung nach „Ordern“, die Verkaufsmaske und die Zeilen der Positionstabelle mit echten Positionen, dazu die Kaufmaske des Wettbewerbsdepots ab dem ersten Handelstag (1.10.2026, 8:00 Uhr; vorher zeigt die Seite dort nur diesen Hinweis). Genau das prüft die Test-Order. Klappt etwas nicht, steht im Ausgabefeld, welcher Schritt scheitert, und der Bot legt Bild und Quelltext der Fehlerstelle in `logs/debug/` ab. Schick mir dann die Ausgabe der Test-Order (und bei Bedarf den Quelltext der betroffenen Seite), ich korrigiere die Datei.
 
-**C. Anmeldung aufnehmen**
-4. Im Browser Benutzername und Passwort eingeben und auf Anmelden klicken. Im Inspector erscheinen Zeilen wie `page.get_by_label("Benutzername").fill("…")` und `page.get_by_role("button", name="Anmelden").click()`.
-5. Trage aus diesen Zeilen ein (Umrechnung siehe Tabelle unten): `user_field`, `password_field`, `login_button`. **Schreibe dein Passwort nicht in die Datei**, es kommt später ins Dashboard.
-6. `logged_in_marker`: ein Element, das es nur nach der Anmeldung gibt, z. B. der Abmelden-Knopf. Zum Finden oben im Inspector auf das Zielkreuz („Pick locator“) klicken, das Element im Browser anklicken, den Selektor unten kopieren.
+**Quelltext einer Seite kopieren** (falls ich einen Zustand brauche): Seite öffnen, F12, Reiter Konsole, dort eintippen `copy(document.documentElement.outerHTML)` und Enter, dann in die Nachricht einfügen. Vorher persönliche Daten (Name, E-Mail) aus dem Text löschen.
 
-**D. Depot aufnehmen**
-7. Im Browser die Depotansicht öffnen. Adresse aus der Adresszeile in `portfolio.url` eintragen.
-8. Mit „Pick locator“ nacheinander wählen und eintragen: `cash_selector` (das verfügbare Geld, genau ein Element), `row_selector` (eine Zeile der Positionstabelle), dann innerhalb der Zeile `isin_cell`, `shares_cell`, `avg_price_cell` (Kaufkurs). Sind noch keine Positionen da, wiederholst du das nach der ersten Order (Schritt 9).
-
-**E. Kauf-Order aufnehmen**
-9. Neue Order öffnen, dann klicken und tippen in genau der Reihenfolge, wie der Bot es später machen soll: Suchfeld anklicken, einen Namen oder eine ISIN eintippen, ersten Treffer anklicken, Kaufen wählen, Stückzahl eintippen, absenden, bestätigen. Wähle dabei eine kleine Stückzahl (Spielgeld, kostet nur die virtuelle Gebühr; die Order zählt auch für die Mindestzahl von 3 Käufen).
-10. Jede Zeile im Inspector wird ein Eintrag in `order.buy_steps`: `.click()` wird `{"do": "click", "selector": "…"}`, `.fill("Siemens")` wird `{"do": "fill", "selector": "…", "value": "{search}"}`. Die Stückzahl bekommt `"value": "{shares}"`. Wartet die Seite nach einem Schritt (Trefferliste lädt), füge davor `{"do": "wait", "selector": "…Trefferzeile…"}` ein.
-11. Das Element der Erfolgsmeldung nach dem Absenden (Pick locator) kommt in `order.confirmation_marker`.
-
-**F. Verkauf aufnehmen**
-12. Dasselbe für eine Verkauforder (Position wählen oder Suche, Verkaufen, Stückzahl, absenden, bestätigen) in `order.sell_steps`. Die Verkauforder darfst du mit einer kleinen Position aufgeben.
-
-**G. Umrechnung Recorder-Zeile in Selektor** (das steht im Feld `selector`):
-
-| Recorder zeigt | Selektor |
-|---|---|
-| `get_by_role("button", name="Kaufen")` | `role=button[name="Kaufen"]` |
-| `get_by_label("Benutzername")` | `label=Benutzername` |
-| `get_by_placeholder("Suche")` | `[placeholder="Suche"]` |
-| `get_by_text("Order absenden")` | `text=Order absenden` |
-| `get_by_test_id("buy")` | `[data-testid="buy"]` |
-| `locator("#stueck")` | `#stueck` |
-
-Nimm bevorzugt Selektoren mit sichtbarem Text, `id` oder `name`, keine langen Klassenketten. Nimmt das Suchfeld keine ISIN an, nimm `{name}` statt `{search}`.
-
-**G2. Depot umschalten (wichtig)**
-Die Plattform hat ein Test-Depot (zählt nicht) und das Wettbewerbsdepot (zählt für den Rang). Der Bot muss nach der Anmeldung das richtige wählen. Zeichne dafür auf, wie man zwischen beiden wechselt, und trage es in `selectors.json` unter `depot_switch` ein: `test_steps` (Klicks für das Test-Depot), `echt_steps` (Klicks für das Wettbewerbsdepot) und je ein `test_marker` und `echt_marker`, das ist ein Element, das nur im jeweiligen Depot zu sehen ist (z. B. der Depotname oben). Der Bot prüft nach dem Umschalten den Marker und handelt nicht, wenn das falsche Depot aktiv ist. Ohne den Abschnitt `depot_switch` handelt der Bot gar nicht (hat die Plattform bei dir nur ein Depot: `"depot_switch": {"skip": true}`).
-
-**H. Prüfen**
-13. Im Dashboard, Tab Einstellungen, `selectors.json` einfügen (oder Datei im Ordner `data/` lassen). Trage dort auch Benutzername und Passwort ein.
-14. Tab Steuerung, **Selbsttest**. Es muss `[ OK ] Plattform-Login + Depot lesen` erscheinen, mit der richtigen Zahl Positionen. Bei einem Fehler zeigt die Meldung, welcher Selektor nicht gefunden wurde: Im Recorder erneut mit „Pick locator“ prüfen und korrigieren.
-15. Zum Schluss den Trockenlauf starten (Schritt 12 unten). Live erst nach einigen sauberen Trockenläufen.
-
-**Hilfe:** Schick mir Screenshots von Login, Depot und Orderformular (ohne persönliche Daten) oder den Inhalt der Recorder-Zeilen, dann schreibe ich die `selectors.json`. Oder gib Claude auf deinem Rechner den Prompt aus `ANWEISUNG_SELEKTOREN.md`.
+**Wenn die Plattform sich ändert:** Dann ändern sich meist nur einzelne Selektoren. Der Selbsttest nennt den Schritt, der scheitert; die Datei lässt sich im Dashboard im Tab Einstellungen bearbeiten. `ANWEISUNG_SELEKTOREN.md` enthält einen Prompt, mit dem Claude das auf deinem Rechner per Recorder neu aufnimmt.
 
 ## 11. Selbsttest
-Tab Steuerung, **Selbsttest**. Alles muss `[ OK ]` zeigen: Universum (amtliche Liste), Marktdaten, Entscheidungsquelle (`claude_cli (Abo) antwortet`), Plattform-Login samt Depot-Auslesen. Zeile mit `[FAIL]`: Meldung lesen oder an mich schicken. `[WARN]` bei Zusatzdaten ist unkritisch.
+Tab Steuerung, **Selbsttest**. Alles muss `[ OK ]` zeigen: Universum (amtliche Liste), Marktdaten, Entscheidungsquelle (`claude_cli (Abo) antwortet`), Plattform-Login samt Depot-Auslesen. Die **Test-Order** (eigener Knopf) prüft zusätzlich Kauf und Verkauf im Test-Depot. Zeile mit `[FAIL]`: Meldung lesen oder an mich schicken. `[WARN]` bei Zusatzdaten ist unkritisch.
 
 ## 12. Trockenlauf (mindestens einige Tage)
 1. Modus bleibt **Trockenlauf** (bucht nur lokal, keine echten Orders).
@@ -137,4 +102,4 @@ Tab Steuerung, **Selbsttest**. Alles muss `[ OK ]` zeigen: Universum (amtliche L
 - Nach Updates: `git pull`, dann `docker compose up -d --build`.
 
 ## Ehrliche Erwartung
-Die Strategie schlägt im Test im Mittel 61 bis 67 % zufälliger Vergleichsdepots, kein sicherer Sieg. Live-Orders auf der Plattform, dein Token und die Selektoren sind noch ungetestet: deshalb erst Selbsttest und Trockenlauf.
+Die Strategie schlägt im Test im Mittel 61 bis 67 % zufälliger Vergleichsdepots, kein sicherer Sieg. Live-Orders auf der Plattform sind erst teilweise getestet (Selektoren gegen den echten Quelltext geprüft, die Bestätigung nach „Ordern“ und der Verkauf noch nicht): deshalb erst Selbsttest, Test-Order und Trockenlauf.

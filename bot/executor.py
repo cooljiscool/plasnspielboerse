@@ -2,9 +2,26 @@
 import json
 import os
 import re
-from datetime import date
+from datetime import date, datetime
 
 from . import config
+
+
+ISIN_RE = re.compile(r"\b[A-Z]{2}[A-Z0-9]{9}\d\b")
+PLACEHOLDER_RE = re.compile(r"\{(\w+)\}")
+LOAD_TRIES, LOAD_WAIT_MS = 8, 1500   # so oft (und mit dieser Pause) wird ein halb geladenes Depot neu gelesen
+OPTIONAL_TIMEOUT_MS = 4000   # so lange wird auf einen Schritt mit "optional": true gewartet (etwa ein Bestätigungsfenster, das nicht immer erscheint)
+
+
+def fill_placeholders(text, values: dict) -> str:
+    """Ersetzt {isin} {name} {search} {shares} {stop} {tab} in Selektoren und Werten. Andere geschweifte Klammern (z. B. in regulären Ausdrücken) bleiben unberührt."""
+    return PLACEHOLDER_RE.sub(lambda m: str(values[m.group(1)]) if m.group(1) in values else m.group(0), str(text))
+
+
+def find_isin(text: str) -> str:
+    """Zelle 'Name / ISIN / Branche' (mehrere Zeilen) -> die ISIN; ohne Treffer der bereinigte Text."""
+    m = ISIN_RE.search(text)
+    return m.group(0) if m else text.strip()
 
 
 def parse_de_number(text: str) -> float:
@@ -58,14 +75,24 @@ class PlaywrightExecutor:
         self.password = os.environ["PSB_PASSWORD"]
         self.prev = {}
 
+    def _launch(self):
+        """Startet den Browser aus config.BROWSER: firefox (Standard), chromium oder chrome (installiertes Google Chrome). Die Plattform wies die Anmeldung
+        im Chromium von Playwright ab, im normalen Browser und in Firefox klappte sie."""
+        if config.BROWSER == "firefox":
+            return self._pw.firefox.launch()
+        if config.BROWSER == "chrome":
+            return self._pw.chromium.launch(channel="chrome")
+        return self._pw.chromium.launch()
+
     def __enter__(self):
         from playwright.sync_api import sync_playwright
 
         self._pw = sync_playwright().start()
-        self.browser = self._pw.chromium.launch()
-        self.page = self.browser.new_page(viewport={"width": 1400, "height": 1000})
+        self.browser = self._launch()
+        self.page = self.browser.new_context(viewport={"width": 1400, "height": 1000}, locale="de-DE", timezone_id="Europe/Berlin").new_page()
         self.page.set_default_timeout(20000)
         self.page.goto(self.sel["login_url"])
+        self._run_steps(self.sel.get("pre_login_steps", []), {})
         self.page.fill(self.sel["user_field"], self.user)
         self.page.fill(self.sel["password_field"], self.password)
         self.page.click(self.sel["login_button"])
@@ -89,7 +116,7 @@ class PlaywrightExecutor:
         self._run_steps(steps, {})
         marker = sw.get(f"{want}_marker")
         if marker:
-            self.page.wait_for_selector(marker)
+            self.page.wait_for_selector(marker, state="attached")   # Zustandsmerkmal (z. B. angehaktes Optionsfeld), muss nicht sichtbar sein
         if sw.get(f"{other}_marker") and self.page.locator(sw[f"{other}_marker"]).count():
             raise RuntimeError(f"Es ist das {'Wettbewerbsdepot' if other == 'echt' else 'Testdepot'} aktiv, gewollt ist das {'Wettbewerbsdepot' if want == 'echt' else 'Testdepot'}. Es wird nicht gehandelt.")
 
@@ -98,49 +125,121 @@ class PlaywrightExecutor:
         self._pw.stop()
 
     # --- Lesen ---
-    def get_portfolio(self, previous: dict | None = None) -> dict:
-        s, page = self.sel["portfolio"], self.page
-        page.goto(s["url"])
-        page.wait_for_selector(s["cash_selector"])
-        cash = parse_de_number(page.inner_text(s["cash_selector"]))
+    def _read_positions(self, prev: dict) -> dict:
+        s = self.sel["portfolio"]
         positions = {}
-        page.wait_for_load_state("networkidle")
-        prev = (previous or {}).get("positions", {})
-        for row in page.locator(s["row_selector"]).all():
-            isin = row.locator(s["isin_cell"]).inner_text().strip()
+        for row in self.page.locator(s["row_selector"]).all():
+            isin = find_isin(row.locator(s["isin_cell"]).inner_text())
             shares = int(parse_de_number(row.locator(s["shares_cell"]).inner_text()))
             avg = parse_de_number(row.locator(s["avg_price_cell"]).inner_text())
-            bought = prev.get(isin, {}).get("bought", date.today().isoformat())
-            positions[isin] = {"shares": shares, "avg_price": avg, "bought": bought}
+            if isin in positions:                     # mehrere Zeilen desselben Titels (etwa getrennte Käufe): zusammenfassen
+                old = positions[isin]
+                total = old["shares"] + shares
+                old["avg_price"] = (old["avg_price"] * old["shares"] + avg * shares) / total if total else avg
+                old["shares"] = total
+                continue
+            positions[isin] = {"shares": shares, "avg_price": avg, "bought": prev.get(isin, {}).get("bought", date.today().isoformat())}
+        return positions
+
+    def get_portfolio(self, previous: dict | None = None) -> dict:
+        s, page = self.sel["portfolio"], self.page
+        try:
+            page.goto(s["url"])
+            self._select_depot()                      # nach dem Neuladen der Seite gilt wieder das Standarddepot
+            self._run_steps(s.get("steps", []), {})
+            page.wait_for_selector(s["cash_selector"])
+            cash = parse_de_number(page.inner_text(s["cash_selector"]))
+            if s.get("ready_selector"):               # Tabelle (oder ihr Leer-Hinweis) ist da; "networkidle" kommt bei Seiten mit laufenden Kursen nicht zuverlässig
+                page.wait_for_selector(s["ready_selector"], state="attached")
+            else:
+                page.wait_for_load_state("networkidle")
+            prev = (previous or {}).get("positions", {})
+            for _ in range(LOAD_TRIES):
+                positions = self._read_positions(prev)
+                # Sicherung gegen ein halb geladenes Depot: Zeigt die Tabelle nichts, der Gesamtwert aber mehr als das Bargeld, fehlen die Positionen noch. Sonst hielte der Bot das Depot für leer und kaufte doppelt.
+                if positions or not s.get("total_selector"):
+                    break
+                if parse_de_number(page.inner_text(s["total_selector"])) - cash <= 1.0:
+                    break
+                page.wait_for_timeout(LOAD_WAIT_MS)
+                cash = parse_de_number(page.inner_text(s["cash_selector"]))
+            else:
+                raise RuntimeError("Das Depot ist nicht vollständig geladen: Gesamtwert über dem Barbestand, aber keine Positionen in der Tabelle. Es wird nicht gehandelt.")
+        except Exception:
+            self._dump("depot")
+            raise
         return {"cash": cash, "positions": positions,
                 "buy_orders_executed": (previous or {}).get("buy_orders_executed", 0)}
 
+    def _dump(self, tag: str) -> None:
+        """Bei einem Fehler Bild und Seitenquelltext ablegen (logs/debug/), damit sich die Selektoren gezielt nachbessern lassen. Fehler hier bleiben folgenlos."""
+        try:
+            folder = os.path.join(config.LOG_DIR, "debug")
+            os.makedirs(folder, exist_ok=True)
+            stem = os.path.join(folder, f"{datetime.now().strftime('%Y%m%d-%H%M%S')}-{tag}")
+            self.page.screenshot(path=stem + ".png", full_page=True)
+            open(stem + ".html", "w", encoding="utf-8").write(self.page.content())
+        except Exception:  # noqa: BLE001
+            pass
+
     # --- Schreiben ---
     def _run_steps(self, steps: list, values: dict) -> None:
+        """Führt die Schritte aus selectors.json aus. Schritt-Felder: do, selector, value, optional (true: erscheint das Element nicht binnen weniger Sekunden, weiter),
+        state (nur bei wait: attached, visible, hidden, detached)."""
         for st in steps:
-            val = str(st.get("value", "")).format(**values)
-            act, target = st["do"], st.get("selector")
-            if act == "goto":
-                self.page.goto(val)
-            elif act == "click":
-                self.page.click(target)
-            elif act == "fill":
-                self.page.fill(target, val)
-            elif act == "press":
-                self.page.press(target, val)
-            elif act == "select":
-                self.page.select_option(target, label=val)
-            elif act == "wait":
-                self.page.wait_for_selector(target)
-            else:
-                raise ValueError(f"unbekannter Schritt: {act}")
+            val = fill_placeholders(st.get("value", ""), values)
+            act = st["do"]
+            target = fill_placeholders(st["selector"], values) if st.get("selector") else None
+            if target and "{tab}" in st["selector"] and not values.get("tab"):
+                raise RuntimeError(f"Für {values.get('isin')} ist in selectors.json (order.tabs) kein Marktreiter hinterlegt")
+            opt = {"timeout": OPTIONAL_TIMEOUT_MS} if st.get("optional") else {}
+            try:
+                if act == "goto":
+                    self.page.goto(val)
+                elif act == "click":
+                    self.page.click(target, **opt)
+                elif act == "fill":
+                    self.page.fill(target, val, **opt)
+                elif act == "press":
+                    self.page.press(target, val, **opt)
+                elif act == "select":
+                    self.page.select_option(target, label=val, **opt)
+                elif act == "wait":
+                    self.page.wait_for_selector(target, **({"state": st["state"]} if st.get("state") else {}), **opt)
+                else:
+                    raise ValueError(f"unbekannter Schritt: {act}")
+            except Exception as e:  # noqa: BLE001
+                if st.get("optional") and type(e).__name__ == "TimeoutError":
+                    continue
+                raise
 
-    def place(self, order: dict, today: date) -> None:
+    def _tab(self, order: dict) -> str:
+        """Marktreiter der Marktübersicht, in dem das Wertpapier steht: erster Index des Titels (Universum) mit Eintrag in selectors.json (order.tabs)."""
+        tabs = self.sel["order"].get("tabs") or {}
+        return next((tabs[i] for i in order.get("indices") or [] if i in tabs), "")
+
+    def _confirm(self) -> str:
+        """Wartet auf die Rückmeldung der Plattform nach dem Ordern und bricht ab, wenn sie wie eine Fehlermeldung klingt (order.error_pattern)."""
+        o = self.sel["order"]
+        el = self.page.wait_for_selector(o["confirmation_marker"])
+        text = (el.inner_text() if el else "").strip()
+        if o.get("error_pattern") and re.search(o["error_pattern"], text, re.I):
+            raise RuntimeError(f"Die Plattform meldet: {text[:200]}")
+        return text
+
+    def place(self, order: dict, today: date) -> str:
+        """Gibt die Rückmeldung der Plattform (Text der Bestätigung) zurück."""
         key = "buy_steps" if order["action"] == "buy" else "sell_steps"
         values = {"isin": order["isin"], "name": order.get("name", ""), "search": order.get("search") or order.get("name", ""),
-                  "shares": order["shares"],
+                  "shares": order["shares"], "tab": self._tab(order),
                   "stop": f'{order["stop_price"]:.2f}'.replace(".", ",") if order.get("stop_price") else ""}
-        self._run_steps(self.sel["order"][key], values)
-        self.page.wait_for_selector(self.sel["order"]["confirmation_marker"])
-        if order["action"] == "buy" and order.get("stop_price") and self.sel["order"].get("stop_steps"):
-            self._run_steps(self.sel["order"]["stop_steps"], values)
+        try:
+            self._select_depot()                      # immer im gewollten Depot, auch wenn eine frühere Order die Seite verlassen hat
+            self._run_steps(self.sel["order"][key], values)
+            text = self._confirm()
+            if order["action"] == "buy" and order.get("stop_price") and self.sel["order"].get("stop_steps"):
+                self._run_steps(self.sel["order"]["stop_steps"], values)
+        except Exception:
+            self._dump(f"order-{order['action']}-{order['isin']}")
+            raise
+        return text

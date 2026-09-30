@@ -106,10 +106,10 @@ class Runner:
         self._stop_evt = threading.Event()
 
     # --- Prozess ---
-    def _env(self, live: bool) -> dict:
+    def _env(self, live: bool, depot: str = None) -> dict:
         s = self.store.settings()
         env = {**os.environ, **self.store.secrets(), "BOT_LIVE": "1" if live else "0",
-               "ANTHROPIC_MODEL": s["model"], "BOT_PROVIDER": s["provider"], "BOT_RESEARCH": "1" if s["research"] else "0", "BOT_KRONOS": "1" if s["kronos"] else "0", "BOT_NH_SLOTS": str(s["nh_slots"]), "BOT_STYLE": s["style"], "BOT_FREEDOM": s["freiheit"], "BOT_DEPOT": s["depot"], "BOT_DATA_DIR": self.data_dir, "BOT_LOG_DIR": self.log_dir,
+               "ANTHROPIC_MODEL": s["model"], "BOT_PROVIDER": s["provider"], "BOT_RESEARCH": "1" if s["research"] else "0", "BOT_KRONOS": "1" if s["kronos"] else "0", "BOT_NH_SLOTS": str(s["nh_slots"]), "BOT_STYLE": s["style"], "BOT_FREEDOM": s["freiheit"], "BOT_DEPOT": depot or s["depot"], "BOT_DATA_DIR": self.data_dir, "BOT_LOG_DIR": self.log_dir,
                "PYTHONUNBUFFERED": "1"}
         return env
 
@@ -117,14 +117,14 @@ class Runner:
         return self.proc is not None and self.proc.poll() is None
 
     def start(self, kind: str) -> bool:
-        """kind: 'run' (Handelslauf), 'selftest' oder 'universe' (amtliche Wertpapierliste laden). False, wenn schon ein Prozess läuft."""
+        """kind: 'run' (Handelslauf), 'selftest', 'testorder' (geführte Testorder, immer im Testdepot) oder 'universe' (amtliche Wertpapierliste laden). False, wenn schon ein Prozess läuft."""
         with self.lock:
             if self.running():
                 return False
             live = self.store.settings()["live"] and kind == "run"
-            cmd = {"run": ["-m", "bot.run"], "selftest": ["-m", "bot.selftest"], "universe": ["-m", "bot.universe_tool", "official"]}[kind]
+            cmd = {"run": ["-m", "bot.run"], "selftest": ["-m", "bot.selftest"], "testorder": ["-m", "bot.selftest", "--testorder"], "universe": ["-m", "bot.universe_tool", "official"]}[kind]
             out = open(self.output_path, "w")
-            self.proc = subprocess.Popen([self.python, *cmd], cwd=self.base, env=self._env(live),
+            self.proc = subprocess.Popen([self.python, *cmd], cwd=self.base, env=self._env(live, "test" if kind == "testorder" else None),
                                          stdout=out, stderr=subprocess.STDOUT)
             self.last = {"kind": kind, "live": live, "start": datetime.now(TZ).isoformat(timespec="seconds"),
                          "end": None, "code": None}

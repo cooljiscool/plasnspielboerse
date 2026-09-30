@@ -94,7 +94,12 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
         elif action == "stop":  # Notaus: Zeitplan aus und laufenden Lauf beenden
             store.save_settings(enabled=False)
             runner.kill()
-        elif action in ("run", "selftest", "universe"):
+        elif action in ("run", "selftest", "testorder", "universe"):
+            if action == "testorder":
+                have = store.secret_status()
+                missing = [k for k in ("PSB_USER", "PSB_PASSWORD") if not have[k]]
+                if missing:
+                    return jsonify(error="Zugangsdaten fehlen: " + ", ".join(missing)), 400
             if not runner.start(action):
                 return jsonify(error="es läuft bereits ein Vorgang"), 409
         else:

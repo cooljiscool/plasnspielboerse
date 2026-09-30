@@ -1,0 +1,78 @@
+{
+  "_hinweis": "Aus dem echten Seitenquelltext des Planspiels (Version 1.5.6, Stand 30.09.2026) abgeleitet. GEPRÜFT gegen das HTML: Anmeldung, Depotwechsel, Barbestand, Positionstabelle (Leerzustand), Marktübersicht, Kaufmaske. NOCH NICHT GESEHEN, deshalb geschätzt: Rückmeldung nach 'Ordern' (Bestätigungsfenster oder Meldung), Verkaufsmaske, Zeilen der Positionstabelle mit echten Positionen, Kaufmaske des Wettbewerbsdepots nach dem ersten Handelstag (01.10.2026 08:00). Alle Selektoren sind unabhängig von der Sprache der Seite (ids und Attribute statt Beschriftungen), nur die Kauf-Schaltflächen heißen 'Kauf <Name>'.",
+  "login_url": "https://trading.planspiel-boerse.de/web/auth/login",
+  "pre_login_steps": [
+    {"do": "click", "selector": "a#de:not(.d-none)", "optional": true}
+  ],
+  "user_field": "input#username",
+  "password_field": "input#password",
+  "login_button": "button[type=\"submit\"]",
+  "logged_in_marker": "a.nav-link[href=\"/web/account\"]",
+  "depot_switch": {
+    "_hinweis": "Kopfleiste der Depotseite: Optionsfelder #depot (Schüler:innenwettbewerb) und #training (Trainings-Depot). Das aktive trägt die Klasse 'active'. Geklickt wird die Beschriftung (label[for=...]), das Optionsfeld selbst ist evtl. unsichtbar.",
+    "test_steps": [
+      {"do": "click", "selector": "a.nav-link[href=\"/web/account\"]"},
+      {"do": "click", "selector": "label[for=\"training\"]"}
+    ],
+    "echt_steps": [
+      {"do": "click", "selector": "a.nav-link[href=\"/web/account\"]"},
+      {"do": "click", "selector": "label[for=\"depot\"]"}
+    ],
+    "test_marker": "input#training.active",
+    "echt_marker": "input#depot.active"
+  },
+  "portfolio": {
+    "url": "https://trading.planspiel-boerse.de/web/account",
+    "cash_selector": "div:has(> span:text-is(\"Barbestand\")) > p:has-text(\"€\")",
+    "total_selector": "div:has(> span:text-is(\"Gesamtdepotwert\")) > p:has-text(\"€\")",
+    "ready_selector": "#table tr.mat-mdc-row, app-portfolio p:has-text(\"Erster Handelstag\")",
+    "row_selector": "#table tr.mat-mdc-row:not(.mat-mdc-no-data-row)",
+    "isin_cell": ".cdk-column-name",
+    "shares_cell": ".cdk-column-quantity",
+    "avg_price_cell": ".cdk-column-buyvalue"
+  },
+  "order": {
+    "_hinweis": "Kauf: Marktübersicht, Reiter des Index (tabs), Zeile mit der ISIN, Schaltfläche 'Kauf <Name>', dann die Kaufmaske (app-order). Die Schritte des Verkaufs (sell_steps) sind GESCHÄTZT: angenommen wird, dass dieselbe Maske bei einem gehaltenen Titel die Orderart 'Verkauf' anbietet.",
+    "tabs": {
+      "dax": "DAX",
+      "mdax": "MDAX",
+      "sdax": "SDAX",
+      "tecdax": "TECDAX",
+      "eurostoxx50": "EuroStoxx50",
+      "dow": "Dow Jones",
+      "nasdaq100": "Nasdaq 100",
+      "gci": "Global Challenges Index",
+      "atx": "ATX",
+      "ftsemib": "FTSE MIB",
+      "luxx": "LuxX",
+      "europa": "Selection Europe"
+    },
+    "buy_steps": [
+      {"do": "click", "selector": "label[for=\"market\"]"},
+      {"do": "click", "selector": "label[for=\"{tab}\"]"},
+      {"do": "click", "selector": "tr.mat-mdc-row:has-text(\"{isin}\") button[aria-label^=\"Kauf \"]"},
+      {"do": "wait", "selector": "app-order input#quantity"},
+      {"do": "click", "selector": "app-order label[for=\"type1\"]"},
+      {"do": "fill", "selector": "app-order input#quantity", "value": "{shares}"},
+      {"do": "click", "selector": "app-order label[for=\"subTypeBest\"]"},
+      {"do": "click", "selector": "app-order label[for=\"valid1\"]"},
+      {"do": "click", "selector": "app-order button.order-button"},
+      {"do": "click", "selector": "mat-dialog-container button:text-matches(\"^\\\\s*(Bestätigen|Ordern|Order aufgeben|Jetzt ordern|Kaufen|Ja|Weiter)\\\\s*$\", \"i\")", "optional": true}
+    ],
+    "sell_steps": [
+      {"do": "click", "selector": "label[for=\"market\"]"},
+      {"do": "click", "selector": "label[for=\"{tab}\"]"},
+      {"do": "click", "selector": "tr.mat-mdc-row:has-text(\"{isin}\") button[aria-label^=\"Kauf \"]"},
+      {"do": "wait", "selector": "app-order input#quantity"},
+      {"do": "click", "selector": "app-order label.selector-item_label:text-matches(\"^\\\\s*Verkauf\", \"i\")"},
+      {"do": "fill", "selector": "app-order input#quantity", "value": "{shares}"},
+      {"do": "click", "selector": "app-order label[for=\"subTypeBest\"]"},
+      {"do": "click", "selector": "app-order label[for=\"valid1\"]"},
+      {"do": "click", "selector": "app-order button.order-button"},
+      {"do": "click", "selector": "mat-dialog-container button:text-matches(\"^\\\\s*(Bestätigen|Ordern|Order aufgeben|Jetzt ordern|Verkaufen|Ja|Weiter)\\\\s*$\", \"i\")", "optional": true}
+    ],
+    "stop_steps": [],
+    "confirmation_marker": ":is(mat-dialog-container, .mat-mdc-snack-bar-container, simple-snack-bar, .toast-message, .alert-success):visible",
+    "error_pattern": "fehler|abgelehnt|nicht möglich|nicht ausreichend|nicht genug|unzureichend|ungültig|error|failed|insufficient"
+  }
+}

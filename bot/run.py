@@ -168,6 +168,7 @@ def main():
         for o in approved:
             o["name"] = universe[o["isin"]]["name"]
             o["search"] = universe[o["isin"]].get("search") or o["name"]
+            o["indices"] = universe[o["isin"]].get("indices") or []
             executor.place(o, today)
         if config.LIVE and approved:
             # Kontrolle: Depot nach den Orders neu lesen.

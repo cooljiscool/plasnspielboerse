@@ -159,8 +159,8 @@ class FakePage:
     def click(self, sel):
         self.actions.append(("click", sel))
 
-    def wait_for_selector(self, sel):
-        self.actions.append(("wait", sel))
+    def wait_for_selector(self, sel, **kw):
+        self.actions.append(("wait", sel) if not kw else ("wait", sel, kw))
 
     def locator(self, sel):
         n = 1 if sel in self.visible else 0
@@ -181,11 +181,11 @@ def test_executor_selects_the_configured_depot_and_checks_the_marker(monkeypatch
     page = FakePage()
     monkeypatch.setattr(config, "DEPOT", "echt")
     executor_with({"depot_switch": SWITCH}, page)._select_depot()
-    assert page.actions == [("click", "#e"), ("wait", ".im-echt")]
+    assert page.actions == [("click", "#e"), ("wait", ".im-echt", {"state": "attached"})]
     page = FakePage()
     monkeypatch.setattr(config, "DEPOT", "test")
     executor_with({"depot_switch": SWITCH}, page)._select_depot()
-    assert page.actions == [("click", "#t"), ("wait", ".im-test")]
+    assert page.actions == [("click", "#t"), ("wait", ".im-test", {"state": "attached"})]
 
 
 def test_executor_refuses_to_trade_in_the_wrong_or_an_unknown_depot(monkeypatch):

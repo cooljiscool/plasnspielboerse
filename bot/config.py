@@ -46,6 +46,7 @@ SHORTLIST = 15              # so viele Titel bekommen Fundamentaldaten und Web-R
 LLM_CANDIDATES = 40         # so viele Kandidaten sieht Claude bei der Entscheidung
 LIVE = os.environ.get("BOT_LIVE", "0") == "1"   # ohne BOT_LIVE=1 wird nur simuliert
 DEPOT = "echt" if os.environ.get("BOT_DEPOT") == "echt" else "test"   # Depot auf der Plattform bei LIVE: "test" (Test- bzw. Trainingsdepot, Standard) oder "echt" (Wettbewerbsdepot, zählt für den Rang)
+BROWSER = os.environ.get("BOT_BROWSER", "firefox") if os.environ.get("BOT_BROWSER") in ("firefox", "chromium", "chrome") else "firefox"   # Browser für die Plattform: firefox (Standard), chromium oder chrome (installiertes Google Chrome); im Chromium von Playwright wies die Plattform die Anmeldung ab
 DATA_DIR = os.environ.get("BOT_DATA_DIR", "data")
 LOG_DIR = os.environ.get("BOT_LOG_DIR", "logs")
 

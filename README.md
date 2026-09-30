@@ -463,7 +463,7 @@ Das Dashboard ist eine kleine Web-App, die zusammen mit dem Bot auf einem Rechne
 1. Auf dem Dauerrechner Docker installieren, Repository klonen, `cp .env.example .env` und in `.env` ein langes
    `DASHBOARD_PASSWORD` setzen.
 2. `docker compose up -d --build`. Das Dashboard läuft auf Port 8080.
-   Ohne Docker: `pip install -r requirements.txt && playwright install chromium && DASHBOARD_PASSWORD=… python -m dashboard.app`.
+   Ohne Docker: `pip install -r requirements.txt && playwright install firefox && DASHBOARD_PASSWORD=… python -m dashboard.app`.
 3. **Vom Handy erreichen, ohne den Port ins offene Internet zu stellen:** Tailscale (kostenlos) auf dem Rechner und dem Handy
    installieren und anmelden, dann `http://<Rechnername>:8080` im Handy-Browser öffnen. Alternative: ein Cloudflare Tunnel
    oder ein Reverse Proxy mit https, dann `DASHBOARD_HTTPS=1` in `.env`. Im Browser „Zum Startbildschirm hinzufügen“ macht daraus eine App.
@@ -497,7 +497,7 @@ Handel über Stuttgart, Luxemburg, Wien · Stop-Orders bis 14 Tage.
   https://trading.planspiel-boerse.de/web/ registrieren. Benutzername und Passwort notieren.
 - **Automatisierung schriftlich bestätigen lassen.** Die Regeln erwähnen nur manuelle Eingabe, weder Erlaubnis noch Verbot.
 - **Kein API-Key nötig:** Für die KI nutzt du dein Claude-Abo (Abschnitt oben). Ohne Abo läuft die kostenlose Regelstrategie.
-- Python 3.11 und Git lokal installieren; dann `pip install -r requirements.txt && playwright install chromium`.
+- Python 3.11 und Git lokal installieren; dann `pip install -r requirements.txt && playwright install firefox`.
 - **Optional, aber empfohlen:** Im Dashboard (Einstellungen) bei „Kontakt für die SEC-Insiderdaten“ deinen Namen und deine E-Mail-Adresse eintragen (z. B. `Max Muster max@example.org`). Die SEC verlangt
   eine solche Kennung bei automatischen Abfragen. Ohne sie ruft der Bot die kostenlosen Insider-Meldungen nicht ab (Umgebungsvariable `SEC_USER_AGENT`). Die Adresse wird nur an die SEC gesendet.
 
@@ -509,16 +509,20 @@ Handel über Stuttgart, Luxemburg, Wien · Stop-Orders bis 14 Tage.
 - Ohne Internetzugang zur Liste: PDF oder Text der Liste selbst herunterladen und angeben: `python -m bot.universe_tool official liste.pdf` (braucht `pdftotext`, Paket poppler-utils; im Docker-Image enthalten).
 - Nur zum Vergleich: `python -m bot.universe_tool tested` erzeugt das frühere Testuniversum (214 Titel, ISIN teils Symbol als Platzhalter). Eigene Listen: `python -m bot.universe_tool import meine_liste.csv` (Spalten `isin,name,stars,yf`).
 - **Branchen:** `official` trägt auch die Branche (Yahoo) jedes Titels ein, `python -m bot.universe_tool sectors` holt sie allein nach (rund 40 Sekunden; Stand jetzt bei 516 von 517 Titeln bekannt). Nur bei bekannter Branche wirkt die Begrenzung auf höchstens 2 Titel je Branche; im Probelauf fehlte sie zuvor bei Datadog, INDUS und Dräger, sodass 3 Technologietitel möglich waren.
-- Die Order sucht nach der ISIN (`{isin}` bzw. `{search}`); nimmt das Suchfeld der Plattform keine ISIN an, stelle in `selectors.json` auf `{name}` um.
+- Die Order sucht nach der ISIN (`{isin}` bzw. `{search}`); die mitgelieferten Schritte suchen die Zeile in der Marktübersicht über die ISIN.
 
-### 3. Selektoren aufzeichnen (der einzige manuelle Teil)
-1. `playwright codegen https://trading.planspiel-boerse.de/web/auth/login` öffnen.
-2. Nacheinander aufzeichnen: Login → Depotansicht → eine Kauforder bis zur Bestätigung → eine Verkauforder.
-   (Vorher im Übungsdepot, falls vorhanden, sonst mit einer kleinen Order.)
-3. `cp data/selectors.example.json data/selectors.json` und jeden `SELEKTOR_…`-Eintrag durch die aufgezeichneten Selektoren
-   ersetzen. Die Order-Schritte sind eine Liste aus `click`/`fill`/`press`/`select`/`wait`/`goto`; `{isin}`, `{name}`,
-   `{shares}` werden eingesetzt. Zahlen im Depot werden im deutschen Format gelesen (`1.234,56 €`).
-4. Hat der Login Captcha oder 2-Faktor, ist Vollautomatik nicht möglich. Dann Sparkasse fragen.
+### 3. Selektoren (mitgeliefert, nur prüfen)
+`data/selectors.json` ist im Repo: abgeleitet aus dem echten Quelltext der Plattform (Version 1.5.6) und gegen acht gespeicherte Seitenzustände (Anmeldung, Start, Depot und Marktübersicht je Depot, Kaufmaske je Depot) Selektor für Selektor geprüft.
+Sie nutzt `id`s und Attribute statt Beschriftungen, ist also unabhängig von der Seitensprache (der Bot stellt den Browser auf Deutsch).
+- **Anmeldung:** `#username`, `#password`, `button[type=submit]`; Erkennung der Anmeldung: Menüpunkt „Depot“.
+- **Depotwechsel:** Optionsfelder `#depot` (Schüler:innenwettbewerb) und `#training` (Trainings-Depot); gewählt wird über die Beschriftung, geprüft am Merkmal `.active`. Nach jedem Neuladen und vor jeder Order wird das Depot neu gewählt und geprüft.
+- **Depot lesen:** Barbestand aus der Karte „Barbestand“, Positionen aus `#table` (Spalten `name` mit ISIN, `quantity`, `buyvalue`); mehrere Zeilen desselben Titels werden zusammengefasst.
+- **Kauf:** Marktübersicht, Reiter des Index, in dem der Titel steht (`order.tabs`, abgeleitet aus den Indizes der amtlichen Liste), Zeile mit der ISIN, „Kauf …“, Kaufmaske (`#quantity`, „Billigst“, „Tagesgültig“, „Ordern“), ein eventuelles Bestätigungsfenster (optionaler Schritt).
+- **Schrittfelder:** `optional: true` (Schritt entfällt, wenn das Element nicht erscheint), `state` bei `wait`, Platzhalter auch in Selektoren (`{tab}`, `{isin}` …).
+- **Bei einem Fehler** legt der Bot Bild und Quelltext der Stelle in `logs/debug/` ab.
+- **Noch nicht am echten Objekt gesehen:** die Meldung nach „Ordern“, die Verkaufsmaske (angenommen: dieselbe Maske mit der Orderart „Verkauf“), Positionszeilen mit echten Daten, die Kaufmaske des Wettbewerbsdepots nach dem ersten Handelstag. Das prüft der Knopf **Test-Order** (`python -m bot.selftest --testorder`, 1 Stück im Test-Depot kaufen und verkaufen, nie im Wettbewerbsdepot).
+- **Browser:** Firefox (Standard). Im Chromium von Playwright wies die Plattform die Anmeldung ab. `BOT_BROWSER=firefox|chromium|chrome`; `playwright install firefox` bzw. `chromium`.
+- Hat der Login Captcha oder 2-Faktor, ist Vollautomatik nicht möglich. Dann Sparkasse fragen.
 
 ### 4. Dashboard einrichten
 Siehe Abschnitt „Dashboard fürs Handy“ oben. Zugangsdaten trägst du dort im Tab Einstellungen ein.

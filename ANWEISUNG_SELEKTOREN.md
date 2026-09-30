@@ -1,5 +1,7 @@
 # Prompt: Claude zeichnet die Selektoren mit `playwright codegen` auf
 
+> **Hinweis:** `data/selectors.json` liegt inzwischen fertig im Repo (aus dem echten Quelltext abgeleitet, siehe `ANLEITUNG.md`, Schritt 10). Dieser Prompt ist nur noch nötig, wenn sich die Plattform ändert und einzelne Selektoren nicht mehr passen. Dann: vorhandene Datei prüfen und nur die scheiternden Schritte neu aufnehmen. Als Browser für `playwright codegen` **Firefox** nehmen (`--browser firefox`): Im Chromium wies die Plattform die Anmeldung ab.
+
 Diesen Text in Claude einfügen (Claude-Desktop-App mit Computer Use, oder Claude Code im Ordner des Repos auf deinem Rechner). Das Repo muss lokal liegen (`git clone https://github.com/cooljiscool/plasnspielboerse.git`).
 
 ---
@@ -12,10 +14,10 @@ Du hilfst mir, den Trading-Bot in diesem Repo (Planspiel Börse der Sparkassen) 
 - Eine echte Order (Spielgeld, kleine Stückzahl) gibst du nur auf, nachdem ich es ausdrücklich erlaubt habe, und höchstens eine Kauforder und eine Verkauforder.
 - Nichts an Dritte senden. Selektoren und Seitenstruktur bleiben lokal.
 
-**Schritt 1: Vorbereitung.** Prüfe, ob Python 3.11 und Playwright da sind (`python -m playwright --version`). Falls nicht: `pip install -r requirements.txt` und `playwright install chromium`.
+**Schritt 1: Vorbereitung.** Prüfe, ob Python 3.11 und Playwright da sind (`python -m playwright --version`). Falls nicht: `pip install -r requirements.txt` und `playwright install firefox`.
 
 **Schritt 2: Aufzeichnen.** Starte
-`playwright codegen --target python -o data/codegen_aufzeichnung.py https://trading.planspiel-boerse.de/web/auth/login`.
+`playwright codegen --browser firefox --target python -o data/codegen_aufzeichnung.py https://trading.planspiel-boerse.de/web/auth/login`.
 Sag mir, dass ich mich jetzt selbst anmelden soll, und warte, bis ich „angemeldet“ schreibe. Danach klickst du (oder ich) nacheinander durch: Depotansicht (Positionen, verfügbares Geld), neue Order (Wertpapier per Suche finden, Treffer wählen, Kaufen, Stückzahl eintragen, absenden, bestätigen), und dasselbe für Verkaufen. Zwischenschritte wie eine Vorschauseite mit aufzeichnen. Nach meiner Erlaubnis darf für die Bestätigungsseite eine kleine echte Order (Spielgeld) aufgegeben werden.
 
 **Schritt 3: `data/selectors.json` schreiben.** Kopiere die Struktur von `data/selectors.example.json` und ersetze jeden Platzhalter durch einen Selektor, den du aus der Aufzeichnung und den Seiten ableitest. Bevorzuge stabile Selektoren: `id`, `data-testid`, `name`, `aria-label`, `role`, sichtbarer Text (`button:has-text("Kaufen")`), keine langen Klassenketten oder Positionen. Die Schlüssel:

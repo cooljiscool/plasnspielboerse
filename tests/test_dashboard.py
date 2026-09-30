@@ -209,6 +209,27 @@ def test_universe_action_runs_the_official_list_import(authed, app, tmp_path):
     assert authed.post("/api/control", headers=H, json={"action": "gibtsnicht"}).status_code == 400
 
 
+def test_testorder_needs_credentials_and_always_runs_in_the_test_depot(authed, app, tmp_path):
+    assert authed.post("/api/control", headers=H, json={"action": "testorder"}).status_code == 400          # ohne Zugangsdaten
+    app.store.update_secrets({"PSB_USER": "u", "PSB_PASSWORD": "p"})
+    authed.post("/api/depot", headers=H, json={"depot": "echt", "confirm": "ECHT"})
+    assert app.runner._env(False)["BOT_DEPOT"] == "echt"
+    assert app.runner._env(False, "test")["BOT_DEPOT"] == "test"
+    fake = tmp_path / "fakepython"
+    argsfile = tmp_path / "args.txt"
+    fake.write_text(f"#!/bin/sh\necho \"$@ $BOT_DEPOT\" > {argsfile}\nsleep 5\n")
+    fake.chmod(0o755)
+    app.runner.python = str(fake)
+    assert authed.post("/api/control", headers=H, json={"action": "testorder"}).get_json()["running"] is True
+    import time
+    for _ in range(50):
+        if argsfile.exists() and argsfile.read_text().strip():
+            break
+        time.sleep(0.1)
+    assert argsfile.read_text().strip() == "-m bot.selftest --testorder test"                               # auch bei Einstellung "echt" nur das Testdepot
+    authed.post("/api/control", headers=H, json={"action": "stop"})
+
+
 def test_nh_slots_setting_is_validated_and_reaches_the_bot(authed, app):
     assert authed.get("/api/status").get_json()["nh_slots"] == 0
     assert authed.post("/api/settings", headers=H, json={"nh_slots": 3}).get_json()["nh_slots"] == 3

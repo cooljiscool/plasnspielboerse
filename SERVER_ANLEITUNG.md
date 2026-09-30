@@ -125,8 +125,8 @@ Melde dich mit dem Dashboard-Passwort an.
 2. **Planspiel-Login** (Benutzername/E-Mail und Passwort) im Tab Einstellungen eintragen. Optional Name und E-Mail für die SEC-Insiderdaten.
 3. **Strategie** im Tab Einstellungen wählen (Empfehlung: `breit` oder `sicher`).
 4. Tab Steuerung: **Wertpapierliste des Planspiels laden** (1 bis 2 Minuten).
-5. **Selektoren** (`selectors.json`): Das Aufzeichnen mit `playwright codegen` braucht einen Bildschirm und geschieht deshalb am normalen PC (siehe `ANLEITUNG.md`, Schritt 10). Die fertige Datei fügst du im Dashboard im Tab Einstellungen bei `selectors.json` ein.
-6. Tab Steuerung: **Selbsttest**. Alles muss `[ OK ]` zeigen.
+5. **Selektoren** (`selectors.json`): Die Datei liegt fertig im Repo (`data/selectors.json`), du musst nichts aufzeichnen (siehe `ANLEITUNG.md`, Schritt 10). Der Browser (Firefox) steckt im Docker-Image.
+6. Tab Steuerung: **Selbsttest**, danach **Test-Order** (kauft und verkauft 1 Stück im Trainings-Depot). Alles muss `[ OK ]` zeigen.
 7. **Start** drücken (Trockenlauf). Live schaltest du erst nach einigen Tagen um, zuerst im Test-Depot (siehe `ANLEITUNG.md`, Schritt 13).
 
 ## 10. Neustart-Test
