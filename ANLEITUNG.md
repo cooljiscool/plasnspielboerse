@@ -2,6 +2,15 @@
 
 Dauer: etwa 1 bis 2 Stunden, einmalig. Zeit-Ziel: fertig vor dem Spielstart am 1.10.2026 (Trockenlauf kann früher beginnen).
 
+## Schnellstart (wenn Docker schon läuft)
+```
+git clone -b claude/intelligent-babbage-dcaf9t https://github.com/cooljiscool/plasnspielboerse.git
+cd plasnspielboerse
+sh start.sh
+```
+`start.sh` erzeugt ein zufälliges Dashboard-Passwort (in `.env`), baut den Container und startet das Dashboard auf http://localhost:8080. Alles Weitere (Token, Login, Liste laden, Selbsttest, Start) machst du im Dashboard, die Schritte 5 bis 13 unten.
+Die Wertpapierliste (517 Titel mit Branchen) ist im Repo enthalten, ebenso alle Tests und Auswertungen (`python -m bot.lab --trefferquote`, `python scripts/test_claude_auswahl.py`, `python -m bot.shadow`).
+
 ## 0. Was du brauchst
 - Einen Rechner, der dauerhaft an ist (Mini-PC, Raspberry Pi 4/5, günstiger Server oder dein PC, solange er läuft). Das Handy steuert den Bot nur im Browser.
 - Dein Claude-Pro-Abo (kein API-Key nötig).
@@ -22,14 +31,11 @@ Dauer: etwa 1 bis 2 Stunden, einmalig. Zeit-Ziel: fertig vor dem Spielstart am 1
 git clone https://github.com/cooljiscool/plasnspielboerse.git
 cd plasnspielboerse
 git checkout claude/intelligent-babbage-dcaf9t
-cp .env.example .env
 ```
-Öffne `.env` und setze bei `DASHBOARD_PASSWORD` ein langes, zufälliges Passwort (mindestens 8 Zeichen, besser 20+). Das ist das Passwort fürs Handy-Dashboard.
+Dann `sh start.sh`: Es legt `.env` mit einem zufälligen Passwort fürs Handy-Dashboard an (oder setze selbst eins bei `DASHBOARD_PASSWORD`, mindestens 8 Zeichen, besser 20+).
 
 ## 4. Dashboard starten
-```
-docker compose up -d --build
-```
+Erledigt `sh start.sh` (nutzt `docker compose up -d --build`).
 Das dauert beim ersten Mal einige Minuten. Danach läuft das Dashboard auf Port 8080 (`http://localhost:8080` auf dem Rechner). Ohne Docker: `pip install -r requirements.txt && playwright install chromium && DASHBOARD_PASSWORD=... python -m dashboard.app` (Python 3.11).
 
 ## 5. Vom Handy erreichen (ohne den Port ins offene Internet zu stellen)
