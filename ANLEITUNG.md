@@ -63,6 +63,7 @@ Der Bot bedient die Weboberfläche des Planspiels. Dafür muss einmal aufgezeich
 2. Im geöffneten Browser nacheinander ausführen: Login, Depotansicht, eine Kauforder bis zur Bestätigung, eine Verkauforder (mit einer kleinen Order oder im Übungsdepot).
 3. `cp data/selectors.example.json data/selectors.json` und jeden `SELEKTOR_…`-Eintrag durch die aufgezeichneten Selektoren ersetzen. Order-Schritte sind eine Liste aus `click`/`fill`/`press`/`select`/`wait`/`goto`; `{isin}`, `{name}`, `{shares}` werden eingesetzt. Nimmt das Suchfeld keine ISIN an, nutze `{name}`.
 4. Alternativ den Inhalt von `selectors.json` im Dashboard (Einstellungen) einfügen.
+Oder gib Claude (Desktop-App oder Claude Code auf deinem Rechner) den fertigen Prompt aus `ANWEISUNG_SELEKTOREN.md`: Er zeichnet auf, schreibt die Datei und prüft sie mit dem Selbsttest; das Passwort tippst du dabei selbst.
 Hilfe: Schick mir Screenshots der Seiten (ohne persönliche Daten), dann schreibe ich die Selektoren.
 
 ## 11. Selbsttest
