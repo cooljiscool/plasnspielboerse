@@ -27,3 +27,11 @@ def test_search_term_strips_legal_forms():
     assert st("Deutsche Telekom AG") == "Deutsche Telekom"
     assert st("Lockheed Martin Corporation") == "Lockheed Martin"
     assert st("AG") == "AG"   # nichts übrig: Original behalten
+
+
+def test_add_sectors_fills_missing_sectors_and_keeps_existing_ones():
+    from bot import universe_tool
+    rows = [{"name": "A", "yf": "A"}, {"name": "B", "yf": "B", "sector": "Utilities"}, {"name": "C", "yf": "C"}, {"name": "D", "yf": None}]
+    out, missing = universe_tool.add_sectors(rows, lookup=lambda sym: {"A": "Technology", "B": None}.get(sym))
+    assert out[0]["sector"] == "Technology" and out[1]["sector"] == "Utilities"      # Yahoo ohne Antwort: vorhandener Eintrag bleibt
+    assert missing == ["C", "D"]                                                     # ohne Branche und ohne Kürzel: gemeldet

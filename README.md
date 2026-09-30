@@ -484,6 +484,7 @@ Handel über Stuttgart, Luxemburg, Wien · Stop-Orders bis 14 Tage.
 **lade die Liste vor dem Start und gelegentlich danach neu**, weil sie sich ändern kann. Die Ausgabe nennt jeden Titel, der entfällt (kein Börsenkürzel, keine aktuellen Kurse).
 - Ohne Internetzugang zur Liste: PDF oder Text der Liste selbst herunterladen und angeben: `python -m bot.universe_tool official liste.pdf` (braucht `pdftotext`, Paket poppler-utils; im Docker-Image enthalten).
 - Nur zum Vergleich: `python -m bot.universe_tool tested` erzeugt das frühere Testuniversum (214 Titel, ISIN teils Symbol als Platzhalter). Eigene Listen: `python -m bot.universe_tool import meine_liste.csv` (Spalten `isin,name,stars,yf`).
+- **Branchen:** `official` trägt auch die Branche (Yahoo) jedes Titels ein, `python -m bot.universe_tool sectors` holt sie allein nach (rund 40 Sekunden; Stand jetzt bei 516 von 517 Titeln bekannt). Nur bei bekannter Branche wirkt die Begrenzung auf höchstens 2 Titel je Branche; im Probelauf fehlte sie zuvor bei Datadog, INDUS und Dräger, sodass 3 Technologietitel möglich waren.
 - Die Order sucht nach der ISIN (`{isin}` bzw. `{search}`); nimmt das Suchfeld der Plattform keine ISIN an, stelle in `selectors.json` auf `{name}` um.
 
 ### 3. Selektoren aufzeichnen (der einzige manuelle Teil)

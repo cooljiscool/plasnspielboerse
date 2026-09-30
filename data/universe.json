@@ -12,7 +12,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Deutsche Bank Aktiengesellschaft"
+    "liste": "Deutsche Bank Aktiengesellschaft",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE0005190003",
@@ -27,7 +28,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Bayerische Motoren Werke Aktiengesellschaft"
+    "liste": "Bayerische Motoren Werke Aktiengesellschaft",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE0005200000",
@@ -41,7 +43,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Beiersdorf Aktiengesellschaft"
+    "liste": "Beiersdorf Aktiengesellschaft",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "DE0005439004",
@@ -55,7 +58,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Continental Aktiengesellschaft"
+    "liste": "Continental Aktiengesellschaft",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE0005552004",
@@ -70,7 +74,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Deutsche Post AG"
+    "liste": "Deutsche Post AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0005557508",
@@ -86,7 +91,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Deutsche Telekom AG"
+    "liste": "Deutsche Telekom AG",
+    "sector": "Communication Services"
   },
   {
     "isin": "DE0005785604",
@@ -100,7 +106,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Fresenius SE & Co. KGaA"
+    "liste": "Fresenius SE & Co. KGaA",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE0005785802",
@@ -115,7 +122,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Fresenius Medical Care AG"
+    "liste": "Fresenius Medical Care AG",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE0005810055",
@@ -130,7 +138,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Deutsche Börse AG"
+    "liste": "Deutsche Börse AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE0006047004",
@@ -144,7 +153,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Heidelberg Materials AG"
+    "liste": "Heidelberg Materials AG",
+    "sector": "Basic Materials"
   },
   {
     "isin": "DE0006048432",
@@ -159,7 +169,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Henkel AG & Co. KGaA"
+    "liste": "Henkel AG & Co. KGaA",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "DE0006070006",
@@ -173,7 +184,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "HOCHTIEF Aktiengesellschaft"
+    "liste": "HOCHTIEF Aktiengesellschaft",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0006231004",
@@ -189,7 +201,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Infineon Technologies AG"
+    "liste": "Infineon Technologies AG",
+    "sector": "Technology"
   },
   {
     "isin": "DE0006599905",
@@ -203,7 +216,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Merck KGaA"
+    "liste": "Merck KGaA",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE0006602006",
@@ -217,7 +231,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "GEA Group Aktiengesellschaft"
+    "liste": "GEA Group Aktiengesellschaft",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0007030009",
@@ -232,7 +247,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Rheinmetall AG"
+    "liste": "Rheinmetall AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0007037129",
@@ -246,7 +262,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "RWE Aktiengesellschaft"
+    "liste": "RWE Aktiengesellschaft",
+    "sector": "Utilities"
   },
   {
     "isin": "DE0007100000",
@@ -261,7 +278,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Mercedes-Benz Group AG"
+    "liste": "Mercedes-Benz Group AG",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE0007164600",
@@ -277,7 +295,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "SAP SE"
+    "liste": "SAP SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE0007236101",
@@ -292,7 +311,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Siemens Aktiengesellschaft"
+    "liste": "Siemens Aktiengesellschaft",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0007664039",
@@ -307,7 +327,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Volkswagen AG"
+    "liste": "Volkswagen AG",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE0008402215",
@@ -321,7 +342,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Hannover Rück SE"
+    "liste": "Hannover Rück SE",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE0008404005",
@@ -336,7 +358,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Allianz SE"
+    "liste": "Allianz SE",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE0008430026",
@@ -351,7 +374,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Münchener Rückversicherungs-Gesellschaft Aktiengesellschaft in München"
+    "liste": "Münchener Rückversicherungs-Gesellschaft Aktiengesellschaft in München",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE000A0D9PT0",
@@ -365,7 +389,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "MTU Aero Engines AG"
+    "liste": "MTU Aero Engines AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000A12DM80",
@@ -379,7 +404,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Scout24 SE"
+    "liste": "Scout24 SE",
+    "sector": "Communication Services"
   },
   {
     "isin": "DE000A1DAHH0",
@@ -393,7 +419,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Brenntag SE"
+    "liste": "Brenntag SE",
+    "sector": "Basic Materials"
   },
   {
     "isin": "DE000A1EWWW0",
@@ -408,7 +435,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "adidas AG"
+    "liste": "adidas AG",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000A1ML7J1",
@@ -422,7 +450,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Vonovia SE"
+    "liste": "Vonovia SE",
+    "sector": "Real Estate"
   },
   {
     "isin": "DE000BASF111",
@@ -437,7 +466,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "BASF SE"
+    "liste": "BASF SE",
+    "sector": "Basic Materials"
   },
   {
     "isin": "DE000BAY0017",
@@ -452,7 +482,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Bayer Aktiengesellschaft"
+    "liste": "Bayer Aktiengesellschaft",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE000CBK1001",
@@ -466,7 +497,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Commerzbank AG"
+    "liste": "Commerzbank AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE000DTR0CK8",
@@ -480,7 +512,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Daimler Truck Holding AG"
+    "liste": "Daimler Truck Holding AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000ENAG999",
@@ -494,7 +527,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "E.ON SE"
+    "liste": "E.ON SE",
+    "sector": "Utilities"
   },
   {
     "isin": "DE000ENER6Y0",
@@ -508,7 +542,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Siemens Energy AG"
+    "liste": "Siemens Energy AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000SHL1006",
@@ -524,7 +559,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Siemens Healthineers AG"
+    "liste": "Siemens Healthineers AG",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE000SYM9999",
@@ -538,7 +574,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Symrise AG"
+    "liste": "Symrise AG",
+    "sector": "Basic Materials"
   },
   {
     "isin": "DE000ZAL1111",
@@ -552,7 +589,8 @@
       "dax"
     ],
     "land": null,
-    "liste": "Zalando SE"
+    "liste": "Zalando SE",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "NL0000235190",
@@ -568,7 +606,8 @@
       "europa"
     ],
     "land": "Niederlande",
-    "liste": "Airbus SE"
+    "liste": "Airbus SE",
+    "sector": "Industrials"
   },
   {
     "isin": "NL0012169213",
@@ -583,7 +622,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Qiagen NV"
+    "liste": "Qiagen NV",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE0005089031",
@@ -598,7 +638,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "United Internet AG"
+    "liste": "United Internet AG",
+    "sector": "Communication Services"
   },
   {
     "isin": "DE0005158703",
@@ -613,7 +654,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Bechtle AG"
+    "liste": "Bechtle AG",
+    "sector": "Technology"
   },
   {
     "isin": "DE0005470306",
@@ -627,7 +669,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "CTS Eventim AG & Co. KGaA"
+    "liste": "CTS Eventim AG & Co. KGaA",
+    "sector": "Communication Services"
   },
   {
     "isin": "DE0005470405",
@@ -641,7 +684,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "LANXESS Aktiengesellschaft"
+    "liste": "LANXESS Aktiengesellschaft",
+    "sector": "Basic Materials"
   },
   {
     "isin": "DE0005677108",
@@ -656,7 +700,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Elmos Semiconductor SE"
+    "liste": "Elmos Semiconductor SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE0005773303",
@@ -670,7 +715,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Fraport AG"
+    "liste": "Fraport AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0005909006",
@@ -684,7 +730,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Bilfinger SE"
+    "liste": "Bilfinger SE",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0006202005",
@@ -698,7 +745,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Salzgitter AG"
+    "liste": "Salzgitter AG",
+    "sector": "Basic Materials"
   },
   {
     "isin": "DE0006305006",
@@ -712,7 +760,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "DEUTZ Aktiengesellschaft"
+    "liste": "DEUTZ Aktiengesellschaft",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0006335003",
@@ -726,7 +775,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Krones AG"
+    "liste": "Krones AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0006452907",
@@ -741,7 +791,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Nemetschek SE"
+    "liste": "Nemetschek SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE0006766504",
@@ -756,7 +807,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Aurubis AG"
+    "liste": "Aurubis AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0006969603",
@@ -770,7 +822,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "PUMA SE"
+    "liste": "PUMA SE",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE0007010803",
@@ -784,7 +837,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "RATIONAL Aktiengesellschaft"
+    "liste": "RATIONAL Aktiengesellschaft",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0007165631",
@@ -799,7 +853,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Sartorius Aktiengesellschaft"
+    "liste": "Sartorius Aktiengesellschaft",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE0007500001",
@@ -813,7 +868,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "thyssenkrupp AG"
+    "liste": "thyssenkrupp AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0008232125",
@@ -827,7 +883,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Deutsche Lufthansa AG"
+    "liste": "Deutsche Lufthansa AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0008303504",
@@ -841,7 +898,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "TAG Immobilien AG"
+    "liste": "TAG Immobilien AG",
+    "sector": "Real Estate"
   },
   {
     "isin": "DE000A0D6554",
@@ -857,7 +915,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Nordex SE"
+    "liste": "Nordex SE",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000A0LD6E6",
@@ -871,7 +930,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Gerresheimer AG"
+    "liste": "Gerresheimer AG",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE000A0WMPJ6",
@@ -886,7 +946,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "AIXTRON SE"
+    "liste": "AIXTRON SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE000A0Z2ZZ5",
@@ -901,7 +962,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "freenet AG"
+    "liste": "freenet AG",
+    "sector": "Communication Services"
   },
   {
     "isin": "DE000A13SX22",
@@ -915,7 +977,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "HELLA GmbH & Co. KGaA"
+    "liste": "HELLA GmbH & Co. KGaA",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000A1K0235",
@@ -930,7 +993,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "SUSS MicroTec SE"
+    "liste": "SUSS MicroTec SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE000A1PHFF7",
@@ -944,7 +1008,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Hugo Boss AG"
+    "liste": "Hugo Boss AG",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000A2E4K43",
@@ -958,7 +1023,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Delivery Hero SE"
+    "liste": "Delivery Hero SE",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000A2LQ884",
@@ -972,7 +1038,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "AUTO1 Group SE"
+    "liste": "AUTO1 Group SE",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000A2NB601",
@@ -987,7 +1054,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Jenoptik AG"
+    "liste": "Jenoptik AG",
+    "sector": "Technology"
   },
   {
     "isin": "DE000A3E00M1",
@@ -1002,7 +1070,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "IONOS Group SE"
+    "liste": "IONOS Group SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE000A3E5D64",
@@ -1016,7 +1085,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Fuchs SE"
+    "liste": "Fuchs SE",
+    "sector": "Basic Materials"
   },
   {
     "isin": "DE000AUM0V10",
@@ -1030,7 +1100,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Aumovio SE"
+    "liste": "Aumovio SE",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000DWS1007",
@@ -1044,7 +1115,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "DWS Group GmbH & Co. KGaA"
+    "liste": "DWS Group GmbH & Co. KGaA",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE000EVNK013",
@@ -1058,7 +1130,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Evonik Industries AG"
+    "liste": "Evonik Industries AG",
+    "sector": "Basic Materials"
   },
   {
     "isin": "DE000FTG1111",
@@ -1072,7 +1145,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "flatexDEGIRO SE"
+    "liste": "flatexDEGIRO SE",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE000HAG0005",
@@ -1087,7 +1161,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Hensoldt AG"
+    "liste": "Hensoldt AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000KBX1006",
@@ -1101,7 +1176,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Knorr-Bremse AG"
+    "liste": "Knorr-Bremse AG",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000KGX8881",
@@ -1115,7 +1191,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "KION GROUP AG"
+    "liste": "KION GROUP AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000KSAG888",
@@ -1129,7 +1206,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "K+S Aktiengesellschaft"
+    "liste": "K+S Aktiengesellschaft",
+    "sector": "Basic Materials"
   },
   {
     "isin": "DE000LEG1110",
@@ -1143,7 +1221,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "LEG Immobilien SE"
+    "liste": "LEG Immobilien SE",
+    "sector": "Real Estate"
   },
   {
     "isin": "DE000PAG9113",
@@ -1157,7 +1236,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Dr. Ing. h.c. F. Porsche AG"
+    "liste": "Dr. Ing. h.c. F. Porsche AG",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000PAH0038",
@@ -1171,7 +1251,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Porsche Automobil Holding SE"
+    "liste": "Porsche Automobil Holding SE",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000RENK730",
@@ -1185,7 +1266,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "RENK Group AG"
+    "liste": "RENK Group AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000TKMS001",
@@ -1199,7 +1281,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "TKMS AG & Co KGaA"
+    "liste": "TKMS AG & Co KGaA",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000TLX1005",
@@ -1213,7 +1296,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Talanx AG"
+    "liste": "Talanx AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE000TRAT0N7",
@@ -1227,7 +1311,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Traton SE"
+    "liste": "Traton SE",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000TUAG505",
@@ -1241,7 +1326,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "TUI AG"
+    "liste": "TUI AG",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000WAF3001",
@@ -1256,7 +1342,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Siltronic AG"
+    "liste": "Siltronic AG",
+    "sector": "Technology"
   },
   {
     "isin": "DE000WCH8881",
@@ -1270,7 +1357,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Wacker Chemie AG"
+    "liste": "Wacker Chemie AG",
+    "sector": "Basic Materials"
   },
   {
     "isin": "LU0061462528",
@@ -1285,7 +1373,8 @@
       "luxx"
     ],
     "land": null,
-    "liste": "RTL Group S.A."
+    "liste": "RTL Group S.A.",
+    "sector": "Communication Services"
   },
   {
     "isin": "LU1673108939",
@@ -1299,7 +1388,8 @@
       "mdax"
     ],
     "land": null,
-    "liste": "Aroundtown SA"
+    "liste": "Aroundtown SA",
+    "sector": "Real Estate"
   },
   {
     "isin": "AT0000A0E9W5",
@@ -1314,7 +1404,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Kontron AG"
+    "liste": "Kontron AG",
+    "sector": "Technology"
   },
   {
     "isin": "AT100ASTA001",
@@ -1328,7 +1419,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "ASTA Energy Solutions AG"
+    "liste": "ASTA Energy Solutions AG",
+    "sector": "Industrials"
   },
   {
     "isin": "BG1100003166",
@@ -1342,7 +1434,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Shelly Group SE"
+    "liste": "Shelly Group SE",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0005102008",
@@ -1356,7 +1449,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Basler Aktiengesellschaft"
+    "liste": "Basler Aktiengesellschaft",
+    "sector": "Technology"
   },
   {
     "isin": "DE0005103006",
@@ -1370,7 +1464,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Adtran Networks SE"
+    "liste": "Adtran Networks SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE0005104400",
@@ -1385,7 +1480,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "ATOSS Software SE"
+    "liste": "ATOSS Software SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE0005313506",
@@ -1399,7 +1495,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Energiekontor AG"
+    "liste": "Energiekontor AG",
+    "sector": "Utilities"
   },
   {
     "isin": "DE0005313704",
@@ -1414,7 +1511,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Carl Zeiss Meditec AG"
+    "liste": "Carl Zeiss Meditec AG",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE0005403901",
@@ -1428,7 +1526,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "CEWE Stiftung & Co. KGaA"
+    "liste": "CEWE Stiftung & Co. KGaA",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE0005419105",
@@ -1443,7 +1542,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Cancom SE"
+    "liste": "Cancom SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE0005493365",
@@ -1457,7 +1557,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Hypoport SE"
+    "liste": "Hypoport SE",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE0005545503",
@@ -1471,7 +1572,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "1&1 AG"
+    "liste": "1&1 AG",
+    "sector": "Communication Services"
   },
   {
     "isin": "DE0005550636",
@@ -1486,7 +1588,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Drägerwerk AG & Co. KGaA"
+    "liste": "Drägerwerk AG & Co. KGaA",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE0005565204",
@@ -1500,7 +1603,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Dürr Aktiengesellschaft"
+    "liste": "Dürr Aktiengesellschaft",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0005659700",
@@ -1515,7 +1619,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Eckert & Ziegler SE"
+    "liste": "Eckert & Ziegler SE",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE0005664809",
@@ -1530,7 +1635,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Evotec SE"
+    "liste": "Evotec SE",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE0005759807",
@@ -1544,7 +1650,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "init innovation in traffic systems SE"
+    "liste": "init innovation in traffic systems SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE0005772206",
@@ -1558,7 +1665,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Fielmann Group AG"
+    "liste": "Fielmann Group AG",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE0005800601",
@@ -1572,7 +1680,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "GFT Technologies SE"
+    "liste": "GFT Technologies SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE0005936124",
@@ -1586,7 +1695,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "OHB SE"
+    "liste": "OHB SE",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0006083405",
@@ -1600,7 +1710,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "HORNBACH Holding AG & Co. KGaA"
+    "liste": "HORNBACH Holding AG & Co. KGaA",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE0006200108",
@@ -1614,7 +1725,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "INDUS Holding AG"
+    "liste": "INDUS Holding AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0006219934",
@@ -1628,7 +1740,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Jungheinrich AG"
+    "liste": "Jungheinrich AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0006292030",
@@ -1642,7 +1755,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "KSB SE & Co. KGaA"
+    "liste": "KSB SE & Co. KGaA",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0006450000",
@@ -1656,7 +1770,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "LPKF Laser & Electronics SE"
+    "liste": "LPKF Laser & Electronics SE",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0006569908",
@@ -1670,7 +1785,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "MLP SE"
+    "liste": "MLP SE",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE0007074007",
@@ -1684,7 +1800,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "KWS SAAT SE & Co. KGaA"
+    "liste": "KWS SAAT SE & Co. KGaA",
+    "sector": "Basic Materials"
   },
   {
     "isin": "DE0007231326",
@@ -1698,7 +1815,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Sixt SE"
+    "liste": "Sixt SE",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0007274136",
@@ -1712,7 +1830,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Sto SE & Co. KGaA"
+    "liste": "Sto SE & Co. KGaA",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0007276503",
@@ -1726,7 +1845,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "secunet Security Networks Aktiengesellschaft"
+    "liste": "secunet Security Networks Aktiengesellschaft",
+    "sector": "Technology"
   },
   {
     "isin": "DE0007297004",
@@ -1740,7 +1860,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Südzucker AG"
+    "liste": "Südzucker AG",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "DE0007314007",
@@ -1754,7 +1875,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Heidelberger Druckmaschinen Aktiengesellschaft"
+    "liste": "Heidelberger Druckmaschinen Aktiengesellschaft",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0007461006",
@@ -1769,7 +1891,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "PVA TePla AG"
+    "liste": "PVA TePla AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0007480204",
@@ -1783,7 +1906,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Deutsche EuroShop AG"
+    "liste": "Deutsche EuroShop AG",
+    "sector": "Real Estate"
   },
   {
     "isin": "DE0007493991",
@@ -1797,7 +1921,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Ströer SE & Co. KGaA"
+    "liste": "Ströer SE & Co. KGaA",
+    "sector": "Communication Services"
   },
   {
     "isin": "DE0007568578",
@@ -1811,7 +1936,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "SFC Energy AG"
+    "liste": "SFC Energy AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0007667107",
@@ -1825,7 +1951,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Vossloh AG"
+    "liste": "Vossloh AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE0008019001",
@@ -1839,7 +1966,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Deutsche Pfandbriefbank AG"
+    "liste": "Deutsche Pfandbriefbank AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE0008051004",
@@ -1853,7 +1981,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Wüstenrot & Württembergische AG"
+    "liste": "Wüstenrot & Württembergische AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE000A0DJ6J9",
@@ -1868,7 +1997,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "SMA Solar Technology AG"
+    "liste": "SMA Solar Technology AG",
+    "sector": "Technology"
   },
   {
     "isin": "DE000A0ETBQ4",
@@ -1882,7 +2012,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "MBB SE"
+    "liste": "MBB SE",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000A0JBPG2",
@@ -1896,7 +2027,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "PNE AG"
+    "liste": "PNE AG",
+    "sector": "Utilities"
   },
   {
     "isin": "DE000A0JL9W6",
@@ -1911,7 +2043,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Verbio SE"
+    "liste": "Verbio SE",
+    "sector": "Basic Materials"
   },
   {
     "isin": "DE000A161408",
@@ -1925,7 +2058,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "HelloFresh SE"
+    "liste": "HelloFresh SE",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "DE000A161N30",
@@ -1939,7 +2073,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Grenke AG"
+    "liste": "Grenke AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE000A1H8BV3",
@@ -1953,7 +2088,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "NORMA Group SE"
+    "liste": "NORMA Group SE",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000A1MMCC8",
@@ -1967,7 +2103,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Medios AG"
+    "liste": "Medios AG",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE000A1TNUT7",
@@ -1981,7 +2118,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Deutsche Beteiligungs AG"
+    "liste": "Deutsche Beteiligungs AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE000A255F11",
@@ -1995,7 +2133,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Friedrich Vorwerk Group SE"
+    "liste": "Friedrich Vorwerk Group SE",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000A2GS5D8",
@@ -2009,7 +2148,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Dermapharm Holding SE"
+    "liste": "Dermapharm Holding SE",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE000A2NB650",
@@ -2023,7 +2163,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Mutares SE & Co. KGaA"
+    "liste": "Mutares SE & Co. KGaA",
+    "sector": "Financial Services"
   },
   {
     "isin": "DE000A2YN900",
@@ -2038,7 +2179,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "TeamViewer SE"
+    "liste": "TeamViewer SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE000A2YNT30",
@@ -2052,7 +2194,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "AlzChem Group AG"
+    "liste": "AlzChem Group AG",
+    "sector": "Basic Materials"
   },
   {
     "isin": "DE000A3ENQ51",
@@ -2066,7 +2209,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "SCHOTT Pharma AG & Co. KGaA"
+    "liste": "SCHOTT Pharma AG & Co. KGaA",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE000A3H2200",
@@ -2080,7 +2224,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Nagarro SE"
+    "liste": "Nagarro SE",
+    "sector": "Technology"
   },
   {
     "isin": "DE000A3H2333",
@@ -2094,7 +2239,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Hamborner REIT AG"
+    "liste": "Hamborner REIT AG",
+    "sector": "Real Estate"
   },
   {
     "isin": "DE000A40ESU3",
@@ -2108,7 +2254,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Einhell Germany AG"
+    "liste": "Einhell Germany AG",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000BCK2223",
@@ -2123,7 +2270,8 @@
       "tecdax"
     ],
     "land": null,
-    "liste": "Ottobock SE & Co. KGaA"
+    "liste": "Ottobock SE & Co. KGaA",
+    "sector": "Healthcare"
   },
   {
     "isin": "DE000BEAU1Y4",
@@ -2137,7 +2285,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Douglas AG"
+    "liste": "Douglas AG",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000JST4000",
@@ -2151,7 +2300,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "JOST Werke SE"
+    "liste": "JOST Werke SE",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000PAT1AG3",
@@ -2165,7 +2315,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "PATRIZIA SE"
+    "liste": "PATRIZIA SE",
+    "sector": "Real Estate"
   },
   {
     "isin": "DE000SAFH001",
@@ -2179,7 +2330,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "SAF-Holland SE"
+    "liste": "SAF-Holland SE",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "DE000SPG1003",
@@ -2193,7 +2345,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Springer Nature AG & Co. KGaA"
+    "liste": "Springer Nature AG & Co. KGaA",
+    "sector": "Communication Services"
   },
   {
     "isin": "DE000STAB1L8",
@@ -2207,7 +2360,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Stabilus SE"
+    "liste": "Stabilus SE",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000VNC0014",
@@ -2221,7 +2375,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Vincorion SE"
+    "liste": "Vincorion SE",
+    "sector": "Industrials"
   },
   {
     "isin": "DE000WACK012",
@@ -2235,7 +2390,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Wacker Neuson SE"
+    "liste": "Wacker Neuson SE",
+    "sector": "Industrials"
   },
   {
     "isin": "LU0775917882",
@@ -2249,7 +2405,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Grand City Properties S.A."
+    "liste": "Grand City Properties S.A.",
+    "sector": "Real Estate"
   },
   {
     "isin": "LU1704650164",
@@ -2264,7 +2421,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Befesa S.A."
+    "liste": "Befesa S.A.",
+    "sector": "Industrials"
   },
   {
     "isin": "LU2333563281",
@@ -2278,7 +2436,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "tonies SE"
+    "liste": "tonies SE",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "NL0012044747",
@@ -2292,7 +2451,8 @@
       "sdax"
     ],
     "land": null,
-    "liste": "Redcare Pharmacy NV"
+    "liste": "Redcare Pharmacy NV",
+    "sector": "Healthcare"
   },
   {
     "isin": "US0231351067",
@@ -2307,7 +2467,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Amazon.com, Inc."
+    "liste": "Amazon.com, Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US0258161092",
@@ -2321,7 +2482,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "American Express Company"
+    "liste": "American Express Company",
+    "sector": "Financial Services"
   },
   {
     "isin": "US0311621009",
@@ -2336,7 +2498,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Amgen Inc."
+    "liste": "Amgen Inc.",
+    "sector": "Healthcare"
   },
   {
     "isin": "US0378331005",
@@ -2351,7 +2514,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Apple Inc."
+    "liste": "Apple Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US0970231058",
@@ -2365,7 +2529,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "The Boeing Company"
+    "liste": "The Boeing Company",
+    "sector": "Industrials"
   },
   {
     "isin": "US1491231015",
@@ -2379,7 +2544,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "Caterpillar Inc."
+    "liste": "Caterpillar Inc.",
+    "sector": "Industrials"
   },
   {
     "isin": "US1667641005",
@@ -2393,7 +2559,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "Chevron Corporation"
+    "liste": "Chevron Corporation",
+    "sector": "Energy"
   },
   {
     "isin": "US17275R1023",
@@ -2408,7 +2575,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Cisco Systems, Inc."
+    "liste": "Cisco Systems, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US1912161007",
@@ -2422,7 +2590,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "The Coca-Cola Company"
+    "liste": "The Coca-Cola Company",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "US2546871060",
@@ -2436,7 +2605,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "The Walt Disney Company"
+    "liste": "The Walt Disney Company",
+    "sector": "Communication Services"
   },
   {
     "isin": "US38141G1040",
@@ -2450,7 +2620,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "The Goldman Sachs Group, Inc."
+    "liste": "The Goldman Sachs Group, Inc.",
+    "sector": "Financial Services"
   },
   {
     "isin": "US4370761029",
@@ -2464,7 +2635,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "The Home Depot, Inc."
+    "liste": "The Home Depot, Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US4385161066",
@@ -2479,7 +2651,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Honeywell International Inc."
+    "liste": "Honeywell International Inc.",
+    "sector": "Industrials"
   },
   {
     "isin": "US4592001014",
@@ -2493,7 +2666,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "International Business Machines Corporation"
+    "liste": "International Business Machines Corporation",
+    "sector": "Technology"
   },
   {
     "isin": "US46625H1005",
@@ -2507,7 +2681,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "JPMorgan Chase & Co."
+    "liste": "JPMorgan Chase & Co.",
+    "sector": "Financial Services"
   },
   {
     "isin": "US4781601046",
@@ -2521,7 +2696,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "Johnson & Johnson"
+    "liste": "Johnson & Johnson",
+    "sector": "Healthcare"
   },
   {
     "isin": "US5801351017",
@@ -2535,7 +2711,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "McDonald's Corporation"
+    "liste": "McDonald's Corporation",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US58933Y1055",
@@ -2549,7 +2726,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "Merck & Co., Inc."
+    "liste": "Merck & Co., Inc.",
+    "sector": "Healthcare"
   },
   {
     "isin": "US5949181045",
@@ -2564,7 +2742,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Microsoft Corporation"
+    "liste": "Microsoft Corporation",
+    "sector": "Technology"
   },
   {
     "isin": "US6541061031",
@@ -2578,7 +2757,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "NIKE, Inc."
+    "liste": "NIKE, Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US67066G1040",
@@ -2593,7 +2773,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "NVIDIA Corporation"
+    "liste": "NVIDIA Corporation",
+    "sector": "Technology"
   },
   {
     "isin": "US7427181091",
@@ -2607,7 +2788,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "The Procter & Gamble Company"
+    "liste": "The Procter & Gamble Company",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "US79466L3024",
@@ -2621,7 +2803,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "Salesforce, Inc."
+    "liste": "Salesforce, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US8243481061",
@@ -2635,7 +2818,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "The Sherwin-Williams Company"
+    "liste": "The Sherwin-Williams Company",
+    "sector": "Basic Materials"
   },
   {
     "isin": "US88579Y1010",
@@ -2649,7 +2833,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "3M Company"
+    "liste": "3M Company",
+    "sector": "Industrials"
   },
   {
     "isin": "US89417E1091",
@@ -2663,7 +2848,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "The Travelers Companies, Inc."
+    "liste": "The Travelers Companies, Inc.",
+    "sector": "Financial Services"
   },
   {
     "isin": "US91324P1021",
@@ -2677,7 +2863,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "UnitedHealth Group Incorporated"
+    "liste": "UnitedHealth Group Incorporated",
+    "sector": "Healthcare"
   },
   {
     "isin": "US92343V1044",
@@ -2691,7 +2878,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "Verizon Communications Inc."
+    "liste": "Verizon Communications Inc.",
+    "sector": "Communication Services"
   },
   {
     "isin": "US92826C8394",
@@ -2705,7 +2893,8 @@
       "dow"
     ],
     "land": null,
-    "liste": "Visa Inc."
+    "liste": "Visa Inc.",
+    "sector": "Financial Services"
   },
   {
     "isin": "US9311421039",
@@ -2720,7 +2909,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Walmart Inc."
+    "liste": "Walmart Inc.",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "CA82509L1076",
@@ -2734,7 +2924,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Shopify Inc."
+    "liste": "Shopify Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "CA8849038085",
@@ -2748,7 +2939,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Thomson Reuters Corporation"
+    "liste": "Thomson Reuters Corporation",
+    "sector": "Industrials"
   },
   {
     "isin": "GB00BDCPN049",
@@ -2762,7 +2954,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Coca-Cola Europacific Partners PLC"
+    "liste": "Coca-Cola Europacific Partners PLC",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "IE000S9YS762",
@@ -2776,7 +2969,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Linde plc"
+    "liste": "Linde plc",
+    "sector": "Basic Materials"
   },
   {
     "isin": "IE00BKVD2N49",
@@ -2790,7 +2984,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Seagate Technology Holdings plc"
+    "liste": "Seagate Technology Holdings plc",
+    "sector": "Technology"
   },
   {
     "isin": "NL0009538784",
@@ -2804,7 +2999,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "NXP Semiconductors N.V."
+    "liste": "NXP Semiconductors N.V.",
+    "sector": "Technology"
   },
   {
     "isin": "NL0009805522",
@@ -2818,7 +3014,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Nebius Group N.V."
+    "liste": "Nebius Group N.V.",
+    "sector": "Communication Services"
   },
   {
     "isin": "NL0015001FS8",
@@ -2832,7 +3029,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Ferrovial N.V."
+    "liste": "Ferrovial N.V.",
+    "sector": "Industrials"
   },
   {
     "isin": "US00724F1012",
@@ -2846,7 +3044,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Adobe Inc."
+    "liste": "Adobe Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US0079031078",
@@ -2860,7 +3059,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Advanced Micro Devices, Inc."
+    "liste": "Advanced Micro Devices, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US0090661010",
@@ -2874,7 +3074,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Airbnb, Inc."
+    "liste": "Airbnb, Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US02043Q1076",
@@ -2888,7 +3089,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Alnylam Pharmaceuticals, Inc."
+    "liste": "Alnylam Pharmaceuticals, Inc.",
+    "sector": "Healthcare"
   },
   {
     "isin": "US02079K1079",
@@ -2902,7 +3104,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "ALPHABET INC.CL C DL-,001"
+    "liste": "ALPHABET INC.CL C DL-,001",
+    "sector": "Communication Services"
   },
   {
     "isin": "US02079K3059",
@@ -2916,7 +3119,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "ALPHABET INC.CL.A DL-,001"
+    "liste": "ALPHABET INC.CL.A DL-,001",
+    "sector": "Communication Services"
   },
   {
     "isin": "US0255371017",
@@ -2930,7 +3134,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "American Electric Power Company, Inc."
+    "liste": "American Electric Power Company, Inc.",
+    "sector": "Utilities"
   },
   {
     "isin": "US0326541051",
@@ -2944,7 +3149,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Analog Devices, Inc."
+    "liste": "Analog Devices, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US0382221051",
@@ -2958,7 +3164,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Applied Materials, Inc."
+    "liste": "Applied Materials, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US03831W1080",
@@ -2972,7 +3179,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "AppLovin Corporation"
+    "liste": "AppLovin Corporation",
+    "sector": "Communication Services"
   },
   {
     "isin": "US0420682058",
@@ -2986,7 +3194,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Arm Holdings plc"
+    "liste": "Arm Holdings plc",
+    "sector": "Technology"
   },
   {
     "isin": "US04626A1034",
@@ -3000,7 +3209,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Astera Labs, Inc."
+    "liste": "Astera Labs, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US0527691069",
@@ -3014,7 +3224,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Autodesk, Inc."
+    "liste": "Autodesk, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US0530151036",
@@ -3028,7 +3239,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Automatic Data Processing, Inc."
+    "liste": "Automatic Data Processing, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US05464C1018",
@@ -3042,7 +3254,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Axon Enterprise, Inc."
+    "liste": "Axon Enterprise, Inc.",
+    "sector": "Industrials"
   },
   {
     "isin": "US05722G1004",
@@ -3056,7 +3269,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Baker Hughes Company"
+    "liste": "Baker Hughes Company",
+    "sector": "Energy"
   },
   {
     "isin": "US09857L1089",
@@ -3070,7 +3284,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Booking Holdings Inc."
+    "liste": "Booking Holdings Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US11135F1012",
@@ -3084,7 +3299,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Broadcom Inc."
+    "liste": "Broadcom Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US1264081035",
@@ -3099,7 +3315,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "CSX Corporation"
+    "liste": "CSX Corporation",
+    "sector": "Industrials"
   },
   {
     "isin": "US1273871087",
@@ -3113,7 +3330,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Cadence Design Systems, Inc."
+    "liste": "Cadence Design Systems, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US1729081059",
@@ -3127,7 +3345,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Cintas Corporation"
+    "liste": "Cintas Corporation",
+    "sector": "Industrials"
   },
   {
     "isin": "US20030N1019",
@@ -3141,7 +3360,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Comcast Corporation"
+    "liste": "Comcast Corporation",
+    "sector": "Communication Services"
   },
   {
     "isin": "US21037T1097",
@@ -3155,7 +3375,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Constellation Energy Corporation"
+    "liste": "Constellation Energy Corporation",
+    "sector": "Utilities"
   },
   {
     "isin": "US2172041061",
@@ -3169,7 +3390,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Copart, Inc."
+    "liste": "Copart, Inc.",
+    "sector": "Industrials"
   },
   {
     "isin": "US21873S1087",
@@ -3183,7 +3405,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "CoreWeave, Inc."
+    "liste": "CoreWeave, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US22160K1051",
@@ -3197,7 +3420,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Costco Wholesale Corporation"
+    "liste": "Costco Wholesale Corporation",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "US22788C1053",
@@ -3211,7 +3435,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "CrowdStrike Holdings, Inc."
+    "liste": "CrowdStrike Holdings, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US23804L1035",
@@ -3225,7 +3450,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Datadog, Inc."
+    "liste": "Datadog, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US2521311074",
@@ -3239,7 +3465,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "DexCom, Inc."
+    "liste": "DexCom, Inc.",
+    "sector": "Healthcare"
   },
   {
     "isin": "US25278X1090",
@@ -3253,7 +3480,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Diamondback Energy, Inc."
+    "liste": "Diamondback Energy, Inc.",
+    "sector": "Energy"
   },
   {
     "isin": "US25809K1051",
@@ -3267,7 +3495,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "DoorDash, Inc."
+    "liste": "DoorDash, Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US30161N1019",
@@ -3281,7 +3510,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Exelon Corporation"
+    "liste": "Exelon Corporation",
+    "sector": "Utilities"
   },
   {
     "isin": "US30303M1027",
@@ -3295,7 +3525,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Meta Platforms, Inc."
+    "liste": "Meta Platforms, Inc.",
+    "sector": "Communication Services"
   },
   {
     "isin": "US3119001044",
@@ -3309,7 +3540,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Fastenal Company"
+    "liste": "Fastenal Company",
+    "sector": "Industrials"
   },
   {
     "isin": "US34959E1091",
@@ -3323,7 +3555,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Fortinet, Inc."
+    "liste": "Fortinet, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US36266G1076",
@@ -3337,7 +3570,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "GE HealthCare Technologies Inc."
+    "liste": "GE HealthCare Technologies Inc.",
+    "sector": "Healthcare"
   },
   {
     "isin": "US3755581036",
@@ -3351,7 +3585,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Gilead Sciences, Inc."
+    "liste": "Gilead Sciences, Inc.",
+    "sector": "Healthcare"
   },
   {
     "isin": "US45168D1046",
@@ -3365,7 +3600,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "IDEXX Laboratories, Inc."
+    "liste": "IDEXX Laboratories, Inc.",
+    "sector": "Healthcare"
   },
   {
     "isin": "US4581401001",
@@ -3380,7 +3616,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Intel Corporation"
+    "liste": "Intel Corporation",
+    "sector": "Technology"
   },
   {
     "isin": "US4612021034",
@@ -3394,7 +3631,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Intuit Inc."
+    "liste": "Intuit Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US46120E6023",
@@ -3408,7 +3646,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Intuitive Surgical, Inc."
+    "liste": "Intuitive Surgical, Inc.",
+    "sector": "Healthcare"
   },
   {
     "isin": "US4824801009",
@@ -3422,7 +3661,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "KLA Corporation"
+    "liste": "KLA Corporation",
+    "sector": "Technology"
   },
   {
     "isin": "US49271V1008",
@@ -3436,7 +3676,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Keurig Dr Pepper Inc."
+    "liste": "Keurig Dr Pepper Inc.",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "US5007541064",
@@ -3450,7 +3691,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "The Kraft Heinz Company"
+    "liste": "The Kraft Heinz Company",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "US5128073062",
@@ -3464,7 +3706,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Lam Research Corporation"
+    "liste": "Lam Research Corporation",
+    "sector": "Technology"
   },
   {
     "isin": "US55024U1097",
@@ -3478,7 +3721,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Lumentum Holdings Inc."
+    "liste": "Lumentum Holdings Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US5719032022",
@@ -3492,7 +3736,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Marriott International, Inc."
+    "liste": "Marriott International, Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US5738741041",
@@ -3506,7 +3751,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Marvell Technology, Inc."
+    "liste": "Marvell Technology, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US58733R1023",
@@ -3520,7 +3766,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "MercadoLibre, Inc."
+    "liste": "MercadoLibre, Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US5949724083",
@@ -3534,7 +3781,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Strategy Inc"
+    "liste": "Strategy Inc",
+    "sector": "Technology"
   },
   {
     "isin": "US5950171042",
@@ -3548,7 +3796,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Microchip Technology Incorporated"
+    "liste": "Microchip Technology Incorporated",
+    "sector": "Technology"
   },
   {
     "isin": "US5951121038",
@@ -3562,7 +3811,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Micron Technology, Inc."
+    "liste": "Micron Technology, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US6092071058",
@@ -3576,7 +3826,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Mondelez International, Inc."
+    "liste": "Mondelez International, Inc.",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "US6098391054",
@@ -3590,7 +3841,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Monolithic Power Systems, Inc."
+    "liste": "Monolithic Power Systems, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US61174X1090",
@@ -3604,7 +3856,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Monster Beverage Corporation"
+    "liste": "Monster Beverage Corporation",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "US64110L1061",
@@ -3618,7 +3871,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Netflix, Inc."
+    "liste": "Netflix, Inc.",
+    "sector": "Communication Services"
   },
   {
     "isin": "US67103H1077",
@@ -3632,7 +3886,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "O'Reilly Automotive, Inc."
+    "liste": "O'Reilly Automotive, Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US6795801009",
@@ -3646,7 +3901,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Old Dominion Freight Line, Inc."
+    "liste": "Old Dominion Freight Line, Inc.",
+    "sector": "Industrials"
   },
   {
     "isin": "US6937181088",
@@ -3660,7 +3916,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "PACCAR Inc"
+    "liste": "PACCAR Inc",
+    "sector": "Industrials"
   },
   {
     "isin": "US69608A1088",
@@ -3674,7 +3931,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Palantir Technologies Inc."
+    "liste": "Palantir Technologies Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US6974351057",
@@ -3688,7 +3946,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Palo Alto Networks, Inc."
+    "liste": "Palo Alto Networks, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US7043261079",
@@ -3702,7 +3961,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Paychex, Inc."
+    "liste": "Paychex, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US70450Y1038",
@@ -3716,7 +3976,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "PayPal Holdings, Inc."
+    "liste": "PayPal Holdings, Inc.",
+    "sector": "Financial Services"
   },
   {
     "isin": "US7134481081",
@@ -3730,7 +3991,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "PepsiCo, Inc."
+    "liste": "PepsiCo, Inc.",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "US7223041028",
@@ -3744,7 +4006,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "PINDUODUO INC. SP.ADR/4"
+    "liste": "PINDUODUO INC. SP.ADR/4",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US7475251036",
@@ -3758,7 +4021,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "QUALCOMM Incorporated"
+    "liste": "QUALCOMM Incorporated",
+    "sector": "Technology"
   },
   {
     "isin": "US75886F1075",
@@ -3772,7 +4036,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Regeneron Pharmaceuticals, Inc."
+    "liste": "Regeneron Pharmaceuticals, Inc.",
+    "sector": "Healthcare"
   },
   {
     "isin": "US7731211089",
@@ -3786,7 +4051,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Rocket Lab Corporation"
+    "liste": "Rocket Lab Corporation",
+    "sector": "Industrials"
   },
   {
     "isin": "US7766961061",
@@ -3800,7 +4066,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Roper Technologies, Inc."
+    "liste": "Roper Technologies, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US7782961038",
@@ -3814,7 +4081,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Ross Stores, Inc."
+    "liste": "Ross Stores, Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US80004C2008",
@@ -3828,7 +4096,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Sandisk Corporation"
+    "liste": "Sandisk Corporation",
+    "sector": "Technology"
   },
   {
     "isin": "US8552441094",
@@ -3842,7 +4111,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Starbucks Corporation"
+    "liste": "Starbucks Corporation",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US8716071076",
@@ -3856,7 +4126,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Synopsys, Inc."
+    "liste": "Synopsys, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US8725901040",
@@ -3870,7 +4141,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "T-Mobile US, Inc."
+    "liste": "T-Mobile US, Inc.",
+    "sector": "Communication Services"
   },
   {
     "isin": "US8740541094",
@@ -3884,7 +4156,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Take-Two Interactive Software, Inc."
+    "liste": "Take-Two Interactive Software, Inc.",
+    "sector": "Communication Services"
   },
   {
     "isin": "US8807701029",
@@ -3898,7 +4171,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Teradyne, Inc."
+    "liste": "Teradyne, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US88160R1014",
@@ -3912,7 +4186,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Tesla, Inc."
+    "liste": "Tesla, Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US8825081040",
@@ -3926,7 +4201,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Texas Instruments Incorporated"
+    "liste": "Texas Instruments Incorporated",
+    "sector": "Technology"
   },
   {
     "isin": "US92532F1003",
@@ -3940,7 +4216,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Vertex Pharmaceuticals Incorporated"
+    "liste": "Vertex Pharmaceuticals Incorporated",
+    "sector": "Healthcare"
   },
   {
     "isin": "US9344231041",
@@ -3954,7 +4231,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Warner Bros. Discovery, Inc."
+    "liste": "Warner Bros. Discovery, Inc.",
+    "sector": "Communication Services"
   },
   {
     "isin": "US9581021055",
@@ -3968,7 +4246,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Western Digital Corporation"
+    "liste": "Western Digital Corporation",
+    "sector": "Technology"
   },
   {
     "isin": "US98138H1014",
@@ -3982,7 +4261,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Workday, Inc."
+    "liste": "Workday, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US98389B1008",
@@ -3996,7 +4276,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "Xcel Energy Inc."
+    "liste": "Xcel Energy Inc.",
+    "sector": "Utilities"
   },
   {
     "isin": "USN070592100",
@@ -4010,7 +4291,8 @@
       "nasdaq100"
     ],
     "land": null,
-    "liste": "ASML Holding N.V."
+    "liste": "ASML Holding N.V.",
+    "sector": "Technology"
   },
   {
     "isin": "BE0974293251",
@@ -4024,7 +4306,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Anheuser-Busch InBev SA/NV"
+    "liste": "Anheuser-Busch InBev SA/NV",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "ES0113211835",
@@ -4038,7 +4321,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Banco Bilbao Vizcaya Argentaria, S.A."
+    "liste": "Banco Bilbao Vizcaya Argentaria, S.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "ES0113900J37",
@@ -4052,7 +4336,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Banco Santander, S.A."
+    "liste": "Banco Santander, S.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "ES0144580Y14",
@@ -4066,7 +4351,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Iberdrola, S.A."
+    "liste": "Iberdrola, S.A.",
+    "sector": "Utilities"
   },
   {
     "isin": "ES0148396007",
@@ -4080,7 +4366,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Industria de Diseño Textil, S.A."
+    "liste": "Industria de Diseño Textil, S.A.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "FI4000297767",
@@ -4095,7 +4382,8 @@
       "europa"
     ],
     "land": "Finnland",
-    "liste": "Nordea Bank Abp"
+    "liste": "Nordea Bank Abp",
+    "sector": "Financial Services"
   },
   {
     "isin": "FR0000052292",
@@ -4110,7 +4398,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Hermès International Société en commandite par actions"
+    "liste": "Hermès International Société en commandite par actions",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "FR0000073272",
@@ -4125,7 +4414,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Safran SA"
+    "liste": "Safran SA",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0000120073",
@@ -4140,7 +4430,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "L'Air Liquide S.A."
+    "liste": "L'Air Liquide S.A.",
+    "sector": "Basic Materials"
   },
   {
     "isin": "FR0000120271",
@@ -4155,7 +4446,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "TotalEnergies SE"
+    "liste": "TotalEnergies SE",
+    "sector": "Energy"
   },
   {
     "isin": "FR0000120321",
@@ -4170,7 +4462,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "L'Oréal S.A."
+    "liste": "L'Oréal S.A.",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "FR0000120578",
@@ -4185,7 +4478,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Sanofi"
+    "liste": "Sanofi",
+    "sector": "Healthcare"
   },
   {
     "isin": "FR0000120628",
@@ -4200,7 +4494,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "AXA SA"
+    "liste": "AXA SA",
+    "sector": "Financial Services"
   },
   {
     "isin": "FR0000120644",
@@ -4215,7 +4510,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Danone S.A."
+    "liste": "Danone S.A.",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "FR0000121014",
@@ -4230,7 +4526,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "LVMH Moët Hennessy - Louis Vuitton, Société Européenne"
+    "liste": "LVMH Moët Hennessy - Louis Vuitton, Société Européenne",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "FR0000121667",
@@ -4245,7 +4542,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "EssilorLuxottica Société anonyme"
+    "liste": "EssilorLuxottica Société anonyme",
+    "sector": "Healthcare"
   },
   {
     "isin": "FR0000121972",
@@ -4260,7 +4558,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Schneider Electric S.E."
+    "liste": "Schneider Electric S.E.",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0000125007",
@@ -4275,7 +4574,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Compagnie de Saint-Gobain S.A."
+    "liste": "Compagnie de Saint-Gobain S.A.",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0000125486",
@@ -4290,7 +4590,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Vinci SA"
+    "liste": "Vinci SA",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0000131104",
@@ -4305,7 +4606,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "BNP Paribas SA"
+    "liste": "BNP Paribas SA",
+    "sector": "Financial Services"
   },
   {
     "isin": "IT0000072618",
@@ -4321,7 +4623,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Intesa Sanpaolo S.p.A."
+    "liste": "Intesa Sanpaolo S.p.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "IT0003128367",
@@ -4337,7 +4640,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Enel SpA"
+    "liste": "Enel SpA",
+    "sector": "Utilities"
   },
   {
     "isin": "IT0003132476",
@@ -4353,7 +4657,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Eni S.p.A."
+    "liste": "Eni S.p.A.",
+    "sector": "Energy"
   },
   {
     "isin": "IT0005239360",
@@ -4369,7 +4674,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "UniCredit S.p.A."
+    "liste": "UniCredit S.p.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "NL0000395903",
@@ -4383,7 +4689,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Wolters Kluwer N.V."
+    "liste": "Wolters Kluwer N.V.",
+    "sector": "Industrials"
   },
   {
     "isin": "NL0010273215",
@@ -4397,7 +4704,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "ASML Holding N.V."
+    "liste": "ASML Holding N.V.",
+    "sector": "Technology"
   },
   {
     "isin": "NL0010832176",
@@ -4411,7 +4719,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "argenx SE"
+    "liste": "argenx SE",
+    "sector": "Healthcare"
   },
   {
     "isin": "NL0011585146",
@@ -4427,7 +4736,8 @@
       "ftsemib"
     ],
     "land": "Niederlande",
-    "liste": "Ferrari Group PLC"
+    "liste": "Ferrari Group PLC",
+    "sector": "Industrials"
   },
   {
     "isin": "NL0011794037",
@@ -4441,7 +4751,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Koninklijke Ahold Delhaize N.V."
+    "liste": "Koninklijke Ahold Delhaize N.V.",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "NL0011821202",
@@ -4455,7 +4766,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "ING Groep N.V."
+    "liste": "ING Groep N.V.",
+    "sector": "Financial Services"
   },
   {
     "isin": "NL0012969182",
@@ -4469,7 +4781,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Adyen N.V."
+    "liste": "Adyen N.V.",
+    "sector": "Technology"
   },
   {
     "isin": "NL0013654783",
@@ -4483,7 +4796,8 @@
       "eurostoxx50"
     ],
     "land": null,
-    "liste": "Prosus N.V."
+    "liste": "Prosus N.V.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "IT0000062072",
@@ -4498,7 +4812,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Assicurazioni Generali S.p.A."
+    "liste": "Assicurazioni Generali S.p.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "IT0000062957",
@@ -4513,7 +4828,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Mediobanca Banca di Credito Finanziario S.p.A."
+    "liste": "Mediobanca Banca di Credito Finanziario S.p.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "IT0000066123",
@@ -4527,7 +4843,8 @@
       "ftsemib"
     ],
     "land": null,
-    "liste": "BPER Banca SpA"
+    "liste": "BPER Banca SpA",
+    "sector": "Financial Services"
   },
   {
     "isin": "IT0000072170",
@@ -4542,7 +4859,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "FinecoBank Banca Fineco S.p.A."
+    "liste": "FinecoBank Banca Fineco S.p.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "IT0001233417",
@@ -4557,7 +4875,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "A2A S.p.A."
+    "liste": "A2A S.p.A.",
+    "sector": "Utilities"
   },
   {
     "isin": "IT0001250932",
@@ -4572,7 +4891,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Hera S.p.A."
+    "liste": "Hera S.p.A.",
+    "sector": "Utilities"
   },
   {
     "isin": "IT0001347308",
@@ -4586,7 +4906,8 @@
       "ftsemib"
     ],
     "land": null,
-    "liste": "Buzzi S.p.A."
+    "liste": "Buzzi S.p.A.",
+    "sector": "Basic Materials"
   },
   {
     "isin": "IT0003153415",
@@ -4601,7 +4922,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Snam S.p.A."
+    "liste": "Snam S.p.A.",
+    "sector": "Utilities"
   },
   {
     "isin": "IT0003242622",
@@ -4616,7 +4938,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Terna S.p.A."
+    "liste": "Terna S.p.A.",
+    "sector": "Utilities"
   },
   {
     "isin": "IT0003261697",
@@ -4630,7 +4953,8 @@
       "ftsemib"
     ],
     "land": null,
-    "liste": "Azimut Holding S.p.A."
+    "liste": "Azimut Holding S.p.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "IT0003492391",
@@ -4645,7 +4969,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "DiaSorin S.p.A."
+    "liste": "DiaSorin S.p.A.",
+    "sector": "Healthcare"
   },
   {
     "isin": "IT0003796171",
@@ -4660,7 +4985,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Poste Italiane S.p.A."
+    "liste": "Poste Italiane S.p.A.",
+    "sector": "Industrials"
   },
   {
     "isin": "IT0003828271",
@@ -4675,7 +5001,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Recordati Industria Chimica e Farmaceutica S.p.A."
+    "liste": "Recordati Industria Chimica e Farmaceutica S.p.A.",
+    "sector": "Healthcare"
   },
   {
     "isin": "IT0003856405",
@@ -4690,7 +5017,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Leonardo S.p.a."
+    "liste": "Leonardo S.p.a.",
+    "sector": "Industrials"
   },
   {
     "isin": "IT0004056880",
@@ -4705,7 +5033,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Amplifon S.p.A."
+    "liste": "Amplifon S.p.A.",
+    "sector": "Healthcare"
   },
   {
     "isin": "IT0004176001",
@@ -4720,7 +5049,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Prysmian S.p.A."
+    "liste": "Prysmian S.p.A.",
+    "sector": "Industrials"
   },
   {
     "isin": "IT0004764699",
@@ -4734,7 +5064,8 @@
       "ftsemib"
     ],
     "land": null,
-    "liste": "Brunello Cucinelli S.p.A."
+    "liste": "Brunello Cucinelli S.p.A.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "IT0004776628",
@@ -4748,7 +5079,8 @@
       "ftsemib"
     ],
     "land": null,
-    "liste": "Banca Mediolanum S.p.A."
+    "liste": "Banca Mediolanum S.p.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "IT0004810054",
@@ -4762,7 +5094,8 @@
       "ftsemib"
     ],
     "land": null,
-    "liste": "Unipol Assicurazioni S.p.A."
+    "liste": "Unipol Assicurazioni S.p.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "IT0004965148",
@@ -4777,7 +5110,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Moncler S.p.A."
+    "liste": "Moncler S.p.A.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "IT0005090300",
@@ -4792,7 +5126,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Infrastrutture Wireless Italiane S.p.A."
+    "liste": "Infrastrutture Wireless Italiane S.p.A.",
+    "sector": "Real Estate"
   },
   {
     "isin": "IT0005211237",
@@ -4807,7 +5142,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Italgas S.p.A."
+    "liste": "Italgas S.p.A.",
+    "sector": "Utilities"
   },
   {
     "isin": "IT0005218380",
@@ -4822,7 +5158,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Banco BPM S.p.A."
+    "liste": "Banco BPM S.p.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "IT0005366767",
@@ -4837,7 +5174,8 @@
       "ftsemib"
     ],
     "land": "Italien",
-    "liste": "Nexi S.p.A."
+    "liste": "Nexi S.p.A.",
+    "sector": "Technology"
   },
   {
     "isin": "IT0005495657",
@@ -4851,7 +5189,8 @@
       "ftsemib"
     ],
     "land": null,
-    "liste": "Saipem SpA"
+    "liste": "Saipem SpA",
+    "sector": "Energy"
   },
   {
     "isin": "NL0000226223",
@@ -4867,7 +5206,8 @@
       "gci"
     ],
     "land": "Niederlande",
-    "liste": "STMicroelectronics N.V."
+    "liste": "STMicroelectronics N.V.",
+    "sector": "Technology"
   },
   {
     "isin": "NL00150001Q9",
@@ -4882,7 +5222,8 @@
       "ftsemib"
     ],
     "land": "Niederlande",
-    "liste": "Stellantis N.V."
+    "liste": "Stellantis N.V.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "NL0015000LU4",
@@ -4911,7 +5252,8 @@
       "ftsemib"
     ],
     "land": "Niederlande",
-    "liste": "Davide Campari-Milano N.V."
+    "liste": "Davide Campari-Milano N.V.",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "AT000000STR1",
@@ -4925,7 +5267,8 @@
       "atx"
     ],
     "land": null,
-    "liste": "Strabag SE"
+    "liste": "Strabag SE",
+    "sector": "Industrials"
   },
   {
     "isin": "AT0000606306",
@@ -4939,7 +5282,8 @@
       "atx"
     ],
     "land": null,
-    "liste": "Raiffeisen Bank International AG"
+    "liste": "Raiffeisen Bank International AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "AT0000609607",
@@ -4953,7 +5297,8 @@
       "atx"
     ],
     "land": null,
-    "liste": "PORR AG"
+    "liste": "PORR AG",
+    "sector": "Industrials"
   },
   {
     "isin": "AT0000641352",
@@ -4967,7 +5312,8 @@
       "atx"
     ],
     "land": null,
-    "liste": "CA Immobilien Anlagen AG"
+    "liste": "CA Immobilien Anlagen AG",
+    "sector": "Real Estate"
   },
   {
     "isin": "AT0000644505",
@@ -4982,7 +5328,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Lenzing Aktiengesellschaft"
+    "liste": "Lenzing Aktiengesellschaft",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "AT0000652011",
@@ -4997,7 +5344,8 @@
       "atx"
     ],
     "land": "Österreich",
-    "liste": "Erste Group Bank AG"
+    "liste": "Erste Group Bank AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "AT0000730007",
@@ -5012,7 +5360,8 @@
       "atx"
     ],
     "land": "Österreich",
-    "liste": "Andritz AG"
+    "liste": "Andritz AG",
+    "sector": "Industrials"
   },
   {
     "isin": "AT0000741053",
@@ -5026,7 +5375,8 @@
       "atx"
     ],
     "land": null,
-    "liste": "EVN AG"
+    "liste": "EVN AG",
+    "sector": "Utilities"
   },
   {
     "isin": "AT0000743059",
@@ -5041,7 +5391,8 @@
       "atx"
     ],
     "land": "Österreich",
-    "liste": "OMV Aktiengesellschaft"
+    "liste": "OMV Aktiengesellschaft",
+    "sector": "Energy"
   },
   {
     "isin": "AT0000746409",
@@ -5056,7 +5407,8 @@
       "atx"
     ],
     "land": "Österreich",
-    "liste": "VERBUND AG"
+    "liste": "VERBUND AG",
+    "sector": "Utilities"
   },
   {
     "isin": "AT0000758305",
@@ -5070,7 +5422,8 @@
       "atx"
     ],
     "land": null,
-    "liste": "Palfinger AG"
+    "liste": "Palfinger AG",
+    "sector": "Industrials"
   },
   {
     "isin": "AT0000818802",
@@ -5084,7 +5437,8 @@
       "atx"
     ],
     "land": null,
-    "liste": "DO & CO Aktiengesellschaft"
+    "liste": "DO & CO Aktiengesellschaft",
+    "sector": "Industrials"
   },
   {
     "isin": "AT0000821103",
@@ -5098,7 +5452,8 @@
       "atx"
     ],
     "land": null,
-    "liste": "UNIQA Insurance Group AG"
+    "liste": "UNIQA Insurance Group AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "AT0000831706",
@@ -5113,7 +5468,8 @@
       "atx"
     ],
     "land": "Österreich",
-    "liste": "Wienerberger AG"
+    "liste": "Wienerberger AG",
+    "sector": "Basic Materials"
   },
   {
     "isin": "AT0000908504",
@@ -5127,7 +5483,8 @@
       "atx"
     ],
     "land": null,
-    "liste": "Vienna Insurance Group AG"
+    "liste": "Vienna Insurance Group AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "AT0000937503",
@@ -5142,7 +5499,8 @@
       "atx"
     ],
     "land": "Österreich",
-    "liste": "Voestalpine AG"
+    "liste": "Voestalpine AG",
+    "sector": "Basic Materials"
   },
   {
     "isin": "AT0000946652",
@@ -5156,7 +5514,8 @@
       "atx"
     ],
     "land": null,
-    "liste": "SBO AG"
+    "liste": "SBO AG",
+    "sector": "Energy"
   },
   {
     "isin": "AT0000969985",
@@ -5170,7 +5529,8 @@
       "atx"
     ],
     "land": null,
-    "liste": "AT & S Austria Technologie & Systemtechnik Aktiengesellschaft"
+    "liste": "AT & S Austria Technologie & Systemtechnik Aktiengesellschaft",
+    "sector": "Technology"
   },
   {
     "isin": "AT0000APOST4",
@@ -5184,7 +5544,8 @@
       "atx"
     ],
     "land": null,
-    "liste": "Österreichische Post AG"
+    "liste": "Österreichische Post AG",
+    "sector": "Industrials"
   },
   {
     "isin": "AT0000BAWAG2",
@@ -5199,7 +5560,8 @@
       "atx"
     ],
     "land": "Österreich",
-    "liste": "BAWAG Group AG"
+    "liste": "BAWAG Group AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "LU0056569402",
@@ -5213,7 +5575,8 @@
       "luxx"
     ],
     "land": null,
-    "liste": "Socfinaf S.A."
+    "liste": "Socfinaf S.A.",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "LU0088087324",
@@ -5228,7 +5591,8 @@
       "luxx"
     ],
     "land": "Luxemburg",
-    "liste": "SES S.A."
+    "liste": "SES S.A.",
+    "sector": "Communication Services"
   },
   {
     "isin": "LU0092047413",
@@ -5242,7 +5606,8 @@
       "luxx"
     ],
     "land": null,
-    "liste": "Socfinasia S.A."
+    "liste": "Socfinasia S.A.",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "LU0383812293",
@@ -5256,7 +5621,8 @@
       "luxx"
     ],
     "land": null,
-    "liste": "Reinet Investments S.C.A."
+    "liste": "Reinet Investments S.C.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "LU0569974404",
@@ -5270,7 +5636,8 @@
       "luxx"
     ],
     "land": null,
-    "liste": "Aperam S.A."
+    "liste": "Aperam S.A.",
+    "sector": "Basic Materials"
   },
   {
     "isin": "LU1068091351",
@@ -5284,7 +5651,8 @@
       "luxx"
     ],
     "land": null,
-    "liste": "Brederode SA"
+    "liste": "Brederode SA",
+    "sector": "Financial Services"
   },
   {
     "isin": "LU1598757687",
@@ -5299,7 +5667,8 @@
       "luxx"
     ],
     "land": "Luxemburg",
-    "liste": "ArcelorMittal S.A."
+    "liste": "ArcelorMittal S.A.",
+    "sector": "Basic Materials"
   },
   {
     "isin": "LU2605908552",
@@ -5313,7 +5682,8 @@
       "luxx"
     ],
     "land": null,
-    "liste": "Luxempart"
+    "liste": "Luxempart",
+    "sector": "Financial Services"
   },
   {
     "isin": "FI0009000202",
@@ -5327,7 +5697,8 @@
       "europa"
     ],
     "land": "Finnland",
-    "liste": "Kesko Oyj"
+    "liste": "Kesko Oyj",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "FI0009000681",
@@ -5341,7 +5712,8 @@
       "europa"
     ],
     "land": "Finnland",
-    "liste": "Nokia Oyj"
+    "liste": "Nokia Oyj",
+    "sector": "Technology"
   },
   {
     "isin": "FI0009013403",
@@ -5355,7 +5727,8 @@
       "europa"
     ],
     "land": "Finnland",
-    "liste": "KONE Oyj"
+    "liste": "KONE Oyj",
+    "sector": "Industrials"
   },
   {
     "isin": "FI4000074984",
@@ -5369,7 +5742,8 @@
       "europa"
     ],
     "land": "Finnland",
-    "liste": "Valmet Oyj"
+    "liste": "Valmet Oyj",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0000039299",
@@ -5383,7 +5757,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Bolloré SE"
+    "liste": "Bolloré SE",
+    "sector": "Communication Services"
   },
   {
     "isin": "FR0000044448",
@@ -5397,7 +5772,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Nexans S.A."
+    "liste": "Nexans S.A.",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0000045072",
@@ -5411,7 +5787,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Crédit Agricole S.A."
+    "liste": "Crédit Agricole S.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "FR0000050809",
@@ -5425,7 +5802,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Sopra Steria Group SA"
+    "liste": "Sopra Steria Group SA",
+    "sector": "Technology"
   },
   {
     "isin": "FR0000051807",
@@ -5439,7 +5817,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Teleperformance SE"
+    "liste": "Teleperformance SE",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0000054470",
@@ -5453,7 +5832,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Ubisoft Entertainment SA"
+    "liste": "Ubisoft Entertainment SA",
+    "sector": "Communication Services"
   },
   {
     "isin": "FR0000064578",
@@ -5467,7 +5847,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Covivio"
+    "liste": "Covivio",
+    "sector": "Real Estate"
   },
   {
     "isin": "FR0000071946",
@@ -5481,7 +5862,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Alten S.A."
+    "liste": "Alten S.A.",
+    "sector": "Technology"
   },
   {
     "isin": "FR0000120172",
@@ -5495,7 +5877,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Carrefour SA"
+    "liste": "Carrefour SA",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "FR0000120404",
@@ -5509,7 +5892,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Accor SA"
+    "liste": "Accor SA",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "FR0000120503",
@@ -5523,7 +5907,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Bouygues SA"
+    "liste": "Bouygues SA",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0000120693",
@@ -5537,7 +5922,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Pernod Ricard SA"
+    "liste": "Pernod Ricard SA",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "FR0000121121",
@@ -5551,7 +5937,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Eurazeo SE"
+    "liste": "Eurazeo SE",
+    "sector": "Financial Services"
   },
   {
     "isin": "FR0000121147",
@@ -5565,7 +5952,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Forvia SE"
+    "liste": "Forvia SE",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "FR0000121204",
@@ -5579,7 +5967,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Wendel"
+    "liste": "Wendel",
+    "sector": "Financial Services"
   },
   {
     "isin": "FR0000121220",
@@ -5593,7 +5982,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Sodexo S.A."
+    "liste": "Sodexo S.A.",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0000121329",
@@ -5607,7 +5997,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Thales S.A."
+    "liste": "Thales S.A.",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0000121485",
@@ -5621,7 +6012,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Kering SA"
+    "liste": "Kering SA",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "FR0000121709",
@@ -5635,7 +6027,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "SEB SA"
+    "liste": "SEB SA",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "FR0000121964",
@@ -5649,7 +6042,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Klépierre SA"
+    "liste": "Klépierre SA",
+    "sector": "Real Estate"
   },
   {
     "isin": "FR0000124141",
@@ -5663,7 +6057,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Veolia Environnement SA"
+    "liste": "Veolia Environnement SA",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0000125338",
@@ -5677,7 +6072,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Capgemini SE"
+    "liste": "Capgemini SE",
+    "sector": "Technology"
   },
   {
     "isin": "FR0000127771",
@@ -5691,7 +6087,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Vivendi SE"
+    "liste": "Vivendi SE",
+    "sector": "Communication Services"
   },
   {
     "isin": "FR0000130395",
@@ -5705,7 +6102,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Rémy Cointreau SA"
+    "liste": "Rémy Cointreau SA",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "FR0000130403",
@@ -5719,7 +6117,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Christian Dior SE"
+    "liste": "Christian Dior SE",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "FR0000130452",
@@ -5733,7 +6132,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Eiffage SA"
+    "liste": "Eiffage SA",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0000130577",
@@ -5747,7 +6147,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Publicis Groupe S.A."
+    "liste": "Publicis Groupe S.A.",
+    "sector": "Communication Services"
   },
   {
     "isin": "FR0000130809",
@@ -5761,7 +6162,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Société Générale Société anonyme"
+    "liste": "Société Générale Société anonyme",
+    "sector": "Financial Services"
   },
   {
     "isin": "FR0000131906",
@@ -5775,7 +6177,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Renault SA"
+    "liste": "Renault SA",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "FR0000133308",
@@ -5789,7 +6192,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Orange S.A."
+    "liste": "Orange S.A.",
+    "sector": "Communication Services"
   },
   {
     "isin": "FR0004125920",
@@ -5803,7 +6207,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Amundi S.A."
+    "liste": "Amundi S.A.",
+    "sector": "Financial Services"
   },
   {
     "isin": "FR0006174348",
@@ -5817,7 +6222,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Bureau Veritas SA"
+    "liste": "Bureau Veritas SA",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0010040865",
@@ -5832,7 +6238,8 @@
       "gci"
     ],
     "land": "Frankreich",
-    "liste": "Gecina"
+    "liste": "Gecina",
+    "sector": "Real Estate"
   },
   {
     "isin": "FR0010208488",
@@ -5846,7 +6253,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Engie SA"
+    "liste": "Engie SA",
+    "sector": "Utilities"
   },
   {
     "isin": "FR0010220475",
@@ -5860,7 +6268,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Alstom SA"
+    "liste": "Alstom SA",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0010259150",
@@ -5874,7 +6283,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Ipsen S.A."
+    "liste": "Ipsen S.A.",
+    "sector": "Healthcare"
   },
   {
     "isin": "FR0010307819",
@@ -5888,7 +6298,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Legrand SA"
+    "liste": "Legrand SA",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0010313833",
@@ -5902,7 +6313,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Arkema S.A."
+    "liste": "Arkema S.A.",
+    "sector": "Basic Materials"
   },
   {
     "isin": "FR0010340141",
@@ -5916,7 +6328,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Aeroports de Paris SA"
+    "liste": "Aeroports de Paris SA",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0010411983",
@@ -5930,7 +6343,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "SCOR SE"
+    "liste": "SCOR SE",
+    "sector": "Financial Services"
   },
   {
     "isin": "FR0010451203",
@@ -5944,7 +6358,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Rexel S.A."
+    "liste": "Rexel S.A.",
+    "sector": "Technology"
   },
   {
     "isin": "FR0010533075",
@@ -5958,7 +6373,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Getlink SE"
+    "liste": "Getlink SE",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0010908533",
@@ -5972,7 +6388,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Edenred SE"
+    "liste": "Edenred SE",
+    "sector": "Financial Services"
   },
   {
     "isin": "FR0011726835",
@@ -5986,7 +6403,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Gaztransport & Technigaz SA"
+    "liste": "Gaztransport & Technigaz SA",
+    "sector": "Energy"
   },
   {
     "isin": "FR0011981968",
@@ -6000,7 +6418,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Worldline SA"
+    "liste": "Worldline SA",
+    "sector": "Technology"
   },
   {
     "isin": "FR0012435121",
@@ -6014,7 +6433,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Elis SA"
+    "liste": "Elis SA",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0012757854",
@@ -6028,7 +6448,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "SPIE SA"
+    "liste": "SPIE SA",
+    "sector": "Industrials"
   },
   {
     "isin": "FR0013154002",
@@ -6042,7 +6463,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Sartorius Stedim Biotech S.A."
+    "liste": "Sartorius Stedim Biotech S.A.",
+    "sector": "Healthcare"
   },
   {
     "isin": "FR0013176526",
@@ -6056,7 +6478,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Valeo SE"
+    "liste": "Valeo SE",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "FR0013227113",
@@ -6070,7 +6493,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Soitec SA"
+    "liste": "Soitec SA",
+    "sector": "Technology"
   },
   {
     "isin": "FR0013269123",
@@ -6084,7 +6508,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Rubis"
+    "liste": "Rubis",
+    "sector": "Energy"
   },
   {
     "isin": "FR0013280286",
@@ -6099,7 +6524,8 @@
       "gci"
     ],
     "land": "Frankreich",
-    "liste": "bioMérieux S.A."
+    "liste": "bioMérieux S.A.",
+    "sector": "Healthcare"
   },
   {
     "isin": "FR0013326246",
@@ -6113,7 +6539,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Unibail-Rodamco-Westfield SE"
+    "liste": "Unibail-Rodamco-Westfield SE",
+    "sector": "Real Estate"
   },
   {
     "isin": "FR0013447729",
@@ -6127,7 +6554,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Verallia Société Anonyme"
+    "liste": "Verallia Société Anonyme",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "FR0013451333",
@@ -6141,7 +6569,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "FDJ United"
+    "liste": "FDJ United",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "FR0014000MR3",
@@ -6155,7 +6584,8 @@
       "europa"
     ],
     "land": "Frankreich",
-    "liste": "Eurofins Scientific SE"
+    "liste": "Eurofins Scientific SE",
+    "sector": "Healthcare"
   },
   {
     "isin": "FR0014003TT8",
@@ -6170,7 +6600,8 @@
       "gci"
     ],
     "land": "Frankreich",
-    "liste": "Dassault Systèmes SE"
+    "liste": "Dassault Systèmes SE",
+    "sector": "Technology"
   },
   {
     "isin": "IT0001078911",
@@ -6184,7 +6615,8 @@
       "europa"
     ],
     "land": "Italien",
-    "liste": "Interpump Group S.p.A."
+    "liste": "Interpump Group S.p.A.",
+    "sector": "Industrials"
   },
   {
     "isin": "IT0005282865",
@@ -6198,7 +6630,8 @@
       "europa"
     ],
     "land": "Italien",
-    "liste": "Reply S.p.A."
+    "liste": "Reply S.p.A.",
+    "sector": "Technology"
   },
   {
     "isin": "NL0006294274",
@@ -6212,7 +6645,8 @@
       "europa"
     ],
     "land": "Niederlande",
-    "liste": "Euronext N.V."
+    "liste": "Euronext N.V.",
+    "sector": "Financial Services"
   },
   {
     "isin": "NL0010545661",
@@ -6226,7 +6660,8 @@
       "europa"
     ],
     "land": "Niederlande",
-    "liste": "CNH Industrial N.V."
+    "liste": "CNH Industrial N.V.",
+    "sector": "Industrials"
   },
   {
     "isin": "NL0012059018",
@@ -6240,7 +6675,8 @@
       "europa"
     ],
     "land": "Niederlande",
-    "liste": "Exor N.V."
+    "liste": "Exor N.V.",
+    "sector": "Financial Services"
   },
   {
     "isin": "SE0000106270",
@@ -6254,7 +6690,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "H & M Hennes & Mauritz AB (publ)"
+    "liste": "H & M Hennes & Mauritz AB (publ)",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "SE0000108227",
@@ -6268,7 +6705,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "AB SKF (publ)"
+    "liste": "AB SKF (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0000108656",
@@ -6282,7 +6720,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Telefonaktiebolaget LM Ericsson (publ)"
+    "liste": "Telefonaktiebolaget LM Ericsson (publ)",
+    "sector": "Technology"
   },
   {
     "isin": "SE0000108847",
@@ -6296,7 +6735,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "L E Lundbergföretagen AB (publ)"
+    "liste": "L E Lundbergföretagen AB (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0000112724",
@@ -6310,7 +6750,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Svenska Cellulosa Aktiebolaget SCA (publ)"
+    "liste": "Svenska Cellulosa Aktiebolaget SCA (publ)",
+    "sector": "Basic Materials"
   },
   {
     "isin": "SE0000113250",
@@ -6324,7 +6765,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Skanska AB (publ)"
+    "liste": "Skanska AB (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0000114837",
@@ -6338,7 +6780,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Trelleborg AB (publ)"
+    "liste": "Trelleborg AB (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0000115446",
@@ -6352,7 +6795,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "AB Volvo (publ)"
+    "liste": "AB Volvo (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0000148884",
@@ -6366,7 +6810,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Skandinaviska Enskilda Banken AB (publ)"
+    "liste": "Skandinaviska Enskilda Banken AB (publ)",
+    "sector": "Financial Services"
   },
   {
     "isin": "SE0000163594",
@@ -6380,7 +6825,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Securitas AB (publ)"
+    "liste": "Securitas AB (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0000163628",
@@ -6394,7 +6840,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Elekta AB (publ)"
+    "liste": "Elekta AB (publ)",
+    "sector": "Healthcare"
   },
   {
     "isin": "SE0000190126",
@@ -6408,7 +6855,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "AB Industrivärden (publ)"
+    "liste": "AB Industrivärden (publ)",
+    "sector": "Financial Services"
   },
   {
     "isin": "SE0000202624",
@@ -6422,7 +6870,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Getinge AB (publ)"
+    "liste": "Getinge AB (publ)",
+    "sector": "Healthcare"
   },
   {
     "isin": "SE0000242455",
@@ -6436,7 +6885,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Swedbank AB (publ)"
+    "liste": "Swedbank AB (publ)",
+    "sector": "Financial Services"
   },
   {
     "isin": "SE0000379190",
@@ -6450,7 +6900,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Castellum AB (publ)"
+    "liste": "Castellum AB (publ)",
+    "sector": "Real Estate"
   },
   {
     "isin": "SE0000667891",
@@ -6464,7 +6915,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Sandvik AB (publ)"
+    "liste": "Sandvik AB (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0000667925",
@@ -6478,7 +6930,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Telia Company AB (publ)"
+    "liste": "Telia Company AB (publ)",
+    "sector": "Communication Services"
   },
   {
     "isin": "SE0000695876",
@@ -6492,7 +6945,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Alfa Laval AB (publ)"
+    "liste": "Alfa Laval AB (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0000862997",
@@ -6507,7 +6961,8 @@
       "gci"
     ],
     "land": "Schweden",
-    "liste": "Billerud AB (publ)"
+    "liste": "Billerud AB (publ)",
+    "sector": "Basic Materials"
   },
   {
     "isin": "SE0000872095",
@@ -6521,7 +6976,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Swedish Orphan Biovitrum AB (publ)"
+    "liste": "Swedish Orphan Biovitrum AB (publ)",
+    "sector": "Healthcare"
   },
   {
     "isin": "SE0001515552",
@@ -6535,7 +6991,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Indutrade AB (publ)"
+    "liste": "Indutrade AB (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0001662230",
@@ -6549,7 +7006,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Husqvarna AB (publ)"
+    "liste": "Husqvarna AB (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0005190238",
@@ -6563,7 +7021,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Tele2 AB (publ)"
+    "liste": "Tele2 AB (publ)",
+    "sector": "Communication Services"
   },
   {
     "isin": "SE0006422390",
@@ -6577,7 +7036,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Thule Group AB (publ)"
+    "liste": "Thule Group AB (publ)",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "SE0007074281",
@@ -6591,7 +7051,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "HEXPOL AB (publ)"
+    "liste": "HEXPOL AB (publ)",
+    "sector": "Basic Materials"
   },
   {
     "isin": "SE0007100581",
@@ -6605,7 +7066,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "ASSA ABLOY AB (publ)"
+    "liste": "ASSA ABLOY AB (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0007100599",
@@ -6619,7 +7081,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Svenska Handelsbanken AB (publ)"
+    "liste": "Svenska Handelsbanken AB (publ)",
+    "sector": "Financial Services"
   },
   {
     "isin": "SE0009216278",
@@ -6633,7 +7096,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Mips AB (publ)"
+    "liste": "Mips AB (publ)",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "SE0009922164",
@@ -6647,7 +7111,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Essity AB (publ)"
+    "liste": "Essity AB (publ)",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "SE0010100958",
@@ -6661,7 +7126,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Investment AB Latour (publ)"
+    "liste": "Investment AB Latour (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0011090018",
@@ -6675,7 +7141,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Holmen AB (publ)"
+    "liste": "Holmen AB (publ)",
+    "sector": "Basic Materials"
   },
   {
     "isin": "SE0011166974",
@@ -6690,7 +7157,8 @@
       "gci"
     ],
     "land": "Schweden",
-    "liste": "Fabege AB (publ)"
+    "liste": "Fabege AB (publ)",
+    "sector": "Real Estate"
   },
   {
     "isin": "SE0011205202",
@@ -6704,7 +7172,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Vitrolife AB (publ)"
+    "liste": "Vitrolife AB (publ)",
+    "sector": "Healthcare"
   },
   {
     "isin": "SE0011337708",
@@ -6718,7 +7187,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "AAK AB (publ.)"
+    "liste": "AAK AB (publ.)",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "SE0012673267",
@@ -6732,7 +7202,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Evolution AB (publ)"
+    "liste": "Evolution AB (publ)",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "SE0012853455",
@@ -6746,7 +7217,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "EQT AB (publ)"
+    "liste": "EQT AB (publ)",
+    "sector": "Financial Services"
   },
   {
     "isin": "SE0014781795",
@@ -6760,7 +7232,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Addtech AB (publ.)"
+    "liste": "Addtech AB (publ.)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0015658109",
@@ -6774,7 +7247,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Epiroc AB (publ)"
+    "liste": "Epiroc AB (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0015810247",
@@ -6788,7 +7262,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Kinnevik AB"
+    "liste": "Kinnevik AB",
+    "sector": "Financial Services"
   },
   {
     "isin": "SE0015811963",
@@ -6802,7 +7277,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Investor AB (publ)"
+    "liste": "Investor AB (publ)",
+    "sector": "Financial Services"
   },
   {
     "isin": "SE0015949201",
@@ -6816,7 +7292,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Lifco AB (publ)"
+    "liste": "Lifco AB (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0015961909",
@@ -6830,7 +7307,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Hexagon AB (publ)"
+    "liste": "Hexagon AB (publ)",
+    "sector": "Technology"
   },
   {
     "isin": "SE0015988019",
@@ -6844,7 +7322,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "NIBE Industrier AB (publ)"
+    "liste": "NIBE Industrier AB (publ)",
+    "sector": "Industrials"
   },
   {
     "isin": "SE0016101844",
@@ -6858,7 +7337,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "Sinch AB (publ)"
+    "liste": "Sinch AB (publ)",
+    "sector": "Communication Services"
   },
   {
     "isin": "SE0016589188",
@@ -6872,7 +7352,8 @@
       "europa"
     ],
     "land": "Schweden",
-    "liste": "AB Electrolux (publ)"
+    "liste": "AB Electrolux (publ)",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "CA1363751027",
@@ -6886,7 +7367,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Canadian National Railway Company"
+    "liste": "Canadian National Railway Company",
+    "sector": "Industrials"
   },
   {
     "isin": "CH0012549785",
@@ -6900,7 +7382,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Sonova Holding AG"
+    "liste": "Sonova Holding AG",
+    "sector": "Healthcare"
   },
   {
     "isin": "CH0030170408",
@@ -6914,7 +7397,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Geberit AG"
+    "liste": "Geberit AG",
+    "sector": "Industrials"
   },
   {
     "isin": "CH0126881561",
@@ -6928,7 +7412,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Swiss Re AG"
+    "liste": "Swiss Re AG",
+    "sector": "Financial Services"
   },
   {
     "isin": "DK0060094928",
@@ -6942,7 +7427,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Ørsted A/S"
+    "liste": "Ørsted A/S",
+    "sector": "Utilities"
   },
   {
     "isin": "DK0060448595",
@@ -6956,7 +7442,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Coloplast A/S"
+    "liste": "Coloplast A/S",
+    "sector": "Healthcare"
   },
   {
     "isin": "DK0061539921",
@@ -6970,7 +7457,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Vestas Wind Systems A/S"
+    "liste": "Vestas Wind Systems A/S",
+    "sector": "Industrials"
   },
   {
     "isin": "DK0063855168",
@@ -6984,7 +7472,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Rockwool A/S"
+    "liste": "Rockwool A/S",
+    "sector": "Industrials"
   },
   {
     "isin": "ES0127797019",
@@ -6998,7 +7487,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "EDP Renewables, S.A."
+    "liste": "EDP Renewables, S.A.",
+    "sector": "Utilities"
   },
   {
     "isin": "ES0165386014",
@@ -7012,7 +7502,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Solaria Energía y Medio Ambiente, S.A."
+    "liste": "Solaria Energía y Medio Ambiente, S.A.",
+    "sector": "Utilities"
   },
   {
     "isin": "GB0003452173",
@@ -7026,7 +7517,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "FirstGroup plc"
+    "liste": "FirstGroup plc",
+    "sector": "Industrials"
   },
   {
     "isin": "GB0006776081",
@@ -7040,7 +7532,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Pearson plc"
+    "liste": "Pearson plc",
+    "sector": "Communication Services"
   },
   {
     "isin": "GB0009223206",
@@ -7054,7 +7547,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Smith & Nephew plc"
+    "liste": "Smith & Nephew plc",
+    "sector": "Healthcare"
   },
   {
     "isin": "GB00B1FH8J72",
@@ -7068,7 +7562,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Severn Trent PLC"
+    "liste": "Severn Trent PLC",
+    "sector": "Utilities"
   },
   {
     "isin": "GB00B39J2M42",
@@ -7082,7 +7577,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "United Utilities Group PLC"
+    "liste": "United Utilities Group PLC",
+    "sector": "Utilities"
   },
   {
     "isin": "GB00BD3VFW73",
@@ -7096,7 +7592,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Convatec Group PLC"
+    "liste": "Convatec Group PLC",
+    "sector": "Healthcare"
   },
   {
     "isin": "GB00BMWC6P49",
@@ -7110,7 +7607,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Mondi plc"
+    "liste": "Mondi plc",
+    "sector": "Basic Materials"
   },
   {
     "isin": "GB00BNNTLN49",
@@ -7124,7 +7622,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Pennon Group Plc"
+    "liste": "Pennon Group Plc",
+    "sector": "Utilities"
   },
   {
     "isin": "IE00028FXN24",
@@ -7138,7 +7637,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Smurfit Westrock Plc"
+    "liste": "Smurfit Westrock Plc",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "IE00BTN1Y115",
@@ -7152,7 +7652,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Medtronic plc"
+    "liste": "Medtronic plc",
+    "sector": "Healthcare"
   },
   {
     "isin": "JP3270000007",
@@ -7166,7 +7667,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Kurita Water Industries Ltd."
+    "liste": "Kurita Water Industries Ltd.",
+    "sector": "Industrials"
   },
   {
     "isin": "JP3300600008",
@@ -7180,7 +7682,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Konica Minolta, Inc."
+    "liste": "Konica Minolta, Inc.",
+    "sector": "Industrials"
   },
   {
     "isin": "JP3973400009",
@@ -7194,7 +7697,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Ricoh Company, Ltd."
+    "liste": "Ricoh Company, Ltd.",
+    "sector": "Industrials"
   },
   {
     "isin": "NL0011821392",
@@ -7208,7 +7712,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Signify N.V."
+    "liste": "Signify N.V.",
+    "sector": "Industrials"
   },
   {
     "isin": "NO0010715139",
@@ -7222,7 +7727,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Scatec ASA"
+    "liste": "Scatec ASA",
+    "sector": "Utilities"
   },
   {
     "isin": "US00737L1035",
@@ -7236,7 +7742,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Covista Inc."
+    "liste": "Covista Inc.",
+    "sector": "Consumer Defensive"
   },
   {
     "isin": "US1307881029",
@@ -7250,7 +7757,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "California Water Service Group"
+    "liste": "California Water Service Group",
+    "sector": "Utilities"
   },
   {
     "isin": "US3364331070",
@@ -7264,7 +7772,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "First Solar, Inc."
+    "liste": "First Solar, Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US41068X1000",
@@ -7278,7 +7787,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "HA Sustainable Infrastructure Capital, Inc."
+    "liste": "HA Sustainable Infrastructure Capital, Inc.",
+    "sector": "Financial Services"
   },
   {
     "isin": "US4586653044",
@@ -7292,7 +7802,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Interface, Inc."
+    "liste": "Interface, Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US6005441000",
@@ -7306,7 +7817,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "MillerKnoll, Inc."
+    "liste": "MillerKnoll, Inc.",
+    "sector": "Consumer Cyclical"
   },
   {
     "isin": "US6687711084",
@@ -7320,7 +7832,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Gen Digital Inc."
+    "liste": "Gen Digital Inc.",
+    "sector": "Technology"
   },
   {
     "isin": "US6866881021",
@@ -7334,7 +7847,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Ormat Technologies, Inc."
+    "liste": "Ormat Technologies, Inc.",
+    "sector": "Utilities"
   },
   {
     "isin": "US9078181081",
@@ -7348,7 +7862,8 @@
       "gci"
     ],
     "land": null,
-    "liste": "Union Pacific Corporation"
+    "liste": "Union Pacific Corporation",
+    "sector": "Industrials"
   },
   {
     "isin": "US98421M1062",
@@ -7362,6 +7877,7 @@
       "gci"
     ],
     "land": null,
-    "liste": "Xerox Holdings Corporation"
+    "liste": "Xerox Holdings Corporation",
+    "sector": "Industrials"
   }
 ]

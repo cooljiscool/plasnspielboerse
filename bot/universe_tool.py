@@ -2,6 +2,7 @@
 
   python -m bot.universe_tool official [x.pdf|x.txt|URL]   # EMPFOHLEN: die amtliche Wertpapierliste des Planspiels (ohne Angabe: die aktuelle von planspiel-boerse.de)
   python -m bot.universe_tool tested         # das getestete Universum (bot/universes.py: DAX, MDAX, Europa, USA) mit Namen und ISINs
+  python -m bot.universe_tool sectors        # Branche (Yahoo) für alle Titel in data/universe.json eintragen; die Begrenzung "höchstens 2 je Branche" wirkt nur bei bekannter Branche
   python -m bot.universe_tool build          # DAX/MDAX/TecDAX/SDAX aus Wikipedia + Symbolsuche (yfinance)
   python -m bot.universe_tool import x.csv   # eigene Liste: Spalten isin,name[,stars][,yf]
 
@@ -113,6 +114,34 @@ def build_official(source: str = None):
     return official.build(official.pdf_text(path))
 
 
+def _yahoo_sector(sym: str):
+    import yfinance as yf
+
+    for _ in range(2):
+        try:
+            sec = (yf.Ticker(sym).info or {}).get("sector")
+            if sec:
+                return sec
+        except Exception:  # noqa: BLE001 – Yahoo antwortet gelegentlich mit 404 oder leer
+            pass
+    return None
+
+
+def add_sectors(rows: list, lookup=None, workers: int = 8) -> tuple:
+    """Trägt bei jedem Titel die Branche ein (Feld `sector`), damit die Branchenbegrenzung schon beim ersten Lauf für alle Titel gilt und nicht nur für die, deren
+    Fundamentaldaten Yahoo am Tag liefert. Ein vorhandener Eintrag bleibt, wenn Yahoo nichts liefert. Gibt (Zeilen, Titel ohne Branche) zurück."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    lookup = lookup or _yahoo_sector
+    todo = [r for r in rows if r.get("yf")]
+    with ThreadPoolExecutor(workers) as ex:
+        found = list(ex.map(lambda r: lookup(r["yf"]), todo))
+    for r, sec in zip(todo, found):
+        if sec:
+            r["sector"] = sec
+    return rows, [r["name"] for r in rows if not r.get("sector")]
+
+
 def report_text(rep: dict) -> str:
     """Bericht der amtlichen Liste in Worten."""
     lines = [f"Amtliche Liste: {rep['aus_liste']} Aktien, davon {rep['universum']} mit Kürzel und aktuellen Kursen im Universum.",
@@ -126,7 +155,7 @@ def report_text(rep: dict) -> str:
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] not in ("build", "import", "tested", "official"):
+    if len(sys.argv) < 2 or sys.argv[1] not in ("build", "import", "tested", "official", "sectors"):
         raise SystemExit(__doc__)
     if sys.argv[1] == "official":
         rows, rep = build_official(sys.argv[2] if len(sys.argv) > 2 else None)
@@ -136,6 +165,8 @@ def main():
         old = os.path.join(config.DATA_DIR, "universe.json")
         if os.path.exists(old):
             os.replace(old, os.path.join(config.DATA_DIR, "universe_vorher.json"))   # eine Sicherung der bisherigen Liste
+    elif sys.argv[1] == "sectors":
+        rows = json.load(open(os.path.join(config.DATA_DIR, "universe.json")))
     elif sys.argv[1] == "tested":
         rows = build_tested()
     elif sys.argv[1] == "build":
@@ -143,6 +174,9 @@ def main():
     else:
         rows = [{"isin": r["isin"], "name": r["name"], "yf": r.get("yf") or None, "stars": int(r.get("stars") or 0)}
                 for r in csv.DictReader(open(sys.argv[2], encoding="utf-8"))]
+    if sys.argv[1] in ("official", "sectors"):
+        rows, missing = add_sectors(rows)
+        print(f"Branche bekannt bei {len(rows) - len(missing)} von {len(rows)} Titeln." + (f" Ohne Branche (Begrenzung je Branche wirkt dort nicht): {'; '.join(missing[:40])}" + (" ..." if len(missing) > 40 else "") if missing else ""))
     os.makedirs(config.DATA_DIR, exist_ok=True)
     json.dump(rows, open(os.path.join(config.DATA_DIR, "universe.json"), "w"), indent=2, ensure_ascii=False)
     print(f"{len(rows)} Wertpapiere gespeichert.")
