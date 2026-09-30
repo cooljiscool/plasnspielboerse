@@ -4,6 +4,24 @@ Dauer: etwa 2 bis 3 Stunden, davon viel Wartezeit. Am Ende läuft der Bot rund u
 
 **Vorweg prüfen:** 64-Bit-Prozessor, mindestens 4 GB Arbeitsspeicher (besser 8), mindestens 30 GB freie Festplatte, LAN-Kabel oder WLAN, ein funktionierender Akku ist von Vorteil (er wirkt wie eine Notstromversorgung). **Die Festplatte wird komplett gelöscht:** Sichere vorher alles, was du behalten willst.
 
+## Variante: Windows 10 oder 11 behalten (Docker Desktop)
+Wenn du einen Windows-10- oder -11-PC hast, brauchst du kein Ubuntu. Er muss dann aber **immer laufen**, wenn der Bot handeln soll (Zeitplan im Dashboard, Standard mehrmals am Börsentag).
+Hinweis: Für Windows 10 gibt es seit dem 14. Oktober 2025 keine kostenlosen Sicherheitsupdates mehr (außer mit dem kostenpflichtigen Zusatzprogramm). Auf einem Rechner mit deinen Zugangsdaten ist Windows 11 oder Linux besser.
+1. **Version prüfen:** Win + R, `winver`. Windows 10 braucht Version **22H2**, sonst erst aktualisieren.
+2. **Virtualisierung im BIOS einschalten** (Intel „VT-x“, AMD „SVM/AMD-V“). Ob sie an ist, zeigt der Task-Manager, Reiter Leistung, „Virtualisierung: Aktiviert“.
+3. **WSL 2 installieren:** PowerShell **als Administrator** öffnen, `wsl --install` eingeben, neu starten.
+4. **Docker Desktop** von docker.com installieren, starten, in den Einstellungen „Start Docker Desktop when you sign in“ anlassen.
+5. **Git** von git-scm.com installieren. Dann in PowerShell:
+```
+git clone https://github.com/cooljiscool/plasnspielboerse.git
+cd plasnspielboerse
+powershell -ExecutionPolicy Bypass -File start.ps1
+```
+Das Skript legt `.env` mit einem zufälligen Dashboard-Passwort an (es steht am Ende auf dem Bildschirm, notiere es), baut den Container (10 bis 20 Minuten) und startet ihn. Dashboard: `http://localhost:8080`. (Das Skript ist von mir nicht unter Windows ausprobiert: Meldet es einen Fehler, schick mir den Wortlaut. Alternativ `copy .env.example .env`, in `notepad .env` hinter `DASHBOARD_PASSWORD=` ein langes Passwort setzen und `docker compose up -d --build`.)
+6. **Damit er durchläuft:** Energieoptionen auf „Energie sparen: nie“ und bei einem Laptop „Beim Zuklappen: nichts unternehmen“; Windows-Update-„Nutzungszeit“ auf deine Handelszeiten legen (sonst startet er mitten am Tag neu); unter `netplwiz` „Automatisch anmelden“ einrichten, damit Docker Desktop nach einem Neustart von selbst startet.
+7. **Handy:** Tailscale für Windows (tailscale.com) installieren, anmelden, App auf dem Handy, dann `http://<Computername>:8080`. Keinen Port im Router freigeben.
+8. Weiter wie ab Abschnitt 9 („Im Dashboard einrichten“). Aktualisieren: `git pull`, dann `docker compose up -d --build`.
+
 ## 1. Installationsstick erstellen (am normalen PC)
 1. Lade **Ubuntu Server 24.04 LTS** herunter (ubuntu.com/download/server).
 2. Stecke einen USB-Stick (mindestens 8 GB, wird gelöscht) an, lade **balenaEtcher** (etcher.balena.io), wähle die ISO-Datei und den Stick, klicke auf Flash.
