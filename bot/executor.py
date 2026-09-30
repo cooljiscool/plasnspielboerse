@@ -10,7 +10,7 @@ from . import config
 ISIN_RE = re.compile(r"\b[A-Z]{2}[A-Z0-9]{9}\d\b")
 PLACEHOLDER_RE = re.compile(r"\{(\w+)\}")
 LOAD_TRIES, LOAD_WAIT_MS = 8, 1500   # so oft (und mit dieser Pause) wird ein halb geladenes Depot neu gelesen
-LOGIN_TRIES, LOGIN_WAIT_MS = 3, 12000   # Anmeldeversuche und Wartezeit je Versuch
+LOGIN_TRIES, LOGIN_WAIT_MS = 2, 12000   # Anmeldeversuche und Wartezeit je Versuch
 OPTIONAL_TIMEOUT_MS = 4000   # so lange wird auf einen Schritt mit "optional": true gewartet (etwa ein Bestätigungsfenster, das nicht immer erscheint)
 
 
@@ -98,6 +98,7 @@ class PlaywrightExecutor:
         except Exception:
             self._dump("login")
             self._dump_text()
+            print("Antworten der Plattform auf die Anmeldung: " + (" | ".join(getattr(self, "answers", [])[-6:]) or "keine (der Klick löste keine Anfrage aus)"))
             self.browser.close()
             self._pw.stop()
             raise
@@ -105,6 +106,8 @@ class PlaywrightExecutor:
 
     def _login(self) -> None:
         """Anmelden, bis zu dreimal: Die Seite nimmt den Klick manchmal nicht an (Formular noch nicht bereit) und bleibt dann ohne Meldung auf dem Login stehen."""
+        self.answers = []
+        self.page.on("response", lambda r: self.answers.append(f"{r.request.method} {r.url.split('?')[0][-60:]} -> {r.status}") if r.request.method in ("POST", "PUT") else None)
         for attempt in range(LOGIN_TRIES):
             self.page.goto(self.sel["login_url"])
             self._run_steps(self.sel.get("pre_login_steps", []), {})
