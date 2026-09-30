@@ -469,14 +469,104 @@ def _style_report(refresh: bool):
     hist = _official_history(rows, refresh)
     d = bt.Data.from_frames(hist["close"], hist["high"], hist["low"], hist["open"], [r["yf"] for r in rows])
     w = planspiel_windows(d.dates)
-    print(f"Strategie-Stile, {len(w)} Planspiel-Jahre, je 50.000 €, amtliches Universum in Euro. Rang = Anteil zufälliger 6-Titel-Depots, die geschlagen werden.\n")
-    print(f"{'Stil':10}{'Risiko':>7}{'Ø Rang':>8}{'früh':>6}{'spät':>6}{'unter besten 10 %':>19}{'unter schlechtesten 10 %':>26}{'Median':>9}{'Ø Gewinn':>10}{'schlechtestes':>15}{'bestes':>9}")
+    sec = {r["yf"]: r.get("sector") for r in rows}
+    print(f"Strategie-Stile, {len(w)} Planspiel-Jahre, je 50.000 €, amtliches Universum in Euro. Rang = Anteil zufälliger 6-Titel-Depots, die geschlagen werden.")
+    print("Branchenbegrenzung (höchstens 2 Titel je Branche) wie im Live-Betrieb: mit; zum Vergleich ohne (so wurden frühere Tabellen gerechnet).\n")
+    print(f"{'Stil':10}{'Branchen':>9}{'Risiko':>7}{'Ø Rang':>8}{'früh':>6}{'spät':>6}{'unter besten 10 %':>19}{'unter schlechtesten 10 %':>26}{'Median':>9}{'Ø Gewinn':>10}{'schlechtestes':>15}{'bestes':>9}")
     for name, spec in rules.STYLES.items():
-        df = evaluate(d, w, functools.partial(rules.decide, params={"style": name}))
-        pl = df.ret * 50000
-        e, late = df[df.index < SPLIT_YEAR], df[df.index >= SPLIT_YEAR]
-        print(f"{name:10}{spec['risiko']:>7}{df.pct.mean() * 100:>7.0f}%{e.pct.mean() * 100:>5.0f}%{late.pct.mean() * 100:>5.0f}%{int((df.pct >= .9).sum()):>13} von {len(df)}{int((df.pct <= .1).sum()):>20} von {len(df)}"
-              f"{pl.median():>+9,.0f}{pl.mean():>+10,.0f}{pl.min():>+15,.0f}{pl.max():>+9,.0f}", flush=True)
+        for use in (True, False):
+            for c in d.cols:
+                d.uni[c]["sector"] = sec.get(c) if use else None
+            df = evaluate(d, w, functools.partial(rules.decide, params={"style": name}))
+            pl = df.ret * 50000
+            e, late = df[df.index < SPLIT_YEAR], df[df.index >= SPLIT_YEAR]
+            print(f"{name:10}{'mit' if use else 'ohne':>9}{spec['risiko']:>7}{df.pct.mean() * 100:>7.0f}%{e.pct.mean() * 100:>5.0f}%{late.pct.mean() * 100:>5.0f}%{int((df.pct >= .9).sum()):>13} von {len(df)}"
+                  f"{int((df.pct <= .1).sum()):>20} von {len(df)}{pl.median():>+9,.0f}{pl.mean():>+10,.0f}{pl.min():>+15,.0f}{pl.max():>+9,.0f}", flush=True)
+
+
+def _protocol_report(year: int, refresh: bool):
+    """Protokoll eines Planspiel-Jahres für jeden Strategie-Stil (Markdown auf die Standardausgabe): jede Order mit Datum, Kurs, Stückzahl, Gebühr und Begründung, das Ergebnis je Wertpapier
+    und der Verlauf des Depotwerts. Mit der Branchenbegrenzung des Live-Betriebs (höchstens 2 je Branche); daneben das Ergebnis ohne sie, wie in den Tabellen der README."""
+    rows = _official_rows()
+    hist = _official_history(rows, refresh)
+    d = bt.Data.from_frames(hist["close"], hist["high"], hist["low"], hist["open"], [r["yf"] for r in rows])
+    w = [x for x in planspiel_windows(d.dates) if x[0] == year]
+    if not w:
+        raise SystemExit(f"Kein vollständiges Planspiel-Jahr {year} in den Kursdaten.")
+    _, s, e = w[0]
+    info = {r["yf"]: r for r in rows}
+    price = d.fr.a["price"]
+    every = float(np.nanmean(price[e] / price[s] - 1))
+
+    def styled(name):
+        def strat(pf, uni, snap, total, regime=None):
+            out = rules.decide(pf, uni, snap, total, regime, params={"style": name})
+            eff = rules.effective_style({"style": name}, regime)
+            for o in out["orders"]:
+                o["stil"] = eff
+            return out
+        return strat
+
+    def label(c):
+        return f"{info[c]['name']} ({info[c]['isin']})"
+
+    def run(name, sectors):
+        for c in d.cols:
+            d.uni[c]["sector"] = info[c].get("sector") if sectors else None
+        log = []
+        sim = bt.simulate(d, s, e, styled(name), 2, log=log)
+        return sim, log
+
+    eur = lambda v: f"{v:,.0f} €".replace(",", ".")
+    day = lambda iso: f"{iso[8:]}.{iso[5:7]}."
+    print(f"# Simulation Planspiel {year}/{str(year + 1)[2:]}: {d.dates[s].date():%d.%m.%Y} bis {d.dates[e].date():%d.%m.%Y}")
+    print()
+    print(f"Echte Kurse in Euro, amtliches Universum ({len(d.cols)} Titel), Start 50.000 €, Gebühr 0,3 % (mindestens 15 €), Ausführung zum Eröffnungskurs des Folgetags. "
+          f"Durchschnitt aller Titel im Zeitraum: {every * 100:+.1f} % ({eur(every * 50000)}). Entscheidung alle 2 Handelstage mit den Live-Regeln (ohne Claudes Recherche).")
+    print()
+    results = {}
+    for name, spec in rules.STYLES.items():
+        sim, log = run(name, True)
+        plain, _ = run(name, False)
+        end = sim["equity"][-1]
+        results[name] = (end, plain["equity"][-1], sim["fees"])
+        buys, sells = [t for t in log if t["aktion"] == "buy"], [t for t in log if t["aktion"] == "sell"]
+        print(f"## Stil `{name}` (Risiko {spec['risiko']} von 5): {spec['label']}")
+        print()
+        print(f"**Endwert {eur(end)}, {'Gewinn' if end >= 50000 else 'Verlust'} {eur(abs(end - 50000))} ({(end / 50000 - 1) * 100:+.1f} %)**, Gebühren {eur(sim['fees'])}, {len(buys)} Käufe, {len(sells)} Verkäufe "
+              f"(ohne Branchenbegrenzung: {eur(plain['equity'][-1])}).")
+        print()
+        print("| Datum | Aktion | Wertpapier | Stück | Kurs | Betrag | Gebühr | Stil | Grund |")
+        print("|---|---|---|---|---|---|---|---|---|")
+        for t in log:
+            print(f"| {day(t['datum'])} | {'Kauf' if t['aktion'] == 'buy' else 'Verkauf'} | {label(t['isin'])} | {t['stueck']} | {t['kurs']:.2f} € | {eur(t['stueck'] * t['kurs'])} | {t['gebuehr']:.2f} € | {t['stil'] or name} | {t['grund']} |")
+        print()
+        print("**Ergebnis je Wertpapier** (Kursgewinn ohne Gebühren):")
+        print()
+        print("| Wertpapier | erster Kauf | Verkauf | eingesetzt | zurück oder Wert am Ende | Ergebnis |")
+        print("|---|---|---|---|---|---|")
+        held = sim["held_value"]
+        total_pl = 0.0
+        for c in dict.fromkeys(t["isin"] for t in log):
+            mine = [t for t in log if t["isin"] == c]
+            spent = sum(t["stueck"] * t["kurs"] for t in mine if t["aktion"] == "buy")
+            back = sum(t["stueck"] * t["kurs"] for t in mine if t["aktion"] == "sell") + held.get(c, 0.0)
+            sold = [t["datum"] for t in mine if t["aktion"] == "sell"]
+            total_pl += back - spent
+            print(f"| {label(c)} | {day(mine[0]['datum'])} | {day(sold[-1]) if sold and c not in held else 'bis zum Ende gehalten'} | {eur(spent)} | {eur(back)} | {eur(back - spent)} ({(back / spent - 1) * 100:+.1f} %) |")
+        print()
+        print(f"Summe der Kursgewinne aller Wertpapiere: {eur(total_pl)}; Depotwert am Ende {eur(end)} (Unterschied: Gebühren {eur(sim['fees'])}, Bargeld und Rundung).")
+        print()
+        eq = sim["equity"]
+        pts = list(dict.fromkeys(list(range(0, len(eq), 5)) + [len(eq) - 1]))
+        print("**Verlauf des Depotwerts:** " + ", ".join(f"{d.dates[s + i].date():%d.%m.} {eur(eq[i])}" for i in pts))
+        print()
+    print("## Vergleich der Stile")
+    print()
+    print("| Stil | Endwert | Gewinn/Verlust | Gebühren | ohne Branchenbegrenzung |")
+    print("|---|---|---|---|---|")
+    for name, (end, plain, fees) in results.items():
+        print(f"| {name} | {eur(end)} | {eur(end - 50000)} ({(end / 50000 - 1) * 100:+.1f} %) | {eur(fees)} | {eur(plain)} |")
 
 
 def _nh_report(refresh: bool):
@@ -532,9 +622,12 @@ def main():
     ap.add_argument("--official", action="store_true", help="Strategien auf dem amtlichen Universum (data/universe.json) testen, Kurse in Euro")
     ap.add_argument("--nachhaltigkeit", action="store_true", help="Gesamtwertung gegen Nachhaltigkeitswertung bei reservierten Plätzen für Sterntitel (amtliches Universum, Euro)")
     ap.add_argument("--overlays", action="store_true", help="Marktbreite und Schutzschalter bei Depotrückgang als Überlagerung testen (Markt alle)")
+    ap.add_argument("--protokoll", type=int, metavar="JAHR", help="Protokoll eines Planspiel-Jahres (Start 1.10. dieses Jahres) für alle Stile: jede Order mit Begründung, Ergebnis je Wertpapier (amtliches Universum, Euro)")
     ap.add_argument("--strategien", action="store_true", help="Alle Strategie-Stile (sicher, breit, turnier, angriff, jackpot) über die 22 Planspiel-Jahre messen (amtliches Universum, Euro)")
     ap.add_argument("--trefferquote", action="store_true", help="Wie oft liegt die Auswahl richtig? Trefferquote der Käufe und Ergebnis der Positionen (amtliches Universum, Euro)")
     a = ap.parse_args()
+    if a.protokoll:
+        return _protocol_report(a.protokoll, a.refresh)
     if a.strategien:
         return _style_report(a.refresh)
     if a.trefferquote:

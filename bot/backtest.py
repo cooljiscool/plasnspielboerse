@@ -113,7 +113,7 @@ class Data:
         return self.fr.price_at(i, c)
 
 
-def simulate(d: Data, start: int, end: int, strategy, step: int = 2, capital: float = 50000.0) -> dict:
+def simulate(d: Data, start: int, end: int, strategy, step: int = 2, capital: float = 50000.0, log: list = None) -> dict:
     pf = {"cash": capital, "positions": {}, "buy_orders_executed": 0}
     pending, equity, fees, trades = [], [], 0.0, 0
     flows = {}   # je Titel: [Summe der Käufe, Summe der Verkäufe] (für den Nachhaltigkeitsertrag)
@@ -132,6 +132,8 @@ def simulate(d: Data, start: int, end: int, strategy, step: int = 2, capital: fl
                 fee = config.fee(sh * px)
                 pf["cash"] -= sh * px + fee
                 fees, trades = fees + fee, trades + 1
+                if log is not None:   # Protokoll jeder ausgeführten Order (bot/lab.py --protokoll)
+                    log.append({"datum": today.isoformat(), "aktion": "buy", "isin": o["isin"], "stueck": sh, "kurs": float(px), "gebuehr": fee, "grund": o.get("reason", ""), "stil": o.get("stil")})
                 flows.setdefault(o["isin"], [0.0, 0.0])[0] += sh * px
                 pos = pf["positions"].get(o["isin"])
                 if pos:
@@ -147,6 +149,8 @@ def simulate(d: Data, start: int, end: int, strategy, step: int = 2, capital: fl
                 fee = config.fee(sh * px)
                 pf["cash"] += sh * px - fee
                 fees, trades = fees + fee, trades + 1
+                if log is not None:
+                    log.append({"datum": today.isoformat(), "aktion": "sell", "isin": o["isin"], "stueck": sh, "kurs": float(px), "gebuehr": fee, "grund": o.get("reason", ""), "stil": o.get("stil")})
                 flows.setdefault(o["isin"], [0.0, 0.0])[1] += sh * px
                 pos["shares"] -= sh
                 if pos["shares"] == 0:

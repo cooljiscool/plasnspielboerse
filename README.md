@@ -125,6 +125,7 @@ ordnet jeder ISIN über die Yahoo-Suche das Börsenkürzel zu (Heimatbörse bevo
 | **amtliches Universum, in Euro (Standard-Regeln wie live)** | 511 | +13,1 % | −15,2 % | **67 %** (70 / 64) |
 | amtliches Universum, nur dessen Titel aus dem alten Testuniversum | 178 | +16,3 % | −8,4 % | 76 % (73 / 79) |
 
+Mit der Branchenbegrenzung des Live-Betriebs (höchstens 2 Titel je Branche, seit `universe_tool sectors`) liegt der Standardstil bei Rang 69 % statt 67 %; die Tabellen dieses Abschnitts sind ohne sie gerechnet.
 Einzelne Märkte im amtlichen Universum: DAX 50 %, MDAX 54 %, SDAX 65 %, Europa 58 %, USA 63 %. Bei um Wochen verschobenen Fenstern (±20, 40 und 60 Handelstage) liegt der Rang zwischen 53 und 69 %, **im Mittel bei 61 %**.
 
 **Was das heißt, ohne Schönfärberei:**
@@ -170,25 +171,27 @@ Die Positionen der Regeln in den 22 Planspiel-Jahren (154 Käufe, sonst bewertet
 - **Vorbehalte:** Parameter und Test nutzen dieselben 22 Jahre (Anpassung an die Vergangenheit), heutige Indexmitglieder (Überlebens-Verzerrung, die Zahlen sind eher zu gut). **Claudes eigene Prognosen** (Szenarien mit Bandbreiten je Titel) sind darin nicht enthalten und
   historisch nicht prüfbar; ihre Trefferquote zeigt erst `python -m bot.track` nach rund 4 bis 5 Wochen Betrieb (Stand jetzt: 0 gespeicherte Prognosen).
 
-**Strategie und Risiko wählen (Dashboard, Einstellungen, „Strategie und Risiko“, oder `BOT_STYLE`).** Der Bot kennt fünf Stile mit einer Risikostufe von 1 bis 5. Gemessen mit `python -m bot.lab --strategien` (amtliches Universum, Euro, 22 Planspiel-Jahre, 50.000 €, Gebühren, die Live-Regeln):
+**Strategie und Risiko wählen (Dashboard, Einstellungen, „Strategie und Risiko“, oder `BOT_STYLE`).** Der Bot kennt fünf Stile mit einer Risikostufe von 1 bis 5. Gemessen mit `python -m bot.lab --strategien` (amtliches Universum, Euro, 22 Planspiel-Jahre, 50.000 €, Gebühren, die Live-Regeln **mit der Branchenbegrenzung des Live-Betriebs**, höchstens 2 Titel je Branche; die Branchen stehen seit dem Befehl `universe_tool sectors` in `data/universe.json`):
 
-| Stil | Risiko | Ø Rang (früh / spät) | Jahre unter den besten 10 % | unter den schlechtesten 10 % | Median | schlechtestes / bestes Jahr |
-|---|---|---|---|---|---|---|
-| `sicher` (Standard): Momentum, 6 Titel, Volatilitätsbremse | 2 | 67 % (70 / 64) | 7 | 3 | +6.553 € | −7.598 € / +16.334 € |
-| `breit`: dasselbe Signal, 8 Titel | 2 | 70 % (75 / 65) | 7 | 2 | +7.306 € | −7.472 € / +18.716 € |
-| `turnier` (Aufholjagd): wie sicher, bei geschätztem Rang unter 35 % nach 35 Tagen Wechsel zu Angriff | 3 | 70 % (65 / 75) | 8 | 2 | +6.293 € | −7.598 € / +16.334 € |
-| `angriff`: 5 volatile Titel, Momentum plus Beta, keine Bremse | 4 | 72 % (62 / 82) | 10 | 3 | +7.909 € | −10.260 € / +56.478 € |
-| `jackpot`: 5 heiße Titel, nur 60-Tage-Momentum, keine Bremse | 5 | 60 % (48 / 73) | 11 | 5 | +4.451 € | −11.282 € / +45.174 € |
+| Stil | Risiko | Ø Rang (früh / spät) | Jahre unter den besten 10 % | unter den schlechtesten 10 % | Median | Ø Gewinn | schlechtestes / bestes Jahr |
+|---|---|---|---|---|---|---|---|
+| `sicher` (Standard): Momentum, 6 Titel, Volatilitätsbremse | 2 | 69 % (72 / 66) | 10 | 3 | +6.305 € | +5.778 € | −7.598 € / +20.194 € |
+| `breit`: dasselbe Signal, 8 Titel | 2 | 70 % (76 / 65) | 9 | 2 | +6.466 € | +5.563 € | −6.621 € / +19.626 € |
+| `turnier` (Aufholjagd): wie sicher, bei geschätztem Rang unter 35 % nach 35 Tagen Wechsel zu Angriff | 3 | 68 % (65 / 70) | 9 | 3 | +5.968 € | +5.463 € | −7.598 € / +21.238 € |
+| `angriff`: 5 volatile Titel, Momentum plus Beta, keine Bremse | 4 | 67 % (58 / 75) | 9 | 4 | +7.102 € | +9.227 € | −10.260 € / +56.478 € |
+| `jackpot`: 5 heiße Titel, nur 60-Tage-Momentum, keine Bremse | 5 | 61 % (51 / 71) | 10 | 5 | +4.451 € | +8.226 € | −8.469 € / +33.748 € |
+
+**Wichtig zur Branchenbegrenzung:** Ohne sie (so waren frühere Tabellen gerechnet) sah `angriff` mit Rang 72 % und `turnier` mit 70 % besser aus. Die Begrenzung, die der Live-Betrieb einhält, nimmt vor allem `angriff` den Vorsprung, weil in den Technologie-Jahren genau die Konzentration auf eine Branche gewonnen hatte. Einzelne Jahre schwanken dadurch stark (2025/26, `turnier`: 52.779 € ohne, 42.844 € mit Begrenzung).
 
 **Woher die Stile kommen (Recherche) und was daraus wurde:**
 - *Momentum* ist der am besten belegte Effekt. Seine Schwäche sind Crashs beim Marktwechsel ([Daniel und Moskowitz, „Momentum Crashes“](https://www.researchgate.net/publication/307823188_Momentum_Crashes)); verwaltet man das Momentum-Risiko (Volatilitätsskalierung, [Barroso und Santa-Clara](https://alphaarchitect.com/avoiding-momentum-crashes/)), sinken die Crashs und die Rendite je Risiko steigt. Das ist die Volatilitätsbremse in `sicher`.
 - *Niedrige Schwankung plus Momentum:* Die Literatur ist gemischt, in nordischen Märkten schlug keine Kombination reines Momentum ([Applied Economics 2024](https://www.tandfonline.com/doi/full/10.1080/00036846.2024.2337806)). Ich habe es getestet (Momentum je Schwankung, nur Titel unter 35 bis 40 % Volatilität): **Rang nur 43 bis 47 %, schlechter als Zufall**, deshalb kein Stil.
 - *Qualität plus Momentum* gilt in der Literatur als robuster als reines Momentum (Überblick: [Robeco: Guide to factor investing](https://www.robeco.com/files/docm/docu-robeco-guide-to-factor-investing-global.pdf)), braucht aber historische Bilanzdaten, die ich nicht kostenlos habe: nicht testbar, bleibt Information für Claude.
-- *Turnier-Logik:* In Wettbewerben mit Rangwertung sollten Führende Positionen sichern und Zurückliegende mehr Risiko eingehen (z. B. [Prize and Risk-Taking Strategy in Tournaments, IZA](https://docs.iza.org/dp1345.pdf); [Winning ways, Oxford](https://ora.ox.ac.uk/objects/uuid:21f241bd-a305-4bdf-bc86-36dcf65b7201/files/sd217qr534)). Umgesetzt als `turnier` mit der geschätzten Rangposition gegen Zufallsdepots (`bot/rank.py`, Startstand in `data/start.json`). Nur die Hälfte der Theorie trägt in den Messwerten: **hinten Angriff hilft (Rang 70 %), vorn absichern schadet (Rang 62 %)**, deshalb sichert `turnier` nie ab.
+- *Turnier-Logik:* In Wettbewerben mit Rangwertung sollten Führende Positionen sichern und Zurückliegende mehr Risiko eingehen (z. B. [Prize and Risk-Taking Strategy in Tournaments, IZA](https://docs.iza.org/dp1345.pdf); [Winning ways, Oxford](https://ora.ox.ac.uk/objects/uuid:21f241bd-a305-4bdf-bc86-36dcf65b7201/files/sd217qr534)). Umgesetzt als `turnier` mit der geschätzten Rangposition gegen Zufallsdepots (`bot/rank.py`, Startstand in `data/start.json`). Nur ein Teil der Theorie trägt in den Messwerten: **vorn absichern schadet (Rang 62 % statt 67 bis 69 %)**, deshalb sichert `turnier` nie ab. Ob „hinten Angriff“ hilft, ist offen: ohne Branchenbegrenzung schien es so (Rang 70 %), mit ihr nicht mehr (68 % gegen 69 % bei `sicher`).
 - *Breit streuen:* Der Durchschnitt der 40 Momentum-Kandidaten lag mit +11,0 % vor den 6 stärksten (+10,2 %), also 8 statt 6 Titel (`breit`), soweit die Mindestorder von 5.000 € es erlaubt.
-- *Jackpot und Angriff* nutzen, dass der Rang gewinnt, nicht die Rendite: Wenige große Treffer bringen den Spitzenplatz, kosten aber im Schnitt Rang.
+- *Jackpot und Angriff* nutzen, dass der Rang gewinnt, nicht die Rendite: Wenige große Treffer bringen den Spitzenplatz, das zeigt der höhere Durchschnittsgewinn; im Rang liegen sie nicht vor `sicher`.
 
-**Ehrlich zur Aussagekraft:** Sieben bis zehn Varianten auf denselben 22 Jahren verglichen, der Unterschied von 2 bis 5 Rangpunkten zwischen `sicher`, `breit` und `turnier` liegt im Rauschen. Wirklich verschieden ist nur das Risiko: `angriff` und `jackpot` haben deutlich größere Spreizung (bestes Jahr über +45.000 €, schlechtestes bis −11.000 €). `angriff` und `jackpot` verdanken viel den letzten elf Jahren (Tech-Boom), in den ersten elf war `sicher` besser. Das Schattendepot vergleicht zusätzlich Claudes Auswahl mit dem gewählten Stil.
+**Ehrlich zur Aussagekraft:** Mehrere Varianten auf denselben 22 Jahren verglichen: Der Unterschied von 1 bis 2 Rangpunkten zwischen `sicher`, `breit` und `turnier` liegt im Rauschen. Wirklich verschieden ist nur das Risiko: `angriff` und `jackpot` haben deutlich größere Spreizung (bestes Jahr +34.000 bis +56.000 €, schlechtestes bis −10.000 €) und einen höheren Durchschnittsgewinn, aber keinen besseren Rang; `jackpot` liegt sogar darunter. Beide verdanken viel den letzten elf Jahren (Tech-Boom), in den ersten elf war `sicher` besser. Das Schattendepot vergleicht zusätzlich Claudes Auswahl mit dem gewählten Stil.
 
 **Claude gegen Regeln, vollautomatisch (Schattendepot, `bot/shadow.py`, `python -m bot.shadow`).** Ob Claude allein besser wählt als die Regeln, lässt sich historisch nicht prüfen. Deshalb misst der Bot es nach vorn, ohne dass du etwas tun musst:
 1. An jedem Handelstag wählt Claude **ohne Regelvorschlag** 6 Titel aus denselben 40 Kandidaten (eigener Aufruf, ohne Werkzeuge, rund 0,15 $ Rechenwert; es wird nichts gekauft). Dazu speichert der Bot die Auswahl der Regeln vom selben Tag und alle Kurse als Maßstab (Durchschnitt aller Titel).

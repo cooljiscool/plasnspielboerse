@@ -171,3 +171,23 @@ def test_hit_report_runs_on_a_small_universe(monkeypatch, capsys):
     assert "A) Käufe zum Start der" in out and "B) Käufe an beliebigen Tagen" in out and "C) Was aus den Positionen" in out
     assert out.count(" Tage") >= 8 and "alle Positionen" in out and "je Planspiel-Jahr" in out and "2020/21" in out
     assert "zu wenig Kursdaten   (nur Jahre bis 2014)" in out                                     # die Testdaten beginnen 2019: kein früher Teil, aber kein Absturz
+
+
+def test_protocol_report_lists_every_order_with_reason_and_result_per_style(monkeypatch, capsys):
+    idx = pd.bdate_range("2019-01-01", periods=1600)
+    rng = np.random.default_rng(2)
+    syms = [f"T{j}.DE" for j in range(25)]
+    close = pd.DataFrame({s: 100 * np.cumprod(1 + 0.0005 + 0.012 * rng.standard_normal(len(idx))) for s in syms}, index=idx)
+    for ix in ("^GDAXI", "^GSPC", "^VIX"):
+        close[ix] = 100 * np.cumprod(1 + 0.0003 + 0.008 * rng.standard_normal(len(idx)))
+    hist = {"close": close, "high": close * 1.005, "low": close * 0.995, "open": close}
+    rows = [{"yf": s, "isin": f"DE000000{j:04d}", "name": f"Firma {j}", "markt": "dax", "currency": "EUR", "sector": "A" if j % 2 else "B"} for j, s in enumerate(syms)]
+    monkeypatch.setattr(lab, "_official_rows", lambda: rows)
+    monkeypatch.setattr(lab, "_official_history", lambda r, refresh: hist)
+    lab._protocol_report(2021, False)
+    out = capsys.readouterr().out
+    for style in ("sicher", "breit", "turnier", "angriff", "jackpot"):
+        assert f"## Stil `{style}`" in out
+    assert "# Simulation Planspiel 2021/22" in out and "| Kauf | Firma " in out and "Momentum Rang" in out and "**Ergebnis je Wertpapier**" in out and "## Vergleich der Stile" in out
+    with pytest.raises(SystemExit, match="1999"):
+        lab._protocol_report(1999, False)

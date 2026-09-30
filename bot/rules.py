@@ -58,15 +58,15 @@ def score_mom60(m: dict, stars: int = 0) -> float:
 # Strategie-Stile. Messwerte: `python -m bot.lab --strategien` (amtliches Universum in Euro, 22 Planspiel-Jahre, 50.000 €, Gebühren). Rang = Anteil zufälliger 6-Titel-Depots, die geschlagen werden.
 STYLES = {
     "sicher": {"label": "Sicher: Momentum, 6 Titel, Volatilitätsbremse", "risiko": 2, "params": {}, "score": score,
-               "text": "Standard. 6 stärkste Titel nach mittelfristigem Momentum, bei unruhigem Markt weniger investiert. Rang 67 % (früh 70 / spät 64), schlechtestes Jahr −7.598 €, bestes +16.334 €."},
+               "text": "Standard. 6 stärkste Titel nach mittelfristigem Momentum, bei unruhigem Markt weniger investiert. Rang 69 % (früh 72 / spät 66), schlechtestes Jahr −7.598 €, bestes +20.194 €."},
     "breit": {"label": "Breit gestreut: Momentum, 8 Titel", "risiko": 2, "params": {"n_positions": 8, "vol_scale": False}, "score": score,
-              "text": "Dasselbe Signal, 8 statt 6 Titel: ein einzelner Fehlgriff zählt weniger. Rang 70 % (früh 75 / spät 65), schlechtestes Jahr −7.472 €, bestes +18.716 €. Kaum Unterschied zu „sicher“."},
+              "text": "Dasselbe Signal, 8 statt 6 Titel: ein einzelner Fehlgriff zählt weniger. Rang 70 % (früh 76 / spät 65), schlechtestes Jahr −6.621 €, bestes +19.626 €. Kaum Unterschied zu „sicher“."},
     "turnier": {"label": "Aufholjagd: sicher, aber hinten mehr Risiko", "risiko": 3, "params": {}, "score": score,
-                "text": "Wie „sicher“, wechselt aber zu „angriff“, sobald der Bot nach 35 Tagen im geschätzten Rang unter 35 % liegt (Turnier-Logik: wer hinten liegt, hat wenig zu verlieren). Rang 70 % (früh 65 / spät 75), schlechtestes Jahr −7.598 €, bestes +16.334 €."},
+                "text": "Wie „sicher“, wechselt aber zu „angriff“, sobald der Bot nach 35 Tagen im geschätzten Rang unter 35 % liegt (Turnier-Logik: wer hinten liegt, hat wenig zu verlieren). Rang 68 % (früh 65 / spät 70), schlechtestes Jahr −7.598 €, bestes +21.238 €. Im Test kein messbarer Vorteil gegenüber „sicher“."},
     "angriff": {"label": "Angriff: 5 volatile Titel mit hohem Beta", "risiko": 4, "params": ATTACK, "score": score_attack,
-                "text": "5 Titel, keine Volatilitätsbremse, auch sehr schwankende Titel. Rang 72 % (früh 62 / spät 82), 10 von 22 Jahren unter den besten 10 %, schlechtestes Jahr −10.260 €, bestes +56.478 €."},
+                "text": "5 Titel, keine Volatilitätsbremse, auch sehr schwankende Titel. Rang 67 % (früh 58 / spät 75), Ø Gewinn +9.227 € gegen +5.778 € bei „sicher“, aber schlechtestes Jahr −10.260 €, bestes +56.478 €: höhere Streuung, der Rang ist nicht besser."},
     "jackpot": {"label": "Jackpot: 5 heiße Titel, nur 60-Tage-Momentum", "risiko": 5, "params": ATTACK, "score": score_mom60,
-                "text": "Für die Chance auf Platz 1 bei hohem Verlustrisiko. Rang nur 60 % (früh 48 / spät 73), 11 von 22 Jahren unter den besten 10 %, aber 5 unter den schlechtesten 10 %, schlechtestes Jahr −11.282 €, bestes +45.174 €."},
+                "text": "Für die Chance auf Platz 1 bei hohem Verlustrisiko. Rang nur 61 % (früh 51 / spät 71), 10 von 22 Jahren unter den besten 10 %, aber 5 unter den schlechtesten 10 %, schlechtestes Jahr −8.469 €, bestes +33.748 €."},
 }
 
 
