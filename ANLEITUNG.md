@@ -4,7 +4,7 @@ Dauer: etwa 1 bis 2 Stunden, einmalig. Zeit-Ziel: fertig vor dem Spielstart am 1
 
 ## Schnellstart (wenn Docker schon läuft)
 ```
-git clone -b claude/intelligent-babbage-dcaf9t https://github.com/cooljiscool/plasnspielboerse.git
+git clone https://github.com/cooljiscool/plasnspielboerse.git
 cd plasnspielboerse
 sh start.sh
 ```
@@ -30,7 +30,6 @@ Die Wertpapierliste (517 Titel mit Branchen) ist im Repo enthalten, ebenso alle 
 ```
 git clone https://github.com/cooljiscool/plasnspielboerse.git
 cd plasnspielboerse
-git checkout claude/intelligent-babbage-dcaf9t
 ```
 Dann `sh start.sh`: Es legt `.env` mit einem zufälligen Passwort fürs Handy-Dashboard an (oder setze selbst eins bei `DASHBOARD_PASSWORD`, mindestens 8 Zeichen, besser 20+).
 
