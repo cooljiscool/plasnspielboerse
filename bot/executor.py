@@ -10,7 +10,7 @@ from . import config
 ISIN_RE = re.compile(r"\b[A-Z]{2}[A-Z0-9]{9}\d\b")
 PLACEHOLDER_RE = re.compile(r"\{(\w+)\}")
 LOAD_TRIES, LOAD_WAIT_MS = 8, 1500   # so oft (und mit dieser Pause) wird ein halb geladenes Depot neu gelesen
-LOGIN_TRIES, LOGIN_WAIT_MS = 2, 12000   # Anmeldeversuche und Wartezeit je Versuch
+LOGIN_TRIES, LOGIN_WAIT_MS = 1, 15000   # genau ein Anmeldeversuch: Die Plattform sperrt das Konto nach mehr als 3 falschen Passwörtern
 OPTIONAL_TIMEOUT_MS = 4000   # so lange wird auf einen Schritt mit "optional": true gewartet (etwa ein Bestätigungsfenster, das nicht immer erscheint)
 
 
@@ -105,7 +105,7 @@ class PlaywrightExecutor:
         return self
 
     def _login(self) -> None:
-        """Anmelden, bis zu dreimal: Die Seite nimmt den Klick manchmal nicht an (Formular noch nicht bereit) und bleibt dann ohne Meldung auf dem Login stehen."""
+        """Anmelden (LOGIN_TRIES Versuche). Wiederholt wird nur, wenn gar nichts geschah; bei falschem Passwort gilt jeder Versuch, nach mehr als 3 sperrt die Plattform das Konto."""
         self.answers = []
         self.page.on("response", lambda r: self.answers.append(f"{r.request.method} {r.url.split('?')[0][-60:]} -> {r.status}") if r.request.method in ("POST", "PUT") else None)
         for attempt in range(LOGIN_TRIES):
