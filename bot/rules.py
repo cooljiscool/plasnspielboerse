@@ -18,7 +18,11 @@ from . import config, signals
 
 PARAMS = {"trend_filter": False, "rsi_filter": True, "hard_stop": True, "trailing": False, "trend_break": False,
           "sma50_sell": False, "vol_weight": False, "regime": False, "earnings_blackout": True, "vol_scale": True,
-          "keep_frac": 0.7, "n_positions": 6, "min_score": None, "kronos_weight": 0.0, "nh_slots": config.NH_SLOTS}
+          "keep_frac": 0.7, "n_positions": 6, "min_score": None, "kronos_weight": 0.0, "nh_slots": config.NH_SLOTS, "style": config.STYLE}
+
+# Stil "angriff" (Einstellung BOT_STYLE): 5 statt 6 Titel (mehr als 20 % je Titel sind verboten), keine Volatilitätsbremse, auch sehr schwankende Titel (bis 150 % Volatilität),
+# Ranking nach Momentum plus Beta. Im Test (22 Planspiel-Jahre): Rang 72 % statt 67 %, 10 statt 7 Jahre unter den besten 10 %, aber tieferer schlechtester Fall; siehe README.
+ATTACK = {"n_positions": 5, "vol_scale": False, "max_vol": 1.5}
 
 VOL_TARGET = 0.20        # Zielschwankung des Marktes; darüber sinkt die investierte Quote
 VOL_FLOOR = 0.40         # mindestens 40 % investiert
@@ -40,6 +44,16 @@ def score(m: dict, stars: int = 0) -> float:
     return (m["ret_60d"] + r120 + m.get("mom_12_1", r120)) / 3 + 0.01 * stars
 
 
+def score_attack(m: dict, stars: int = 0) -> float:
+    """Stil Angriff: Mittel aus 60- und 120-Tage-Rendite plus Zuschlag für hohes Beta (Titel, die den Markt überproportional mitnehmen)."""
+    return 0.5 * m["ret_60d"] + 0.5 * m.get("ret_120d", m["ret_60d"]) + 0.03 * m.get("beta", 1.0) + 0.01 * stars
+
+
+def active_score(P: dict = None):
+    """Bewertungsformel des eingestellten Stils; überall dort, wo die Kandidaten gerankt werden."""
+    return score_attack if (P or PARAMS).get("style") == "angriff" else score
+
+
 def score_60_120(m: dict, stars: int = 0) -> float:
     """Frühere Formel (Vergleich im Backtest): Mittel aus 60- und 120-Tage-Rendite."""
     return 0.5 * m["ret_60d"] + 0.5 * m.get("ret_120d", m["ret_60d"]) + 0.01 * stars
@@ -55,7 +69,7 @@ def score_mix(m: dict, stars: int = 0) -> float:
 
 def can_buy(m: dict, regime_label: str = "risk_on", P: dict = None) -> bool:
     P = P or PARAMS
-    if m["price"] < config.MIN_PRICE_EUR or m["vol_20d"] > MAX_VOL or m["ret_20d"] <= -0.10:
+    if m["price"] < config.MIN_PRICE_EUR or m["vol_20d"] > P.get("max_vol", MAX_VOL) or m["ret_20d"] <= -0.10:
         return False
     if P["trend_filter"] and (m.get("above_sma50") is False or m.get("trend_up") is False):
         return False
@@ -105,7 +119,9 @@ def vol_scaled(mkt_vol, n: int, capital: float) -> tuple:
 def decide(pf: dict, universe: dict, snap: dict, total: float, regime: dict = None,
            params: dict = None, score_fn=None) -> dict:
     P = {**PARAMS, **(params or {})}
-    score_fn = score_fn or score
+    if P.get("style") == "angriff":
+        P = {**P, **{k: v for k, v in ATTACK.items() if k not in (params or {})}}   # ausdrücklich übergebene Parameter gehen vor
+    score_fn = score_fn or active_score(P)
     shown = regime or {"label": "unbekannt", "score": "-"}   # nur zur Anzeige; gesteuert wird nur mit PARAMS["regime"]
     regime = _regime(regime, P["regime"])
     n_target, exposure = P["n_positions"] or regime["positions"], regime["exposure"]

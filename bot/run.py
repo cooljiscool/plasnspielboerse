@@ -57,7 +57,7 @@ def main():
         total = risk.portfolio_value(pf, prices)
 
         # Engere Auswahl: Depottitel plus die stärksten nach Regelscore bekommen Fundamentaldaten und Recherche.
-        top = sorted(snap, key=lambda i: rules.score(snap[i], universe[i].get("stars", 0)), reverse=True)
+        top = sorted(snap, key=lambda i: rules.active_score()(snap[i], universe[i].get("stars", 0)), reverse=True)
         shortlist = [i for i in dict.fromkeys([*pf["positions"], *top[:config.SHORTLIST]]) if i in snap]
         try:
             for isin, f in fundamentals.get(universe, snap, shortlist, today).items():

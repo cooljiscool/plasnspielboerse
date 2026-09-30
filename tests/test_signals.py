@@ -302,3 +302,19 @@ def test_nh_slots_come_from_the_environment_within_bounds(monkeypatch):
         monkeypatch.delenv("BOT_NH_SLOTS")
         importlib.reload(config)
         importlib.reload(rules)
+
+
+# --- Stil Angriff ---
+def test_attack_style_uses_five_titles_beta_score_and_allows_volatile_titles():
+    uni = {f"S{i}": {"name": f"S{i}", "stars": 0} for i in range(30)}
+    snap = {f"S{i}": {"price": 100.0, "vol_20d": 0.9 if i == 29 else 0.2, "ret_20d": 0.01, "ret_60d": 0.01 * i, "ret_120d": 0.01 * i, "mom_12_1": 0.01 * i, "beta": 3.0 if i == 10 else 1.0} for i in range(30)}
+    pf = {"cash": 50000.0, "positions": {}}
+    safe = [o["isin"] for o in rules.decide(pf, uni, snap, 50000.0)["orders"] if o["action"] == "buy"]
+    attack = [o["isin"] for o in rules.decide(pf, uni, snap, 50000.0, params={"style": "angriff"})["orders"] if o["action"] == "buy"]
+    assert "S29" not in safe and len(safe) >= 5                                     # sehr volatiler Titel bleibt im Standard gesperrt
+    assert len(attack) == 5 and "S29" in attack                                     # im Angriff erlaubt, genau 5 Positionen
+    assert rules.score_attack(snap["S10"]) - rules.score(snap["S10"]) > 0.05       # hohes Beta hebt den Score
+    assert rules.PARAMS["style"] == "sicher" and rules.active_score() is rules.score
+    assert rules.active_score({"style": "angriff"}) is rules.score_attack
+    explicit = [o["isin"] for o in rules.decide(pf, uni, snap, 50000.0, params={"style": "angriff", "n_positions": 3})["orders"] if o["action"] == "buy"]
+    assert len(explicit) == 3                                                       # ausdrückliche Parameter gehen vor

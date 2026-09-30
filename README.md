@@ -170,6 +170,17 @@ Die Positionen der Regeln in den 22 Planspiel-Jahren (154 Käufe, sonst bewertet
 - **Vorbehalte:** Parameter und Test nutzen dieselben 22 Jahre (Anpassung an die Vergangenheit), heutige Indexmitglieder (Überlebens-Verzerrung, die Zahlen sind eher zu gut). **Claudes eigene Prognosen** (Szenarien mit Bandbreiten je Titel) sind darin nicht enthalten und
   historisch nicht prüfbar; ihre Trefferquote zeigt erst `python -m bot.track` nach rund 4 bis 5 Wochen Betrieb (Stand jetzt: 0 gespeicherte Prognosen).
 
+**Stil „Angriff“ für die Chance auf einen Spitzenplatz** (Dashboard, Einstellungen, „Stil“, oder `BOT_STYLE=angriff`; Standard ist „sicher“). Weil höchstens 20 % je Titel erlaubt sind, geht mehr Konzentration als 5 Titel nicht; der Stil erhöht das Risiko über die Auswahl:
+5 statt 6 Titel, keine Volatilitätsbremse, auch sehr schwankende Titel (bis 150 % Volatilität), Ranking nach Momentum plus Beta. Gemessen an den 22 Planspiel-Jahren (amtliches Universum, Euro, 50.000 €, `lab.evaluate` mit den Live-Regeln):
+
+| Stil | Ø Rang | Jahre unter den besten 10 % | Median | Ø Gewinn | schlechtestes / bestes Jahr |
+|---|---|---|---|---|---|
+| sicher (Standard) | 67 % (früh 70 / spät 64) | 7 von 22 | +6.553 € | +5.027 € | −6.391 € / +16.334 € |
+| angriff | 72 % (früh 62 / spät 82) | 10 von 22 | +7.909 € | +10.186 € | −10.260 € / +56.478 € |
+
+**Vorbehalte:** Es wurden sieben Varianten verglichen, eine passt leichter zufällig (Anpassung an die Vergangenheit). Der Vorteil stammt überwiegend aus den letzten elf Jahren (Tech-Boom), in den ersten elf war „sicher“ besser. Die besten Jahre sind einzelne Volltreffer
+bei sehr stark gestiegenen Aktien, und die Auswahl heutiger Indexmitglieder begünstigt gerade solche Aktien. Rechne im Live-Betrieb mit einer größeren Streuung als bei „sicher“.
+
 **Die zweite Wertung: Nachhaltigkeit.** Laut Regeln zählt dort der *Nachhaltigkeitsertrag*, die aufsummierten Kursgewinne und -verluste aller im Depot gehandelten Wertpapiere mit Stern (im amtlichen Universum die 50 Titel des
 Global Challenges Index; bei Gleichstand gewinnt das Depot mit weniger Kaufaufträgen). Sie hängt also davon ab, wie viel Geld in Sterntiteln steckt, nicht vom Depot insgesamt. Bisher gab der Bot Sterntiteln nur einen Bonus von einem Punkt im Ranking, kaum
 spürbar: In den Tests handelte die Strategie nur in 6 von 22 Jahren überhaupt einen Sterntitel, die Nachhaltigkeitswertung lief also praktisch ohne den Bot. **Neu ist eine Einstellung** (Dashboard, Einstellungen, „Nachhaltigkeitswertung: Plätze im Depot für Titel mit Stern“,

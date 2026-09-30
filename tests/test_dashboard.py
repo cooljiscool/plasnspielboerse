@@ -216,3 +216,12 @@ def test_nh_slots_setting_is_validated_and_reaches_the_bot(authed, app):
     for bad in (7, -1, "2", 1.5, True, None):
         assert authed.post("/api/settings", headers=H, json={"nh_slots": bad}).status_code == 400
     assert authed.get("/api/status").get_json()["nh_slots"] == 3                    # ungültige Eingaben ändern nichts
+
+
+def test_style_setting_is_validated_and_reaches_the_bot(authed, app):
+    assert authed.get("/api/status").get_json()["style"] == "sicher"
+    assert authed.post("/api/settings", headers=H, json={"style": "angriff"}).get_json()["style"] == "angriff"
+    assert app.runner._env(False)["BOT_STYLE"] == "angriff"
+    for bad in ("wild", 3, None):
+        assert authed.post("/api/settings", headers=H, json={"style": bad}).status_code == 400
+    assert authed.get("/api/status").get_json()["style"] == "angriff"
