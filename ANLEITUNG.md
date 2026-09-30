@@ -11,6 +11,8 @@ sh start.sh
 `start.sh` erzeugt ein zufälliges Dashboard-Passwort (in `.env`), baut den Container und startet das Dashboard auf http://localhost:8080. Alles Weitere (Token, Login, Liste laden, Selbsttest, Start) machst du im Dashboard, die Schritte 5 bis 13 unten.
 Die Wertpapierliste (517 Titel mit Branchen) ist im Repo enthalten, ebenso alle Tests und Auswertungen (`python -m bot.lab --trefferquote`, `python scripts/test_claude_auswahl.py`, `python -m bot.shadow`).
 
+Alter Laptop als Dauerrechner? Die komplette Einrichtung von Grund auf (Ubuntu Server, Docker, Tailscale fürs Handy, Neustart-Test) steht in `SERVER_ANLEITUNG.md`.
+
 ## 0. Was du brauchst
 - Einen Rechner, der dauerhaft an ist (Mini-PC, Raspberry Pi 4/5, günstiger Server oder dein PC, solange er läuft). Das Handy steuert den Bot nur im Browser.
 - Dein Claude-Pro-Abo (kein API-Key nötig).
