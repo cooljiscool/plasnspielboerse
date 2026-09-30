@@ -57,14 +57,52 @@ Im Tab Einstellungen bei „Kontakt für die SEC-Insiderdaten“ deinen Namen un
 ## 9. Wertpapierliste laden
 Tab **Steuerung**, Knopf **Wertpapierliste des Planspiels laden** (1 bis 2 Minuten, Ausgabe erscheint darunter). Wiederhole das kurz vor dem Start und gelegentlich danach, weil sich die Liste ändern kann.
 
-## 10. Selektoren aufzeichnen (der einzige manuelle Teil)
-Der Bot bedient die Weboberfläche des Planspiels. Dafür muss einmal aufgezeichnet werden, wo geklickt wird.
-1. Auf dem Rechner: `pip install playwright && playwright install chromium`, dann `playwright codegen https://trading.planspiel-boerse.de/web/auth/login`.
-2. Im geöffneten Browser nacheinander ausführen: Login, Depotansicht, eine Kauforder bis zur Bestätigung, eine Verkauforder (mit einer kleinen Order oder im Übungsdepot).
-3. `cp data/selectors.example.json data/selectors.json` und jeden `SELEKTOR_…`-Eintrag durch die aufgezeichneten Selektoren ersetzen. Order-Schritte sind eine Liste aus `click`/`fill`/`press`/`select`/`wait`/`goto`; `{isin}`, `{name}`, `{shares}` werden eingesetzt. Nimmt das Suchfeld keine ISIN an, nutze `{name}`.
-4. Alternativ den Inhalt von `selectors.json` im Dashboard (Einstellungen) einfügen.
-Oder gib Claude (Desktop-App oder Claude Code auf deinem Rechner) den fertigen Prompt aus `ANWEISUNG_SELEKTOREN.md`: Er zeichnet auf, schreibt die Datei und prüft sie mit dem Selbsttest; das Passwort tippst du dabei selbst.
-Hilfe: Schick mir Screenshots der Seiten (ohne persönliche Daten), dann schreibe ich die Selektoren.
+## 10. Selektoren aufzeichnen (Schritt für Schritt, ca. 30 bis 45 Minuten)
+Der Bot bedient die Planspiel-Seite wie ein Mensch. Ein **Selektor** ist die Angabe, wo er klickt oder tippt („das Feld für den Benutzernamen“). Du ermittelst sie einmal mit dem Playwright-Recorder und trägst sie in `data/selectors.json` ein.
+
+**A. Vorbereiten (auf deinem Rechner, nicht im Docker-Container)**
+1. Python 3.11 installieren, im Repo-Ordner: `pip install playwright` und `playwright install chromium`.
+2. `cp data/selectors.example.json data/selectors.json` (Windows: Datei kopieren und umbenennen) und in einem Editor öffnen.
+
+**B. Recorder starten**
+3. `playwright codegen --target python https://trading.planspiel-boerse.de/web/auth/login`. Es öffnen sich zwei Fenster: der Browser und der „Playwright Inspector“ mit dem mitgeschriebenen Code.
+
+**C. Anmeldung aufnehmen**
+4. Im Browser Benutzername und Passwort eingeben und auf Anmelden klicken. Im Inspector erscheinen Zeilen wie `page.get_by_label("Benutzername").fill("…")` und `page.get_by_role("button", name="Anmelden").click()`.
+5. Trage aus diesen Zeilen ein (Umrechnung siehe Tabelle unten): `user_field`, `password_field`, `login_button`. **Schreibe dein Passwort nicht in die Datei**, es kommt später ins Dashboard.
+6. `logged_in_marker`: ein Element, das es nur nach der Anmeldung gibt, z. B. der Abmelden-Knopf. Zum Finden oben im Inspector auf das Zielkreuz („Pick locator“) klicken, das Element im Browser anklicken, den Selektor unten kopieren.
+
+**D. Depot aufnehmen**
+7. Im Browser die Depotansicht öffnen. Adresse aus der Adresszeile in `portfolio.url` eintragen.
+8. Mit „Pick locator“ nacheinander wählen und eintragen: `cash_selector` (das verfügbare Geld, genau ein Element), `row_selector` (eine Zeile der Positionstabelle), dann innerhalb der Zeile `isin_cell`, `shares_cell`, `avg_price_cell` (Kaufkurs). Sind noch keine Positionen da, wiederholst du das nach der ersten Order (Schritt 9).
+
+**E. Kauf-Order aufnehmen**
+9. Neue Order öffnen, dann klicken und tippen in genau der Reihenfolge, wie der Bot es später machen soll: Suchfeld anklicken, einen Namen oder eine ISIN eintippen, ersten Treffer anklicken, Kaufen wählen, Stückzahl eintippen, absenden, bestätigen. Wähle dabei eine kleine Stückzahl (Spielgeld, kostet nur die virtuelle Gebühr; die Order zählt auch für die Mindestzahl von 3 Käufen).
+10. Jede Zeile im Inspector wird ein Eintrag in `order.buy_steps`: `.click()` wird `{"do": "click", "selector": "…"}`, `.fill("Siemens")` wird `{"do": "fill", "selector": "…", "value": "{search}"}`. Die Stückzahl bekommt `"value": "{shares}"`. Wartet die Seite nach einem Schritt (Trefferliste lädt), füge davor `{"do": "wait", "selector": "…Trefferzeile…"}` ein.
+11. Das Element der Erfolgsmeldung nach dem Absenden (Pick locator) kommt in `order.confirmation_marker`.
+
+**F. Verkauf aufnehmen**
+12. Dasselbe für eine Verkauforder (Position wählen oder Suche, Verkaufen, Stückzahl, absenden, bestätigen) in `order.sell_steps`. Die Verkauforder darfst du mit einer kleinen Position aufgeben.
+
+**G. Umrechnung Recorder-Zeile in Selektor** (das steht im Feld `selector`):
+
+| Recorder zeigt | Selektor |
+|---|---|
+| `get_by_role("button", name="Kaufen")` | `role=button[name="Kaufen"]` |
+| `get_by_label("Benutzername")` | `label=Benutzername` |
+| `get_by_placeholder("Suche")` | `[placeholder="Suche"]` |
+| `get_by_text("Order absenden")` | `text=Order absenden` |
+| `get_by_test_id("buy")` | `[data-testid="buy"]` |
+| `locator("#stueck")` | `#stueck` |
+
+Nimm bevorzugt Selektoren mit sichtbarem Text, `id` oder `name`, keine langen Klassenketten. Nimmt das Suchfeld keine ISIN an, nimm `{name}` statt `{search}`.
+
+**H. Prüfen**
+13. Im Dashboard, Tab Einstellungen, `selectors.json` einfügen (oder Datei im Ordner `data/` lassen). Trage dort auch Benutzername und Passwort ein.
+14. Tab Steuerung, **Selbsttest**. Es muss `[ OK ] Plattform-Login + Depot lesen` erscheinen, mit der richtigen Zahl Positionen. Bei einem Fehler zeigt die Meldung, welcher Selektor nicht gefunden wurde: Im Recorder erneut mit „Pick locator“ prüfen und korrigieren.
+15. Zum Schluss den Trockenlauf starten (Schritt 12 unten). Live erst nach einigen sauberen Trockenläufen.
+
+**Hilfe:** Schick mir Screenshots von Login, Depot und Orderformular (ohne persönliche Daten) oder den Inhalt der Recorder-Zeilen, dann schreibe ich die `selectors.json`. Oder gib Claude auf deinem Rechner den Prompt aus `ANWEISUNG_SELEKTOREN.md`.
 
 ## 11. Selbsttest
 Tab Steuerung, **Selbsttest**. Alles muss `[ OK ]` zeigen: Universum (amtliche Liste), Marktdaten, Entscheidungsquelle (`claude_cli (Abo) antwortet`), Plattform-Login samt Depot-Auslesen. Zeile mit `[FAIL]`: Meldung lesen oder an mich schicken. `[WARN]` bei Zusatzdaten ist unkritisch.
