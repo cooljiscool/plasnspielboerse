@@ -118,6 +118,18 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
         store.save_settings(live=want)
         return jsonify(runner.status())
 
+    @app.post("/api/depot")
+    @auth
+    def depot_mode():
+        body = request.get_json(silent=True) or {}
+        want = body.get("depot")
+        if want not in ("test", "echt"):
+            return jsonify(error="Depot: test oder echt"), 400
+        if want == "echt" and body.get("confirm") != "ECHT":
+            return jsonify(error='Das Wettbewerbsdepot zählt für den Rang. Zur Bestätigung "ECHT" eingeben'), 400
+        store.save_settings(depot=want)
+        return jsonify(runner.status())
+
     @app.post("/api/settings")
     @auth
     def settings():
@@ -182,7 +194,7 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
         return jsonify(portfolio=pf, series=series, latest=latest, vergleich=vergleich,
                        holdings=(latest or {}).get("holdings", {}),
                        decisions=[{k: e.get(k) for k in ("time", "live", "market_view", "provider", "fallback_reason", "guard", "kronos", "makro", "daten", "regime", "research",
-                                                    "approved", "rejected")}
+                                                    "approved", "rejected", "depot")}
                                   for e in reversed(entries[-30:])])
 
     @app.get("/api/output")

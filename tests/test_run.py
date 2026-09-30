@@ -149,3 +149,74 @@ def test_run_skips_sec_without_contact_details_and_extra_data_without_ai(tmp_pat
     for mod, name in ((run.social, "get"), (run.social, "reddit"), (run.analysts, "get"), (run.macro, "snapshot"), (run.statements, "get")):
         monkeypatch.setattr(mod, name, lambda *a, **k: pytest.fail("die Regelstrategie braucht keine Zusatzdaten"))
     run.main()
+
+
+# --- Test- und Wettbewerbsdepot ---
+class FakePage:
+    def __init__(self, visible=()):
+        self.actions, self.visible = [], set(visible)
+
+    def click(self, sel):
+        self.actions.append(("click", sel))
+
+    def wait_for_selector(self, sel):
+        self.actions.append(("wait", sel))
+
+    def locator(self, sel):
+        n = 1 if sel in self.visible else 0
+        return type("L", (), {"count": staticmethod(lambda: n)})
+
+
+def executor_with(sel, page):
+    from bot.executor import PlaywrightExecutor
+    ex = object.__new__(PlaywrightExecutor)
+    ex.sel, ex.page = sel, page
+    return ex
+
+
+SWITCH = {"test_steps": [{"do": "click", "selector": "#t"}], "echt_steps": [{"do": "click", "selector": "#e"}], "test_marker": ".im-test", "echt_marker": ".im-echt"}
+
+
+def test_executor_selects_the_configured_depot_and_checks_the_marker(monkeypatch):
+    page = FakePage()
+    monkeypatch.setattr(config, "DEPOT", "echt")
+    executor_with({"depot_switch": SWITCH}, page)._select_depot()
+    assert page.actions == [("click", "#e"), ("wait", ".im-echt")]
+    page = FakePage()
+    monkeypatch.setattr(config, "DEPOT", "test")
+    executor_with({"depot_switch": SWITCH}, page)._select_depot()
+    assert page.actions == [("click", "#t"), ("wait", ".im-test")]
+
+
+def test_executor_refuses_to_trade_in_the_wrong_or_an_unknown_depot(monkeypatch):
+    monkeypatch.setattr(config, "DEPOT", "echt")
+    with pytest.raises(RuntimeError, match="depot_switch"):
+        executor_with({}, FakePage())._select_depot()                                            # ohne Abschnitt wird nicht gehandelt
+    with pytest.raises(RuntimeError, match="Testdepot aktiv"):
+        executor_with({"depot_switch": SWITCH}, FakePage(visible={".im-test"}))._select_depot()  # Marker des anderen Depots sichtbar
+    with pytest.raises(RuntimeError, match="echt_steps"):
+        executor_with({"depot_switch": {"test_steps": SWITCH["test_steps"]}}, FakePage())._select_depot()
+    page = FakePage()
+    executor_with({"depot_switch": {"skip": True}}, page)._select_depot()                       # nur ein Depot: nichts zu tun
+    assert page.actions == []
+
+
+def test_live_test_depot_keeps_its_own_files_and_logs_the_depot(tmp_path, monkeypatch):
+    prepare(tmp_path, monkeypatch)
+    monkeypatch.setattr(config, "LIVE", True)
+    monkeypatch.setattr(config, "DEPOT", "test")
+
+    class FakeLive:
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def get_portfolio(self, pf=None): return {"cash": 1234.0, "positions": {}, "buy_orders_executed": 0}
+        def place(self, o, today): pass
+    monkeypatch.setattr(run, "PlaywrightExecutor", FakeLive)
+    monkeypatch.setattr(run.brain, "decide", lambda *a, **k: {"market_view": "t", "orders": [], "provider": "rules"})
+    run.main()
+    data = tmp_path / "data"
+    assert (data / "portfolio_test.json").exists() and (data / "start_test.json").exists() and not (data / "portfolio.json").exists()
+    assert json.loads(next((tmp_path / "logs").glob("*.json")).read_text())["depot"] == "test"
+    monkeypatch.setattr(config, "DEPOT", "echt")
+    run.main()
+    assert (data / "portfolio.json").exists()                                                    # Wettbewerbsdepot: die gewohnten Dateien

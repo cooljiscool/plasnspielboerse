@@ -97,6 +97,9 @@ Der Bot bedient die Planspiel-Seite wie ein Mensch. Ein **Selektor** ist die Ang
 
 Nimm bevorzugt Selektoren mit sichtbarem Text, `id` oder `name`, keine langen Klassenketten. Nimmt das Suchfeld keine ISIN an, nimm `{name}` statt `{search}`.
 
+**G2. Depot umschalten (wichtig)**
+Die Plattform hat ein Test-Depot (zählt nicht) und das Wettbewerbsdepot (zählt für den Rang). Der Bot muss nach der Anmeldung das richtige wählen. Zeichne dafür auf, wie man zwischen beiden wechselt, und trage es in `selectors.json` unter `depot_switch` ein: `test_steps` (Klicks für das Test-Depot), `echt_steps` (Klicks für das Wettbewerbsdepot) und je ein `test_marker` und `echt_marker`, das ist ein Element, das nur im jeweiligen Depot zu sehen ist (z. B. der Depotname oben). Der Bot prüft nach dem Umschalten den Marker und handelt nicht, wenn das falsche Depot aktiv ist. Ohne den Abschnitt `depot_switch` handelt der Bot gar nicht (hat die Plattform bei dir nur ein Depot: `"depot_switch": {"skip": true}`).
+
 **H. Prüfen**
 13. Im Dashboard, Tab Einstellungen, `selectors.json` einfügen (oder Datei im Ordner `data/` lassen). Trage dort auch Benutzername und Passwort ein.
 14. Tab Steuerung, **Selbsttest**. Es muss `[ OK ] Plattform-Login + Depot lesen` erscheinen, mit der richtigen Zahl Positionen. Bei einem Fehler zeigt die Meldung, welcher Selektor nicht gefunden wurde: Im Recorder erneut mit „Pick locator“ prüfen und korrigieren.
@@ -115,8 +118,9 @@ Tab Steuerung, **Selbsttest**. Alles muss `[ OK ]` zeigen: Universum (amtliche L
 
 ## 13. Live schalten
 1. Erst wenn der Selbsttest sauber ist und der Trockenlauf plausibel aussieht.
-2. Tab Steuerung, Modus **auf Live**, `LIVE` eingeben. Die ersten Läufe direkt in der Plattform beobachten.
-3. **Stopp** beendet sofort. Zurück: „auf Trockenlauf“.
+2. Tab Steuerung, Modus **auf Live**, `LIVE` eingeben. Das Depot steht standardmäßig auf **Test-Depot**: Der Bot klickt dann wirklich auf der Plattform, aber die Orders zählen nicht für den Rang. Beobachte einige Läufe, ob Anmelden, Depot lesen, Kauf und Verkauf sauber laufen.
+3. Erst dann im selben Bereich **auf Wettbewerbsdepot** wechseln (Bestätigung `ECHT`). Ab dem nächsten Lauf zählen die Orders. Depotstand und Startwert von Test-Depot und Wettbewerbsdepot werden getrennt gespeichert.
+4. **Stopp** beendet sofort. Zurück: „auf Trockenlauf“ bzw. „auf Test-Depot“.
 
 ## 14. Einstellungen, die du kennen solltest
 - **Strategie und Risiko** (Einstellungen): fünf Stile von „sicher“ (Standard) bis „jackpot“, mit Risikostufe 1 bis 5 und den gemessenen Werten. Wirkt ab dem nächsten Lauf.

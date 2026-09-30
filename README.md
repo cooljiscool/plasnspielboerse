@@ -455,7 +455,7 @@ Das Dashboard ist eine kleine Web-App, die zusammen mit dem Bot auf einem Rechne
 | Tab | Inhalt |
 |---|---|
 | Übersicht | Depotwert, Verlauf, Cash, Positionen mit Gewinn/Verlust, Zähler für die Mindest-Käufe |
-| Steuerung | **Start** (Zeitplan an), **Stopp** (Notaus, bricht laufenden Lauf ab), Jetzt ausführen, Selbsttest, **Wertpapierliste des Planspiels laden**, Umschalter Trockenlauf/Live, Ausgabe |
+| Steuerung | **Start** (Zeitplan an), **Stopp** (Notaus, bricht laufenden Lauf ab), Jetzt ausführen, Selbsttest, **Wertpapierliste des Planspiels laden**, Umschalter Trockenlauf/Live und **Test-Depot/Wettbewerbsdepot** (Standard Test-Depot, für das Wettbewerbsdepot muss `ECHT` eingegeben werden), Ausgabe |
 | Protokoll | Jede Entscheidung mit Begründung, geladene Zusatzdaten, ausgeführte und abgelehnte Orders (Verbrauch der KI-Aufrufe steht im JSON-Protokoll in `logs/`) |
 | Einstellungen | Planspiel-Login, Claude-Token, SEC-Kontakt, Quiver-Schlüssel (optional), Uhrzeiten, Modell, `selectors.json`, `universe.json` |
 

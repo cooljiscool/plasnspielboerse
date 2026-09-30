@@ -45,6 +45,7 @@ KRONOS_SAMPLES = int(os.environ.get("BOT_KRONOS_SAMPLES", "1"))
 SHORTLIST = 15              # so viele Titel bekommen Fundamentaldaten und Web-Recherche
 LLM_CANDIDATES = 40         # so viele Kandidaten sieht Claude bei der Entscheidung
 LIVE = os.environ.get("BOT_LIVE", "0") == "1"   # ohne BOT_LIVE=1 wird nur simuliert
+DEPOT = "echt" if os.environ.get("BOT_DEPOT") == "echt" else "test"   # Depot auf der Plattform bei LIVE: "test" (Test- bzw. Trainingsdepot, Standard) oder "echt" (Wettbewerbsdepot, zählt für den Rang)
 DATA_DIR = os.environ.get("BOT_DATA_DIR", "data")
 LOG_DIR = os.environ.get("BOT_LOG_DIR", "logs")
 

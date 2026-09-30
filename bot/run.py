@@ -26,6 +26,11 @@ def optional(name, fn, default=None):
         return default
 
 
+def suffix() -> str:
+    """Dateiendung der Depotstände: Ein Live-Lauf im Testdepot führt eigene Dateien (portfolio_test.json, start_test.json), damit Testdepot und Wettbewerbsdepot sich nicht vermischen."""
+    return "_test" if config.LIVE and config.DEPOT == "test" else ""
+
+
 def main():
     today = date.today()
     if not (config.GAME_START <= today <= config.GAME_END):
@@ -34,7 +39,7 @@ def main():
     universe = {u["isin"]: u for u in load("universe.json", [])}
     if not universe:
         raise SystemExit("data/universe.json ist leer – Wertpapierliste der Plattform eintragen.")
-    pf = load("portfolio.json", {"cash": 50000.0, "positions": {}, "buy_orders_executed": 0})
+    pf = load(f"portfolio{suffix()}.json", {"cash": 50000.0, "positions": {}, "buy_orders_executed": 0})
 
     snap, regime = market.load(universe)
     prev_pf = pf
@@ -58,10 +63,10 @@ def main():
 
         # Startstand merken (einmal): Kurse aller Titel und Depotwert am ersten Lauf. Daraus schätzt der Bot seinen Rang gegen Zufallsdepots (bot/rank.py, Stil "turnier").
         def rank_estimate():
-            start = load("start.json", None)
+            start = load(f"start{suffix()}.json", None)
             if not start:
                 start = {"datum": today.isoformat(), "depotwert": total, "kurse": dict(prices)}
-                save("start.json", start)
+                save(f"start{suffix()}.json", start)
             order = list(start["kurse"])
             p0 = [start["kurse"][i] for i in order]
             p1 = [prices.get(i, float("nan")) for i in order]
@@ -172,12 +177,12 @@ def main():
         if ctx:
             ctx.__exit__(None, None, None)
 
-    save("portfolio.json", pf)
+    save(f"portfolio{suffix()}.json", pf)
     total_after = risk.portfolio_value(pf, prices)
     holdings = {i: {"name": universe.get(i, {}).get("name", i), "shares": p["shares"], "avg_price": p["avg_price"],
                     "price": prices.get(i, p["avg_price"])} for i, p in pf["positions"].items()}
     os.makedirs(config.LOG_DIR, exist_ok=True)
-    log = {"time": datetime.now().isoformat(timespec="seconds"), "live": config.LIVE, "total_before": total,
+    log = {"time": datetime.now().isoformat(timespec="seconds"), "live": config.LIVE, "depot": (config.DEPOT if config.LIVE else "lokal"), "total_before": total,
            "total_after": total_after, "cash": pf["cash"], "holdings": holdings,
            "market_view": proposal["market_view"], "provider": proposal.get("provider"),
            "fallback_reason": proposal.get("fallback_reason"), "guard": proposal.get("guard"), "kronos": kronos_info, "regime": regime, "stil": rules.effective_style(regime=regime),

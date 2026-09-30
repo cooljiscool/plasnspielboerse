@@ -99,7 +99,9 @@ svg{width:100%;height:auto;display:block}
   <h2>Modus</h2>
   <div class="card">
     <div class="row"><b id="modeText">Trockenlauf</b><button id="btnLive" style="width:auto;padding:10px 16px">wechseln</button></div>
-    <p class="mute" style="margin:8px 0 0">Trockenlauf bucht nur lokal. Live sendet echte Orders an die Plattform.</p>
+    <p class="mute" style="margin:8px 0 0">Trockenlauf bucht nur lokal. Live sendet echte Orders an die Plattform, und zwar in das gewählte Depot:</p>
+    <div class="row" style="margin-top:8px"><b id="depotText">Test-Depot</b><button id="btnDepot" style="width:auto;padding:10px 16px">wechseln</button></div>
+    <p class="mute" style="margin:8px 0 0">Das <b>Test-Depot</b> (Standard) zählt nicht für den Rang: Hier kannst du den Live-Ablauf gefahrlos prüfen. Nur im <b>Wettbewerbsdepot</b> zählen die Orders.</p>
   </div>
   <h2>Ausgabe letzter Vorgang</h2>
   <pre id="out">–</pre>
@@ -232,7 +234,9 @@ function renderStatus() {
   $('schedState').textContent = S.enabled ? 'an' : 'aus';
   $('nextRun').textContent = S.enabled ? fmtTime(S.next_run) : '–';
   const l = S.last; $('lastRun').textContent = l ? `${fmtTime(l.start)} · ${l.kind === 'run' ? 'Lauf' : 'Test'} · ${l.end ? (l.code === 0 ? 'ok' : 'Fehler ' + l.code) : 'läuft'}` : '–';
-  $('modeText').textContent = S.live ? 'LIVE – echte Orders' : 'Trockenlauf';
+  $('modeText').textContent = S.live ? (S.depot === 'echt' ? 'LIVE im WETTBEWERBSDEPOT' : 'LIVE im Test-Depot') : 'Trockenlauf';
+  $('depotText').textContent = S.depot === 'echt' ? 'Wettbewerbsdepot (zählt für den Rang)' : 'Test-Depot (zählt nicht)';
+  $('btnDepot').textContent = S.depot === 'echt' ? 'auf Test-Depot' : 'auf Wettbewerbsdepot';
   $('btnLive').textContent = S.live ? 'auf Trockenlauf' : 'auf Live';
   $('btnStart').disabled = S.enabled; $('btnRun').disabled = S.running; $('btnTest').disabled = S.running;
   for (const k of Object.keys(S.secrets)) $('s_' + k).textContent = S.secrets[k] ? '(gespeichert)' : '(fehlt)';
@@ -317,6 +321,11 @@ $('btnStop').onclick = act(async () => { if (!confirm('Alles stoppen? Ein laufen
 $('btnRun').onclick = act(async () => { if (S.live && !confirm('LIVE: Jetzt echte Orders erzeugen?')) return; S = await api('/api/control', {action: 'run'}); renderStatus(); }, 'Lauf gestartet');
 $('btnUni').onclick = act(async () => { if (!confirm('Die Wertpapierliste (data/universe.json) wird durch die aktuelle amtliche Liste ersetzt. Fortfahren?')) return; S = await api('/api/control', {action: 'universe'}); renderStatus(); }, 'Wertpapierliste wird geladen');
 $('btnTest').onclick = act(async () => { S = await api('/api/control', {action: 'selftest'}); renderStatus(); }, 'Selbsttest gestartet');
+$('btnDepot').onclick = act(async () => {
+  if (S.depot === 'echt') { S = await api('/api/depot', {depot: 'test'}); }
+  else { const c = prompt('Im Wettbewerbsdepot zählen alle Orders für den Rang. Zur Bestätigung ECHT eingeben:'); if (c === null) return; S = await api('/api/depot', {depot: 'echt', confirm: c}); }
+  renderStatus();
+}, 'Depot geändert');
 $('btnLive').onclick = act(async () => {
   if (S.live) { S = await api('/api/live', {live: false}); }
   else { const c = prompt('Live sendet ECHTE Orders. Zur Bestätigung LIVE eingeben:'); if (c === null) return; S = await api('/api/live', {live: true, confirm: c}); }

@@ -5,6 +5,13 @@
   "password_field": "SELEKTOR_PASSWORT",
   "login_button": "SELEKTOR_LOGIN_KNOPF",
   "logged_in_marker": "SELEKTOR_ELEMENT_NUR_NACH_LOGIN",
+  "depot_switch": {
+    "_hinweis": "Umschalten zwischen Test- und Wettbewerbsdepot nach der Anmeldung. Der Bot handelt nur, wenn dieser Abschnitt vorhanden ist. Nur ein Depot: {\"skip\": true}. *_marker: Element, das nur im jeweiligen Depot zu sehen ist (z. B. der Depotname in der Kopfzeile).",
+    "test_steps": [{"do": "click", "selector": "SELEKTOR_TEST_DEPOT_WAEHLEN"}],
+    "echt_steps": [{"do": "click", "selector": "SELEKTOR_WETTBEWERBSDEPOT_WAEHLEN"}],
+    "test_marker": "SELEKTOR_NUR_IM_TESTDEPOT_SICHTBAR",
+    "echt_marker": "SELEKTOR_NUR_IM_WETTBEWERBSDEPOT_SICHTBAR"
+  },
   "portfolio": {
     "url": "URL_DER_DEPOTANSICHT",
     "cash_selector": "SELEKTOR_VERFUEGBARES_GELD",

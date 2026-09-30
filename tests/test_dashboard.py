@@ -248,3 +248,14 @@ def test_all_styles_are_offered_with_risk_and_text_and_can_be_selected(authed, a
         assert authed.post("/api/settings", headers=H, json={"style": key}).get_json()["style"] == key
         assert app.runner._env(False)["BOT_STYLE"] == key
     assert authed.post("/api/settings", headers=H, json={"style": "lotterie"}).status_code == 400
+
+
+def test_depot_mode_defaults_to_test_and_needs_a_confirmation_for_the_real_depot(authed, app):
+    assert authed.get("/api/status").get_json()["depot"] == "test"
+    assert app.runner._env(False)["BOT_DEPOT"] == "test"
+    assert authed.post("/api/depot", headers=H, json={"depot": "echt"}).status_code == 400
+    assert authed.post("/api/depot", headers=H, json={"depot": "echt", "confirm": "ja"}).status_code == 400
+    assert authed.post("/api/depot", headers=H, json={"depot": "echt", "confirm": "ECHT"}).get_json()["depot"] == "echt"
+    assert app.runner._env(False)["BOT_DEPOT"] == "echt"
+    assert authed.post("/api/depot", headers=H, json={"depot": "test"}).get_json()["depot"] == "test"    # zurück ohne Bestätigung
+    assert authed.post("/api/depot", headers=H, json={"depot": "beide"}).status_code == 400

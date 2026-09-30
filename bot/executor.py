@@ -70,7 +70,28 @@ class PlaywrightExecutor:
         self.page.fill(self.sel["password_field"], self.password)
         self.page.click(self.sel["login_button"])
         self.page.wait_for_selector(self.sel["logged_in_marker"])
+        self._select_depot()
         return self
+
+    def _select_depot(self) -> None:
+        """Wählt nach der Anmeldung das Depot, in dem gehandelt wird (config.DEPOT: test oder echt), und prüft es an einem Erkennungsmerkmal. Ohne Abschnitt `depot_switch`
+        in selectors.json wird nicht gehandelt: Sonst könnten Orders im falschen Depot landen (Testdepot zählt nicht für den Rang). Wer nur ein Depot hat, trägt {"skip": true} ein."""
+        sw = self.sel.get("depot_switch")
+        if not isinstance(sw, dict):
+            raise RuntimeError("selectors.json enthält keinen Abschnitt 'depot_switch' (Umschalten zwischen Test- und Wettbewerbsdepot, siehe data/selectors.example.json). "
+                               'Hat die Plattform nur ein Depot, trage "depot_switch": {"skip": true} ein.')
+        if sw.get("skip"):
+            return
+        want, other = config.DEPOT, ("echt" if config.DEPOT == "test" else "test")
+        steps = sw.get(f"{want}_steps")
+        if not steps:
+            raise RuntimeError(f"depot_switch.{want}_steps fehlt in selectors.json")
+        self._run_steps(steps, {})
+        marker = sw.get(f"{want}_marker")
+        if marker:
+            self.page.wait_for_selector(marker)
+        if sw.get(f"{other}_marker") and self.page.locator(sw[f"{other}_marker"]).count():
+            raise RuntimeError(f"Es ist das {'Wettbewerbsdepot' if other == 'echt' else 'Testdepot'} aktiv, gewollt ist das {'Wettbewerbsdepot' if want == 'echt' else 'Testdepot'}. Es wird nicht gehandelt.")
 
     def __exit__(self, *exc):
         self.browser.close()

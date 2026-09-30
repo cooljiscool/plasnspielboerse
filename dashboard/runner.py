@@ -14,7 +14,7 @@ TZ = ZoneInfo("Europe/Berlin")
 SECRET_KEYS = ("CLAUDE_CODE_OAUTH_TOKEN", "ANTHROPIC_API_KEY", "PSB_USER", "PSB_PASSWORD", "QUIVER_API_TOKEN", "SEC_USER_AGENT")
 PROVIDERS = ("auto", "claude_cli", "api", "rules")
 DEFAULTS = {"enabled": False, "live": False, "times": ["09:20", "13:30", "19:40"], "model": "claude-sonnet-5-5",
-            "provider": "auto", "research": True, "kronos": False, "nh_slots": 0, "style": "sicher", "freiheit": "auto"}
+            "provider": "auto", "research": True, "kronos": False, "nh_slots": 0, "style": "sicher", "freiheit": "auto", "depot": "test"}
 TIME_RE = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
 SLOT_WINDOW = timedelta(minutes=10)
 
@@ -109,7 +109,7 @@ class Runner:
     def _env(self, live: bool) -> dict:
         s = self.store.settings()
         env = {**os.environ, **self.store.secrets(), "BOT_LIVE": "1" if live else "0",
-               "ANTHROPIC_MODEL": s["model"], "BOT_PROVIDER": s["provider"], "BOT_RESEARCH": "1" if s["research"] else "0", "BOT_KRONOS": "1" if s["kronos"] else "0", "BOT_NH_SLOTS": str(s["nh_slots"]), "BOT_STYLE": s["style"], "BOT_FREEDOM": s["freiheit"], "BOT_DATA_DIR": self.data_dir, "BOT_LOG_DIR": self.log_dir,
+               "ANTHROPIC_MODEL": s["model"], "BOT_PROVIDER": s["provider"], "BOT_RESEARCH": "1" if s["research"] else "0", "BOT_KRONOS": "1" if s["kronos"] else "0", "BOT_NH_SLOTS": str(s["nh_slots"]), "BOT_STYLE": s["style"], "BOT_FREEDOM": s["freiheit"], "BOT_DEPOT": s["depot"], "BOT_DATA_DIR": self.data_dir, "BOT_LOG_DIR": self.log_dir,
                "PYTHONUNBUFFERED": "1"}
         return env
 
@@ -191,7 +191,7 @@ class Runner:
         s = self.store.settings()
         nxt = next_run(datetime.now(TZ), s["times"]) if s["enabled"] else None
         return {"enabled": s["enabled"], "live": s["live"], "times": s["times"], "model": s["model"],
-                "provider": s["provider"], "research": s["research"], "kronos": s["kronos"], "nh_slots": s["nh_slots"], "style": s["style"], "freiheit": s["freiheit"],
+                "provider": s["provider"], "research": s["research"], "kronos": s["kronos"], "nh_slots": s["nh_slots"], "style": s["style"], "freiheit": s["freiheit"], "depot": s["depot"],
                 "stile": [{"key": k, "label": v["label"], "risiko": v["risiko"], "text": v["text"]} for k, v in rules.STYLES.items()],
                 "running": self.running(), "last": self.last,
                 "next_run": nxt.isoformat(timespec="minutes") if nxt else None,

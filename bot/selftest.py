@@ -124,7 +124,7 @@ def main():
         def plattform():
             with PlaywrightExecutor() as ex:
                 pf = ex.get_portfolio()
-                return json.dumps({"cash": pf["cash"], "positionen": len(pf["positions"])})
+                return json.dumps({"depot": "Wettbewerbsdepot" if config.DEPOT == "echt" else "Testdepot", "cash": pf["cash"], "positionen": len(pf["positions"])})
         ok.append(check("Plattform-Login + Depot lesen", plattform))
     else:
         print("[ -- ] Plattform: PSB_USER/PSB_PASSWORD nicht gesetzt, übersprungen")
