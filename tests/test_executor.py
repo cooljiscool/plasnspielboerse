@@ -180,16 +180,17 @@ def test_login_is_retried_when_the_page_ignores_the_first_click():
         tries = 0
         def goto(self, url): self.calls.append(("goto", url, {}))
         def wait_for_timeout(self, ms): pass
+        def on(self, event, fn): pass
         def wait_for_selector(self, sel, **kw):
             self.calls.append(("wait", sel, kw))
             if sel == "#in":
                 self.tries += 1
-                if self.tries < 3:
+                if self.tries < 2:
                     raise TimeoutError(sel)
     ex = executor({"login_url": "u", "user_field": "#u", "password_field": "#p", "login_button": "#b", "logged_in_marker": "#in"}, P())
     ex.user, ex.password = "a", "b"
     ex._login()
-    assert [c for c in ex.page.calls if c[0] == "goto"].__len__() == 3
+    assert [c for c in ex.page.calls if c[0] == "goto"].__len__() == 2
     ex.page.tries = -10
     with pytest.raises(TimeoutError):
-        ex._login()                      # nach drei Versuchen gibt er auf
+        ex._login()                      # nach zwei Versuchen gibt er auf
