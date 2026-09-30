@@ -91,13 +91,20 @@ class PlaywrightExecutor:
         self.browser = self._launch()
         self.page = self.browser.new_context(viewport={"width": 1400, "height": 1000}, locale="de-DE", timezone_id="Europe/Berlin").new_page()
         self.page.set_default_timeout(20000)
-        self.page.goto(self.sel["login_url"])
-        self._run_steps(self.sel.get("pre_login_steps", []), {})
-        self.page.fill(self.sel["user_field"], self.user)
-        self.page.fill(self.sel["password_field"], self.password)
-        self.page.click(self.sel["login_button"])
-        self.page.wait_for_selector(self.sel["logged_in_marker"])
-        self._select_depot()
+        try:
+            self.page.goto(self.sel["login_url"])
+            self._run_steps(self.sel.get("pre_login_steps", []), {})
+            self.page.fill(self.sel["user_field"], self.user)
+            self.page.fill(self.sel["password_field"], self.password)
+            self.page.click(self.sel["login_button"])
+            self.page.wait_for_selector(self.sel["logged_in_marker"])
+            self._select_depot()
+        except Exception:
+            self._dump("login")
+            self._dump_text()
+            self.browser.close()
+            self._pw.stop()
+            raise
         return self
 
     def _select_depot(self) -> None:
@@ -179,6 +186,13 @@ class PlaywrightExecutor:
             stem = os.path.join(folder, f"{datetime.now().strftime('%Y%m%d-%H%M%S')}-{tag}")
             self.page.screenshot(path=stem + ".png", full_page=True)
             open(stem + ".html", "w", encoding="utf-8").write(self.page.content())
+        except Exception:  # noqa: BLE001
+            pass
+
+    def _dump_text(self) -> None:
+        """Sichtbarer Text der Seite, in die Ausgabe (kurz, ohne Passwörter): zeigt etwa 'Zugangsdaten falsch' oder eine Einblendung."""
+        try:
+            print("Sichtbarer Text der Seite: " + " ".join(self.page.inner_text("body").split())[:600])
         except Exception:  # noqa: BLE001
             pass
 
