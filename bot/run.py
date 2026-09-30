@@ -3,7 +3,7 @@ import json
 import os
 from datetime import date, datetime
 
-from . import analysts, brain, config, edgar, fundamentals, journal, kronos_signal, macro, market, quiver, research, risk, rules, social, statements, track
+from . import analysts, brain, config, edgar, fundamentals, journal, kronos_signal, macro, market, quiver, research, risk, rules, shadow, social, statements, track
 from .executor import DryRunExecutor, PlaywrightExecutor
 
 
@@ -128,7 +128,24 @@ def main():
                 for isin, v in qv.items():
                     snap[isin]["quiver"] = v
                 data_info["quiver"] = {"titel": len(qv), **({"fehler": qerr} if qerr else {})}
-        proposal = brain.decide(pf, universe, snap, news, today, total, regime, research_info, history, macro_info, track_record)
+        # Schattendepot (bot/shadow.py): frühere Gruppen auswerten und das Urteil bilden; hat Claudes eigene Auswahl die Regeln sicher geschlagen, darf er freier wählen
+        shadow_rows = optional("Schattendepot laden", shadow.load, [])
+        optional("Schattendepot auswerten", lambda: shadow.update(shadow_rows, prices, today))
+        shadow_report = optional("Schattendepot Urteil", lambda: shadow.report(shadow_rows))
+        free = bool(shadow_report) and shadow.freedom(shadow_report)
+        proposal = brain.decide(pf, universe, snap, news, today, total, regime, research_info, history, macro_info, track_record,
+                                freedom=(shadow_report["text"] if free else ""))
+        shadow_used = None
+        if provider == "claude_cli" and not shadow.has_today(shadow_rows, today):   # Claudes eigene Auswahl des Tages, ohne Regelvorschlag; es wird nichts gekauft
+            def own_picks():
+                picks, used = brain.shadow_picks(pf, universe, snap, news, today, total, regime, research_info, macro_info)
+                return shadow.add(shadow_rows, today, picks, shadow.rule_picks(snap, universe), prices), used
+            got = optional("Schattendepot Auswahl", own_picks)
+            shadow_used = got[1] if got else None
+        if shadow_rows:
+            optional("Schattendepot speichern", lambda: shadow.save(shadow_rows))
+            shadow_report = optional("Schattendepot Urteil", lambda: shadow.report(shadow_rows)) or shadow_report
+            save("shadow_report.json", {**(shadow_report or {}), "freiheit": free, "stand": today.isoformat()})
         approved, rejected = risk.validate(proposal["orders"], pf, prices, universe, today)
         for o in approved:
             o["name"] = universe[o["isin"]]["name"]
@@ -152,7 +169,8 @@ def main():
            "market_view": proposal["market_view"], "provider": proposal.get("provider"),
            "fallback_reason": proposal.get("fallback_reason"), "guard": proposal.get("guard"), "kronos": kronos_info, "regime": regime,
            "makro": ({"warnsignale": macro_info.get("warnsignale", [])} if macro_info else None),
-           "daten": data_info or None, "verbrauch": {"recherche": (research_info or {}).get("verbrauch"), "entscheidung": proposal.get("verbrauch")},
+           "daten": data_info or None, "verbrauch": {"recherche": (research_info or {}).get("verbrauch"), "entscheidung": proposal.get("verbrauch"), "schattendepot": shadow_used},
+           "vergleich": ({"urteil": shadow_report["urteil"], "text": shadow_report["text"], "gruppen": shadow_report["gruppen"], "freiheit": free} if shadow_report else None),
            "research": ({"error": research_info.get("error"), "warning": research_info.get("warning"), "cached": research_info.get("cached", False),
                          "market": research_info.get("market"), "notes": len(research_info["notes"])}
                         if research_info else None),

@@ -225,3 +225,15 @@ def test_style_setting_is_validated_and_reaches_the_bot(authed, app):
     for bad in ("wild", 3, None):
         assert authed.post("/api/settings", headers=H, json={"style": bad}).status_code == 400
     assert authed.get("/api/status").get_json()["style"] == "angriff"
+
+
+def test_freedom_setting_is_validated_and_the_depot_shows_the_comparison(authed, app, tmp_path):
+    assert authed.get("/api/status").get_json()["freiheit"] == "auto"
+    assert authed.post("/api/settings", headers=H, json={"freiheit": "aus"}).get_json()["freiheit"] == "aus"
+    assert app.runner._env(False)["BOT_FREEDOM"] == "aus"
+    for bad in ("immer", 1, None):
+        assert authed.post("/api/settings", headers=H, json={"freiheit": bad}).status_code == 400
+    assert authed.get("/api/depot").get_json()["vergleich"] is None                          # noch kein Vergleich
+    os.makedirs(app.runner.data_dir, exist_ok=True)
+    open(os.path.join(app.runner.data_dir, "shadow_report.json"), "w").write(json.dumps({"urteil": "zu_frueh", "text": "Zu früh.", "gruppen": 2}))
+    assert authed.get("/api/depot").get_json()["vergleich"]["urteil"] == "zu_frueh"

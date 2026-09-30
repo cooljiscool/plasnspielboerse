@@ -79,6 +79,7 @@ svg{width:100%;height:auto;display:block}
   </div>
   <h2>Positionen</h2>
   <div class="card" id="positions"><span class="mute">Noch keine Positionen.</span></div>
+  <div class="card" id="vergleich"><div class="mute">Claude gegen Regeln</div><div id="vergleichText">Noch kein Vergleich.</div></div>
 </section>
 
 <!-- Steuerung -->
@@ -137,6 +138,12 @@ svg{width:100%;height:auto;display:block}
     </select>
     <label><input type="checkbox" id="research" style="width:auto;margin:0 8px 0 0;vertical-align:middle">Web-Recherche für Claude (nur mit Abo-Token, einmal täglich, verbraucht mehr Abo-Limit)</label>
     <div style="height:12px"></div>
+    <label>Claudes Freiheit (Schattendepot-Vergleich)
+      <select id="freiheit">
+        <option value="auto">Automatisch: freier erst, wenn Claudes eigene Auswahl die Regeln sicher schlägt (Standard)</option>
+        <option value="aus">Aus: immer der Regelvorschlag als Grundlage</option>
+      </select></label>
+    <p class="mute" style="margin:-6px 0 12px">Der Vergleich läuft immer mit (Übersicht, „Claude gegen Regeln“); die Einstellung bestimmt nur, ob der Bot daraus selbst Konsequenzen zieht.</p>
     <label>Stil: Sicherheit gegen Spitzenplatz
       <select id="style">
         <option value="sicher">Sicher: 6 Titel, Volatilitätsbremse (Standard, Rang 67 %)</option>
@@ -252,6 +259,8 @@ async function loadHome() {
   $('cash').textContent = pf ? eur(pf.cash) : '–';
   $('buys').textContent = pf ? `${pf.buy_orders_executed ?? 0} / 3` : '–';
   renderChart(d.series);
+  const v = d.vergleich;
+  $('vergleichText').textContent = v ? `${v.text} (${v.gruppen} Tage im Schattendepot${v.freiheit ? ', Claude wählt freier' : ''})` : 'Noch kein Vergleich: Claudes eigene Auswahl wird ab dem ersten Lauf täglich festgehalten und nach 14 Tagen bewertet.';
   const box = $('positions'); box.replaceChildren();
   const h = Object.entries(d.holdings);
   if (!h.length) box.append(el('span', {class: 'mute'}, 'Noch keine Positionen.'));
@@ -316,13 +325,13 @@ $('btnLive').onclick = act(async () => {
 
 async function loadSettingsForm() {
   try {
-    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model; $('provider').value = st.provider; $('research').checked = st.research; $('kronos').checked = st.kronos; $('nh_slots').value = String(st.nh_slots); $('style').value = st.style;
+    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model; $('provider').value = st.provider; $('research').checked = st.research; $('kronos').checked = st.kronos; $('nh_slots').value = String(st.nh_slots); $('style').value = st.style; $('freiheit').value = st.freiheit;
     $('f_selectors').value = (await api('/api/file/selectors')).text; $('f_universe').value = (await api('/api/file/universe')).text;
   } catch (e) {}
 }
 $('saveSettings').onclick = act(async () => {
   const secrets = {}; for (const k of ['PSB_USER', 'PSB_PASSWORD', 'CLAUDE_CODE_OAUTH_TOKEN', 'ANTHROPIC_API_KEY', 'SEC_USER_AGENT', 'QUIVER_API_TOKEN']) { secrets[k] = $(k).value; $(k).value = ''; }
-  S = await api('/api/settings', {times: $('times').value.split(',').map(s => s.trim()).filter(Boolean), model: $('model').value, provider: $('provider').value, research: $('research').checked, kronos: $('kronos').checked, nh_slots: parseInt($('nh_slots').value, 10), style: $('style').value, secrets});
+  S = await api('/api/settings', {times: $('times').value.split(',').map(s => s.trim()).filter(Boolean), model: $('model').value, provider: $('provider').value, research: $('research').checked, kronos: $('kronos').checked, nh_slots: parseInt($('nh_slots').value, 10), style: $('style').value, freiheit: $('freiheit').value, secrets});
   renderStatus();
 }, 'Gespeichert');
 $('saveSelectors').onclick = act(() => api('/api/file/selectors', {text: $('f_selectors').value}), 'Selektoren gespeichert');

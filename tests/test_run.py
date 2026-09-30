@@ -48,6 +48,7 @@ def prepare(tmp_path, monkeypatch, provider="claude_cli"):
     monkeypatch.setattr(run.market, "headlines", lambda u, i: {})
     monkeypatch.setattr(run.journal, "recent", lambda *a, **k: [])
     monkeypatch.setattr(run.brain, "resolve_provider", lambda: provider)
+    monkeypatch.setattr(run.brain, "shadow_picks", lambda *a, **k: (_ for _ in ()).throw(AssertionError("kein echter Claude-Aufruf im Test")))
     monkeypatch.setattr(run, "date", type("D", (), {"today": staticmethod(lambda: config.GAME_START)}))
     return snap
 
@@ -55,8 +56,8 @@ def prepare(tmp_path, monkeypatch, provider="claude_cli"):
 def capture_decide(monkeypatch):
     seen = {}
 
-    def fake(pf, universe, snap, news, today, total, regime=None, research=None, history=None, macro=None, track_record=None):
-        seen.update(snap=snap, research=research, macro=macro, track_record=track_record)
+    def fake(pf, universe, snap, news, today, total, regime=None, research=None, history=None, macro=None, track_record=None, freedom=""):
+        seen.update(snap=snap, research=research, macro=macro, track_record=track_record, freedom=freedom)
         return {"market_view": "test", "orders": [], "provider": "claude_cli", "verbrauch": {"kosten_usd": 0.02}}
     monkeypatch.setattr(run.brain, "decide", fake)
     return seen
@@ -88,7 +89,7 @@ def test_run_hands_all_extra_data_to_claude_and_logs_it(tmp_path, monkeypatch):
     log = json.loads(next((tmp_path / "logs").glob("*.json")).read_text())
     assert log["daten"]["insider_sec"] == 1 and log["daten"]["analysten"] == 1 and log["daten"]["reddit"] == 1 and log["daten"]["stocktwits"] == 1
     assert log["daten"]["quiver"] == {"titel": 1} and log["daten"]["prognosen"] == {"neu": 1, "ausgewertet": 0, "gespeichert": 1}
-    assert log["verbrauch"] == {"recherche": {"aufrufe": 5, "kosten_usd": 0.4}, "entscheidung": {"kosten_usd": 0.02}}
+    assert log["verbrauch"] == {"recherche": {"aufrufe": 5, "kosten_usd": 0.4}, "entscheidung": {"kosten_usd": 0.02}, "schattendepot": None}
 
 
 def test_run_stores_forecast_and_shows_record_only_with_enough_evaluated_forecasts(tmp_path, monkeypatch):

@@ -138,6 +138,10 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
         for flag in ("research", "kronos"):
             if isinstance(body.get(flag), bool):
                 changes[flag] = body[flag]
+        if "freiheit" in body:
+            if body["freiheit"] not in ("auto", "aus"):
+                return jsonify(error="Freiheit: auto oder aus"), 400
+            changes["freiheit"] = body["freiheit"]
         if "style" in body:
             if body["style"] not in ("sicher", "angriff"):
                 return jsonify(error="Stil: sicher oder angriff"), 400
@@ -169,7 +173,11 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
         series = [{"t": e["time"], "v": e.get("total_after", e.get("total_before"))} for e in entries
                   if e.get("total_after", e.get("total_before")) is not None]
         latest = entries[-1] if entries else None
-        return jsonify(portfolio=pf, series=series, latest=latest,
+        try:
+            vergleich = json.load(open(os.path.join(data_dir, "shadow_report.json")))
+        except (FileNotFoundError, json.JSONDecodeError):
+            vergleich = None
+        return jsonify(portfolio=pf, series=series, latest=latest, vergleich=vergleich,
                        holdings=(latest or {}).get("holdings", {}),
                        decisions=[{k: e.get(k) for k in ("time", "live", "market_view", "provider", "fallback_reason", "guard", "kronos", "makro", "daten", "regime", "research",
                                                     "approved", "rejected")}
