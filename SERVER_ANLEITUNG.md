@@ -35,6 +35,38 @@ Das Skript legt `.env` mit einem zufälligen Dashboard-Passwort an (es steht am 
 6. **„Install OpenSSH server“ ankreuzen.** Keine zusätzlichen Pakete (Snaps) auswählen.
 7. Installation abwarten, dann „Reboot Now“ und den Stick ziehen, wenn die Meldung kommt.
 
+## 2b. Nur WLAN, kein LAN-Kabel
+Es geht, ist aber die störanfälligere Variante, weil viele alte Laptops WLAN-Chips haben, für die Linux beim Installieren keinen Treiber mitbringt (vor allem **Broadcom**).
+**Vorher prüfen (solange noch Windows läuft):** Geräte-Manager, Netzwerkadapter, Name des WLAN-Adapters ansehen. **Intel, Atheros, Realtek, Ralink/MediaTek** laufen fast immer. Bei **Broadcom** brauchst du für die Einrichtung vorübergehend eine andere Verbindung.
+1. **Im Installer:** Auf der Seite „Network connections“ den WLAN-Adapter wählen, „Connect to a Wi-Fi network“, Namen und Passwort deines WLANs eingeben. Erscheint dort kein WLAN-Adapter, fehlt der Treiber: Dann für die Installation ein LAN-Kabel, einen **USB-LAN-Adapter** (ca. 10 €) oder **USB-Tethering vom Handy** (Handy per Kabel anstecken, „USB-Tethering“ einschalten) benutzen.
+2. **Nach der Installation, WLAN fest einrichten** (am Laptop direkt, mit Tastatur):
+```
+ip a
+sudo nano /etc/netplan/60-wifi.yaml
+```
+`ip a` zeigt den Namen des WLAN-Adapters (beginnt meist mit `wl`, z. B. `wlp2s0`). In die Datei (Einrückung mit Leerzeichen, nicht Tab):
+```
+network:
+  version: 2
+  wifis:
+    wlp2s0:
+      dhcp4: true
+      access-points:
+        "NameDeinesWLAN":
+          password: "DeinWLANPasswort"
+```
+Speichern (Strg + O, Enter, Strg + X), dann:
+```
+sudo chmod 600 /etc/netplan/60-wifi.yaml
+echo "network: {config: disabled}" | sudo tee /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+sudo netplan apply
+ip -4 addr show wlp2s0
+```
+Es muss eine Adresse wie `192.168.178.42` erscheinen. Fehlt `wpasupplicant` (Meldung), einmal mit Kabel oder Tethering `sudo apt install -y wpasupplicant`.
+3. **Broadcom-Chip:** Mit Kabel oder Tethering `sudo apt install -y bcmwl-kernel-source` (oder, wenn das nicht geht, `sudo ubuntu-drivers install`), neu starten, dann Schritt 2. Klappt auch das nicht, ist ein USB-WLAN-Stick (ca. 10 €, mit Linux-Hinweis auf der Packung) die einfachste Lösung.
+4. **Feste Adresse:** Im Router die Adresse für das Gerät mit dem WLAN-Adapter reservieren (die Kennung steht im Routermenü unter den verbundenen Geräten).
+Im Betrieb reicht WLAN für den Bot völlig, das Datenvolumen ist klein. Stelle den Laptop dorthin, wo das Signal gut ist.
+
 ## 3. Erster Start und Updates
 1. Melde dich am Laptop mit Benutzername und Passwort an.
 2. Zeitzone und Updates:
