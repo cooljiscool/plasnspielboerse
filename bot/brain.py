@@ -126,7 +126,7 @@ def resolve_provider() -> str:
 
 def build_context(pf, universe, snap, news, today, total, regime=None, research=None, baseline=None, history=None, macro=None, track_record=None, freedom: str = "") -> dict:
     """Kompakter Kontext: Marktumfeld, Depot, die stärksten Kandidaten nach Regelscore plus alle Depottitel."""
-    top = sorted(snap, key=lambda i: rules.active_score()(snap[i], universe[i].get("stars", 0)), reverse=True)[:config.LLM_CANDIDATES]
+    top = sorted(snap, key=lambda i: rules.active_score(regime=regime)(snap[i], universe[i].get("stars", 0)), reverse=True)[:config.LLM_CANDIDATES]
     ids = list(dict.fromkeys([*pf["positions"], *top]))
     notes = (research or {}).get("notes", {})
     ctx = {
@@ -161,8 +161,9 @@ def build_context(pf, universe, snap, news, today, total, regime=None, research=
         ctx["prognose_bilanz"] = track_record
     if freedom:
         ctx["freiheit"] = f"{freedom} Du darfst Käufe aus allen Kandidaten wählen und den Regelvorschlag stärker ersetzen; Verkäufe brauchen weiter einen belegten negativen Befund."
-    if config.STYLE == "angriff":
-        ctx["stil"] = "angriff: bewusst 5 volatile Titel mit hohem Beta für die Chance auf einen Spitzenplatz; hohe Schwankung allein ist kein Verkaufsgrund"
+    style = rules.effective_style(regime=regime)
+    if style != "sicher":
+        ctx["stil"] = f"{rules.STYLES[style]['label']}. Bewusst gewählte Strategie des Nutzers; hohe Schwankung allein ist kein Verkaufsgrund. {rules.STYLES[style]['text']}"
     if config.NH_SLOTS:
         ctx["nachhaltigkeit_plaetze"] = config.NH_SLOTS
     return ctx
@@ -177,10 +178,10 @@ def _negative(isin: str, snap: dict, research: dict) -> bool:
             or bool((m.get("bilanz") or {}).get("schwer")) or bool((m.get("analysten") or {}).get("schaetzungen_gesenkt")))
 
 
-def guard(baseline: dict, out: dict, snap: dict, universe: dict, research: dict = None, top_k: int = 25):
+def guard(baseline: dict, out: dict, snap: dict, universe: dict, research: dict = None, top_k: int = 25, regime: dict = None):
     """Schutzgeländer um Claudes Vorschlag (Lehre aus FINSABER: Sprachmodelle sind im Aufschwung zu vorsichtig, im Abschwung zu aggressiv).
     Gibt (Orders, Abweichungen) zurück. Claude darf nur mit Beleg vom Vorschlag der Regeln abweichen."""
-    top = set(sorted(snap, key=lambda i: rules.active_score()(snap[i], universe[i].get("stars", 0)), reverse=True)[:top_k])
+    top = set(sorted(snap, key=lambda i: rules.active_score(regime=regime)(snap[i], universe[i].get("stars", 0)), reverse=True)[:top_k])
     base_buys = {o["isin"]: o for o in baseline["orders"] if o["action"] == "buy"}
     base_sells = {o["isin"] for o in baseline["orders"] if o["action"] == "sell"}
     kept, notes = [], []
@@ -282,7 +283,7 @@ def decide(pf: dict, universe: dict, snap: dict, news: dict, today: date, total:
             baseline = rules.decide(pf, universe, snap, total, regime)
             context = build_context(pf, universe, snap, news, today, total, regime, research, baseline, history, macro, track_record, freedom)
             out = _decide_cli(context) if provider == "claude_cli" else _decide_api(context)
-            orders, overrides = guard(baseline, out, snap, universe, research, top_k=config.LLM_CANDIDATES if freedom else 25)
+            orders, overrides = guard(baseline, out, snap, universe, research, top_k=config.LLM_CANDIDATES if freedom else 25, regime=regime)
             return {**out, "orders": orders, "guard": overrides, "provider": provider}
         except Exception as e:  # noqa: BLE001 – der Bot soll nie wegen der KI ausfallen
             out = rules.decide(pf, universe, snap, total, regime)

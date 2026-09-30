@@ -8,6 +8,8 @@ import threading
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
+from bot import rules
+
 TZ = ZoneInfo("Europe/Berlin")
 SECRET_KEYS = ("CLAUDE_CODE_OAUTH_TOKEN", "ANTHROPIC_API_KEY", "PSB_USER", "PSB_PASSWORD", "QUIVER_API_TOKEN", "SEC_USER_AGENT")
 PROVIDERS = ("auto", "claude_cli", "api", "rules")
@@ -190,6 +192,7 @@ class Runner:
         nxt = next_run(datetime.now(TZ), s["times"]) if s["enabled"] else None
         return {"enabled": s["enabled"], "live": s["live"], "times": s["times"], "model": s["model"],
                 "provider": s["provider"], "research": s["research"], "kronos": s["kronos"], "nh_slots": s["nh_slots"], "style": s["style"], "freiheit": s["freiheit"],
+                "stile": [{"key": k, "label": v["label"], "risiko": v["risiko"], "text": v["text"]} for k, v in rules.STYLES.items()],
                 "running": self.running(), "last": self.last,
                 "next_run": nxt.isoformat(timespec="minutes") if nxt else None,
                 "secrets": self.store.secret_status()}

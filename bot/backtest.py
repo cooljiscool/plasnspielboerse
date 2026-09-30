@@ -16,7 +16,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from . import config, market, risk, rules, signals
+from . import config, market, rank, risk, rules, signals
 
 DEMO_DAX = ("SAP.DE SIE.DE ALV.DE DTE.DE AIR.DE MUV2.DE DBK.DE BAS.DE BMW.DE MBG.DE VOW3.DE ADS.DE IFX.DE RWE.DE EOAN.DE "
             "HEI.DE BAYN.DE DHL.DE DB1.DE FRE.DE MRK.DE SHL.DE SY1.DE ZAL.DE CBK.DE HNR1.DE BEI.DE CON.DE PAH3.DE QIA.DE "
@@ -165,6 +165,8 @@ def simulate(d: Data, start: int, end: int, strategy, step: int = 2, capital: fl
             regime["mkt_vol_60d"] = d.fr.market_at(i)["vol_60d"]
             regime["breadth200"], regime["breadth50"] = float(d.breadth200[i]), float(d.breadth50[i])
             regime["drawdown"] = total / max(equity) - 1   # Abstand zum bisherigen Höchststand des Depots
+            regime["tage_seit_start"] = (d.dates[i] - d.dates[start]).days
+            regime["rang_proxy"] = rank.proxy(d.fr.a["price"][start], d.fr.a["price"][i], total / capital - 1)   # geschätzter Rang gegen Zufallsdepots (bot/rank.py)
             if d._macro is not None:
                 regime["macro"] = d.macro_at(i)
             out = strategy(pf, d.uni, snap, total, regime)

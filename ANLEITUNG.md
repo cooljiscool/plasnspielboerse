@@ -80,6 +80,7 @@ Tab Steuerung, **Selbsttest**. Alles muss `[ OK ]` zeigen: Universum (amtliche L
 3. **Stopp** beendet sofort. Zurück: „auf Trockenlauf“.
 
 ## 14. Einstellungen, die du kennen solltest
+- **Strategie und Risiko** (Einstellungen): fünf Stile von „sicher“ (Standard) bis „jackpot“, mit Risikostufe 1 bis 5 und den gemessenen Werten. Wirkt ab dem nächsten Lauf.
 - **Nachhaltigkeit** (Einstellungen): reserviert 0 bis 6 der 6 Depotplätze für Sterntitel. Standard 0 (schont die Gesamtwertung).
 - **Web-Recherche aus** senkt den Claude-Verbrauch um etwa vier Fünftel, kostet aber Nachrichten, Ereignis-Vetos und Prognosen.
 - Ist das Claude-Limit erreicht, handelt der Bot in diesem Lauf mit der Regelstrategie weiter.

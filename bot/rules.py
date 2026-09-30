@@ -23,6 +23,7 @@ PARAMS = {"trend_filter": False, "rsi_filter": True, "hard_stop": True, "trailin
 # Stil "angriff" (Einstellung BOT_STYLE): 5 statt 6 Titel (mehr als 20 % je Titel sind verboten), keine Volatilitätsbremse, auch sehr schwankende Titel (bis 150 % Volatilität),
 # Ranking nach Momentum plus Beta. Im Test (22 Planspiel-Jahre): Rang 72 % statt 67 %, 10 statt 7 Jahre unter den besten 10 %, aber tieferer schlechtester Fall; siehe README.
 ATTACK = {"n_positions": 5, "vol_scale": False, "max_vol": 1.5}
+BEHIND, BEHIND_AFTER_DAYS = 0.35, 35   # Stil "turnier": hinten liegt man ab Rang 35 % gegen Zufallsdepots, frühestens 35 Tage nach dem Start
 
 VOL_TARGET = 0.20        # Zielschwankung des Marktes; darüber sinkt die investierte Quote
 VOL_FLOOR = 0.40         # mindestens 40 % investiert
@@ -49,9 +50,38 @@ def score_attack(m: dict, stars: int = 0) -> float:
     return 0.5 * m["ret_60d"] + 0.5 * m.get("ret_120d", m["ret_60d"]) + 0.03 * m.get("beta", 1.0) + 0.01 * stars
 
 
-def active_score(P: dict = None):
+def score_mom60(m: dict, stars: int = 0) -> float:
+    """Stil Jackpot: nur die 60-Tage-Rendite (kurzes Momentum, sucht die heißesten Titel)."""
+    return m["ret_60d"] + 0.01 * stars
+
+
+# Strategie-Stile. Messwerte: `python -m bot.lab --strategien` (amtliches Universum in Euro, 22 Planspiel-Jahre, 50.000 €, Gebühren). Rang = Anteil zufälliger 6-Titel-Depots, die geschlagen werden.
+STYLES = {
+    "sicher": {"label": "Sicher: Momentum, 6 Titel, Volatilitätsbremse", "risiko": 2, "params": {}, "score": score,
+               "text": "Standard. 6 stärkste Titel nach mittelfristigem Momentum, bei unruhigem Markt weniger investiert. Rang 67 % (früh 70 / spät 64), schlechtestes Jahr −7.598 €, bestes +16.334 €."},
+    "breit": {"label": "Breit gestreut: Momentum, 8 Titel", "risiko": 2, "params": {"n_positions": 8, "vol_scale": False}, "score": score,
+              "text": "Dasselbe Signal, 8 statt 6 Titel: ein einzelner Fehlgriff zählt weniger. Rang 70 % (früh 75 / spät 65), schlechtestes Jahr −7.472 €, bestes +18.716 €. Kaum Unterschied zu „sicher“."},
+    "turnier": {"label": "Aufholjagd: sicher, aber hinten mehr Risiko", "risiko": 3, "params": {}, "score": score,
+                "text": "Wie „sicher“, wechselt aber zu „angriff“, sobald der Bot nach 35 Tagen im geschätzten Rang unter 35 % liegt (Turnier-Logik: wer hinten liegt, hat wenig zu verlieren). Rang 70 % (früh 65 / spät 75), schlechtestes Jahr −7.598 €, bestes +16.334 €."},
+    "angriff": {"label": "Angriff: 5 volatile Titel mit hohem Beta", "risiko": 4, "params": ATTACK, "score": score_attack,
+                "text": "5 Titel, keine Volatilitätsbremse, auch sehr schwankende Titel. Rang 72 % (früh 62 / spät 82), 10 von 22 Jahren unter den besten 10 %, schlechtestes Jahr −10.260 €, bestes +56.478 €."},
+    "jackpot": {"label": "Jackpot: 5 heiße Titel, nur 60-Tage-Momentum", "risiko": 5, "params": ATTACK, "score": score_mom60,
+                "text": "Für die Chance auf Platz 1 bei hohem Verlustrisiko. Rang nur 60 % (früh 48 / spät 73), 11 von 22 Jahren unter den besten 10 %, aber 5 unter den schlechtesten 10 %, schlechtestes Jahr −11.282 €, bestes +45.174 €."},
+}
+
+
+def effective_style(P: dict = None, regime: dict = None) -> str:
+    """Stil, der jetzt gilt: bei "turnier" der Angriff, wenn der Bot hinten liegt (geschätzter Rang unter BEHIND, frühestens BEHIND_AFTER_DAYS nach dem Start), sonst "sicher"."""
+    style = (P or PARAMS).get("style", "sicher")
+    if style == "turnier":
+        r = regime or {}
+        return "angriff" if r.get("rang_proxy") is not None and r.get("tage_seit_start", 0) >= BEHIND_AFTER_DAYS and r["rang_proxy"] <= BEHIND else "sicher"
+    return style if style in STYLES else "sicher"
+
+
+def active_score(P: dict = None, regime: dict = None):
     """Bewertungsformel des eingestellten Stils; überall dort, wo die Kandidaten gerankt werden."""
-    return score_attack if (P or PARAMS).get("style") == "angriff" else score
+    return STYLES[effective_style(P, regime)]["score"]
 
 
 def score_60_120(m: dict, stars: int = 0) -> float:
@@ -119,9 +149,9 @@ def vol_scaled(mkt_vol, n: int, capital: float) -> tuple:
 def decide(pf: dict, universe: dict, snap: dict, total: float, regime: dict = None,
            params: dict = None, score_fn=None) -> dict:
     P = {**PARAMS, **(params or {})}
-    if P.get("style") == "angriff":
-        P = {**P, **{k: v for k, v in ATTACK.items() if k not in (params or {})}}   # ausdrücklich übergebene Parameter gehen vor
-    score_fn = score_fn or active_score(P)
+    style = effective_style(P, regime)
+    P = {**P, **{k: v for k, v in STYLES[style]["params"].items() if k not in (params or {})}}   # ausdrücklich übergebene Parameter gehen vor
+    score_fn = score_fn or STYLES[style]["score"]
     shown = regime or {"label": "unbekannt", "score": "-"}   # nur zur Anzeige; gesteuert wird nur mit PARAMS["regime"]
     regime = _regime(regime, P["regime"])
     n_target, exposure = P["n_positions"] or regime["positions"], regime["exposure"]

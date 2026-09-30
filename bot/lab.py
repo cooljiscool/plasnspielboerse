@@ -461,6 +461,24 @@ def _hit_report(refresh: bool, years: bool):
             print(f"  {y}/{str(y + 1)[2:]}: {s['n']:>3} | {s['plus'] * 100:>3.0f}% | {s['mittel'] * 100:>+6.1f}%")
 
 
+def _style_report(refresh: bool):
+    """Alle Strategie-Stile (rules.STYLES) mit den Live-Regeln über die 22 Planspiel-Jahre am amtlichen Universum in Euro: Grundlage der Kennzahlen im Dashboard."""
+    import functools
+
+    rows = _official_rows()
+    hist = _official_history(rows, refresh)
+    d = bt.Data.from_frames(hist["close"], hist["high"], hist["low"], hist["open"], [r["yf"] for r in rows])
+    w = planspiel_windows(d.dates)
+    print(f"Strategie-Stile, {len(w)} Planspiel-Jahre, je 50.000 €, amtliches Universum in Euro. Rang = Anteil zufälliger 6-Titel-Depots, die geschlagen werden.\n")
+    print(f"{'Stil':10}{'Risiko':>7}{'Ø Rang':>8}{'früh':>6}{'spät':>6}{'unter besten 10 %':>19}{'unter schlechtesten 10 %':>26}{'Median':>9}{'Ø Gewinn':>10}{'schlechtestes':>15}{'bestes':>9}")
+    for name, spec in rules.STYLES.items():
+        df = evaluate(d, w, functools.partial(rules.decide, params={"style": name}))
+        pl = df.ret * 50000
+        e, late = df[df.index < SPLIT_YEAR], df[df.index >= SPLIT_YEAR]
+        print(f"{name:10}{spec['risiko']:>7}{df.pct.mean() * 100:>7.0f}%{e.pct.mean() * 100:>5.0f}%{late.pct.mean() * 100:>5.0f}%{int((df.pct >= .9).sum()):>13} von {len(df)}{int((df.pct <= .1).sum()):>20} von {len(df)}"
+              f"{pl.median():>+9,.0f}{pl.mean():>+10,.0f}{pl.min():>+15,.0f}{pl.max():>+9,.0f}", flush=True)
+
+
 def _nh_report(refresh: bool):
     """Gesamtwertung gegen Nachhaltigkeitswertung: Wie viele Plätze für Sterntitel reserviert werden (nh_slots), am amtlichen Universum in Euro."""
     rows = _official_rows()
@@ -514,8 +532,11 @@ def main():
     ap.add_argument("--official", action="store_true", help="Strategien auf dem amtlichen Universum (data/universe.json) testen, Kurse in Euro")
     ap.add_argument("--nachhaltigkeit", action="store_true", help="Gesamtwertung gegen Nachhaltigkeitswertung bei reservierten Plätzen für Sterntitel (amtliches Universum, Euro)")
     ap.add_argument("--overlays", action="store_true", help="Marktbreite und Schutzschalter bei Depotrückgang als Überlagerung testen (Markt alle)")
+    ap.add_argument("--strategien", action="store_true", help="Alle Strategie-Stile (sicher, breit, turnier, angriff, jackpot) über die 22 Planspiel-Jahre messen (amtliches Universum, Euro)")
     ap.add_argument("--trefferquote", action="store_true", help="Wie oft liegt die Auswahl richtig? Trefferquote der Käufe und Ergebnis der Positionen (amtliches Universum, Euro)")
     a = ap.parse_args()
+    if a.strategien:
+        return _style_report(a.refresh)
     if a.trefferquote:
         return _hit_report(a.refresh, a.years)
     if a.official:

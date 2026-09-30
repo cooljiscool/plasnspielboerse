@@ -318,3 +318,65 @@ def test_attack_style_uses_five_titles_beta_score_and_allows_volatile_titles():
     assert rules.active_score({"style": "angriff"}) is rules.score_attack
     explicit = [o["isin"] for o in rules.decide(pf, uni, snap, 50000.0, params={"style": "angriff", "n_positions": 3})["orders"] if o["action"] == "buy"]
     assert len(explicit) == 3                                                       # ausdrückliche Parameter gehen vor
+
+
+# --- Stile und geschätzter Rang ---
+def _styles_market(n=30):
+    uni = {f"S{i}": {"name": f"S{i}", "stars": 0} for i in range(n)}
+    snap = {f"S{i}": {"price": 100.0, "vol_20d": 0.2, "ret_20d": 0.01, "ret_60d": 0.01 * i, "ret_120d": 0.01 * i, "mom_12_1": 0.01 * i, "beta": 1.0} for i in range(n)}
+    return uni, snap
+
+
+def test_every_style_decides_and_has_a_description():
+    uni, snap = _styles_market()
+    pf = {"cash": 50000.0, "positions": {}}
+    counts = {}
+    for name, spec in rules.STYLES.items():
+        assert 1 <= spec["risiko"] <= 5 and spec["label"] and spec["text"] and callable(spec["score"])
+        counts[name] = sum(o["action"] == "buy" for o in rules.decide(pf, uni, snap, 50000.0, params={"style": name})["orders"])
+    assert counts == {"sicher": 6, "breit": 8, "turnier": 6, "angriff": 5, "jackpot": 5}
+
+
+def test_turnier_switches_to_attack_only_when_behind_late_enough():
+    assert rules.effective_style({"style": "turnier"}, {}) == "sicher"                                          # noch keine Rangschätzung
+    assert rules.effective_style({"style": "turnier"}, {"rang_proxy": 0.1, "tage_seit_start": 10}) == "sicher"   # zu früh
+    assert rules.effective_style({"style": "turnier"}, {"rang_proxy": 0.1, "tage_seit_start": 40}) == "angriff"  # hinten
+    assert rules.effective_style({"style": "turnier"}, {"rang_proxy": 0.6, "tage_seit_start": 40}) == "sicher"   # vorn oder Mitte
+    assert rules.effective_style({"style": "angriff"}, {"rang_proxy": 0.9, "tage_seit_start": 40}) == "angriff"
+    assert rules.effective_style({"style": "unbekannt"}, {}) == "sicher"
+    uni, snap = _styles_market()
+    snap["S3"]["vol_20d"] = 0.9
+    snap["S3"]["ret_60d"] = snap["S3"]["ret_120d"] = 2.0                                                        # sehr volatiler Spitzenreiter
+    pf = {"cash": 50000.0, "positions": {}}
+    buys = lambda reg: {o["isin"] for o in rules.decide(pf, uni, snap, 50000.0, {"label": "neutral", "score": "3/5", **reg}, params={"style": "turnier"})["orders"] if o["action"] == "buy"}
+    assert "S3" not in buys({"rang_proxy": 0.8, "tage_seit_start": 40}) and "S3" in buys({"rang_proxy": 0.1, "tage_seit_start": 40})
+
+
+def test_rank_proxy_counts_random_portfolios_that_are_beaten():
+    from bot import rank
+    p0 = [100.0] * 20
+    assert rank.proxy(p0, [110.0] * 20, 0.05) == 0.0 and rank.proxy(p0, [110.0] * 20, 0.20) == 1.0     # alle Zufallsdepots +10 %: +5 % schlägt keines, +20 % alle
+    assert rank.proxy(p0, [100.0 + i for i in range(20)], 0.095) == pytest.approx(0.5, abs=0.15)         # Depot im Mittel: etwa Mitte
+    assert rank.proxy([float("nan")] * 3, [1.0] * 3, 0.1) == 0.5                                         # zu wenige Kurse: neutral
+
+
+def test_run_stores_the_start_state_once_and_estimates_the_rank(tmp_path, monkeypatch):
+    import json
+    from bot import run
+    from tests.test_run import prepare
+    prepare(tmp_path, monkeypatch)
+    for name in ("statements.get", "social.get", "social.reddit", "edgar.get", "analysts.get"):
+        mod, fn = name.split(".")
+        monkeypatch.setattr(getattr(run, mod), fn, lambda *a, **k: {})
+    monkeypatch.setattr(run.edgar, "contact_ok", lambda: False)
+    monkeypatch.setattr(run.macro, "snapshot", lambda: {"warnsignale": []})
+    monkeypatch.setattr(run.research, "get", lambda u, i, t: {"market": "", "macro": "", "notes": {}})
+    seen = {}
+    monkeypatch.setattr(run.brain, "decide", lambda *a, **k: seen.update(regime=a[6]) or {"market_view": "t", "orders": [], "provider": "rules"})
+    run.main()
+    start = json.loads((tmp_path / "data" / "start.json").read_text())
+    assert start["depotwert"] == 50000.0 and set(start["kurse"]) == {"A", "B"}
+    assert seen["regime"]["tage_seit_start"] == 0 and 0.0 <= seen["regime"]["rang_proxy"] <= 1.0
+    first = json.dumps(start)
+    run.main()
+    assert json.dumps(json.loads((tmp_path / "data" / "start.json").read_text())) == first                # Startstand wird nicht überschrieben

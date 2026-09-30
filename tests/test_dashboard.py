@@ -237,3 +237,14 @@ def test_freedom_setting_is_validated_and_the_depot_shows_the_comparison(authed,
     os.makedirs(app.runner.data_dir, exist_ok=True)
     open(os.path.join(app.runner.data_dir, "shadow_report.json"), "w").write(json.dumps({"urteil": "zu_frueh", "text": "Zu früh.", "gruppen": 2}))
     assert authed.get("/api/depot").get_json()["vergleich"]["urteil"] == "zu_frueh"
+
+
+def test_all_styles_are_offered_with_risk_and_text_and_can_be_selected(authed, app):
+    from bot import config, rules
+    st = authed.get("/api/status").get_json()
+    assert [x["key"] for x in st["stile"]] == list(config.STYLES) == list(rules.STYLES)
+    assert all(1 <= x["risiko"] <= 5 and x["label"] and x["text"] for x in st["stile"])
+    for key in config.STYLES:
+        assert authed.post("/api/settings", headers=H, json={"style": key}).get_json()["style"] == key
+        assert app.runner._env(False)["BOT_STYLE"] == key
+    assert authed.post("/api/settings", headers=H, json={"style": "lotterie"}).status_code == 400

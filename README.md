@@ -170,16 +170,25 @@ Die Positionen der Regeln in den 22 Planspiel-Jahren (154 Käufe, sonst bewertet
 - **Vorbehalte:** Parameter und Test nutzen dieselben 22 Jahre (Anpassung an die Vergangenheit), heutige Indexmitglieder (Überlebens-Verzerrung, die Zahlen sind eher zu gut). **Claudes eigene Prognosen** (Szenarien mit Bandbreiten je Titel) sind darin nicht enthalten und
   historisch nicht prüfbar; ihre Trefferquote zeigt erst `python -m bot.track` nach rund 4 bis 5 Wochen Betrieb (Stand jetzt: 0 gespeicherte Prognosen).
 
-**Stil „Angriff“ für die Chance auf einen Spitzenplatz** (Dashboard, Einstellungen, „Stil“, oder `BOT_STYLE=angriff`; Standard ist „sicher“). Weil höchstens 20 % je Titel erlaubt sind, geht mehr Konzentration als 5 Titel nicht; der Stil erhöht das Risiko über die Auswahl:
-5 statt 6 Titel, keine Volatilitätsbremse, auch sehr schwankende Titel (bis 150 % Volatilität), Ranking nach Momentum plus Beta. Gemessen an den 22 Planspiel-Jahren (amtliches Universum, Euro, 50.000 €, `lab.evaluate` mit den Live-Regeln):
+**Strategie und Risiko wählen (Dashboard, Einstellungen, „Strategie und Risiko“, oder `BOT_STYLE`).** Der Bot kennt fünf Stile mit einer Risikostufe von 1 bis 5. Gemessen mit `python -m bot.lab --strategien` (amtliches Universum, Euro, 22 Planspiel-Jahre, 50.000 €, Gebühren, die Live-Regeln):
 
-| Stil | Ø Rang | Jahre unter den besten 10 % | Median | Ø Gewinn | schlechtestes / bestes Jahr |
-|---|---|---|---|---|---|
-| sicher (Standard) | 67 % (früh 70 / spät 64) | 7 von 22 | +6.553 € | +5.027 € | −6.391 € / +16.334 € |
-| angriff | 72 % (früh 62 / spät 82) | 10 von 22 | +7.909 € | +10.186 € | −10.260 € / +56.478 € |
+| Stil | Risiko | Ø Rang (früh / spät) | Jahre unter den besten 10 % | unter den schlechtesten 10 % | Median | schlechtestes / bestes Jahr |
+|---|---|---|---|---|---|---|
+| `sicher` (Standard): Momentum, 6 Titel, Volatilitätsbremse | 2 | 67 % (70 / 64) | 7 | 3 | +6.553 € | −7.598 € / +16.334 € |
+| `breit`: dasselbe Signal, 8 Titel | 2 | 70 % (75 / 65) | 7 | 2 | +7.306 € | −7.472 € / +18.716 € |
+| `turnier` (Aufholjagd): wie sicher, bei geschätztem Rang unter 35 % nach 35 Tagen Wechsel zu Angriff | 3 | 70 % (65 / 75) | 8 | 2 | +6.293 € | −7.598 € / +16.334 € |
+| `angriff`: 5 volatile Titel, Momentum plus Beta, keine Bremse | 4 | 72 % (62 / 82) | 10 | 3 | +7.909 € | −10.260 € / +56.478 € |
+| `jackpot`: 5 heiße Titel, nur 60-Tage-Momentum, keine Bremse | 5 | 60 % (48 / 73) | 11 | 5 | +4.451 € | −11.282 € / +45.174 € |
 
-**Vorbehalte:** Es wurden sieben Varianten verglichen, eine passt leichter zufällig (Anpassung an die Vergangenheit). Der Vorteil stammt überwiegend aus den letzten elf Jahren (Tech-Boom), in den ersten elf war „sicher“ besser. Die besten Jahre sind einzelne Volltreffer
-bei sehr stark gestiegenen Aktien, und die Auswahl heutiger Indexmitglieder begünstigt gerade solche Aktien. Rechne im Live-Betrieb mit einer größeren Streuung als bei „sicher“.
+**Woher die Stile kommen (Recherche) und was daraus wurde:**
+- *Momentum* ist der am besten belegte Effekt. Seine Schwäche sind Crashs beim Marktwechsel ([Daniel und Moskowitz, „Momentum Crashes“](https://www.researchgate.net/publication/307823188_Momentum_Crashes)); verwaltet man das Momentum-Risiko (Volatilitätsskalierung, [Barroso und Santa-Clara](https://alphaarchitect.com/avoiding-momentum-crashes/)), sinken die Crashs und die Rendite je Risiko steigt. Das ist die Volatilitätsbremse in `sicher`.
+- *Niedrige Schwankung plus Momentum:* Die Literatur ist gemischt, in nordischen Märkten schlug keine Kombination reines Momentum ([Applied Economics 2024](https://www.tandfonline.com/doi/full/10.1080/00036846.2024.2337806)). Ich habe es getestet (Momentum je Schwankung, nur Titel unter 35 bis 40 % Volatilität): **Rang nur 43 bis 47 %, schlechter als Zufall**, deshalb kein Stil.
+- *Qualität plus Momentum* gilt in der Literatur als robuster als reines Momentum (Überblick: [Robeco: Guide to factor investing](https://www.robeco.com/files/docm/docu-robeco-guide-to-factor-investing-global.pdf)), braucht aber historische Bilanzdaten, die ich nicht kostenlos habe: nicht testbar, bleibt Information für Claude.
+- *Turnier-Logik:* In Wettbewerben mit Rangwertung sollten Führende Positionen sichern und Zurückliegende mehr Risiko eingehen (z. B. [Prize and Risk-Taking Strategy in Tournaments, IZA](https://docs.iza.org/dp1345.pdf); [Winning ways, Oxford](https://ora.ox.ac.uk/objects/uuid:21f241bd-a305-4bdf-bc86-36dcf65b7201/files/sd217qr534)). Umgesetzt als `turnier` mit der geschätzten Rangposition gegen Zufallsdepots (`bot/rank.py`, Startstand in `data/start.json`). Nur die Hälfte der Theorie trägt in den Messwerten: **hinten Angriff hilft (Rang 70 %), vorn absichern schadet (Rang 62 %)**, deshalb sichert `turnier` nie ab.
+- *Breit streuen:* Der Durchschnitt der 40 Momentum-Kandidaten lag mit +11,0 % vor den 6 stärksten (+10,2 %), also 8 statt 6 Titel (`breit`), soweit die Mindestorder von 5.000 € es erlaubt.
+- *Jackpot und Angriff* nutzen, dass der Rang gewinnt, nicht die Rendite: Wenige große Treffer bringen den Spitzenplatz, kosten aber im Schnitt Rang.
+
+**Ehrlich zur Aussagekraft:** Sieben bis zehn Varianten auf denselben 22 Jahren verglichen, der Unterschied von 2 bis 5 Rangpunkten zwischen `sicher`, `breit` und `turnier` liegt im Rauschen. Wirklich verschieden ist nur das Risiko: `angriff` und `jackpot` haben deutlich größere Spreizung (bestes Jahr über +45.000 €, schlechtestes bis −11.000 €). `angriff` und `jackpot` verdanken viel den letzten elf Jahren (Tech-Boom), in den ersten elf war `sicher` besser. Das Schattendepot vergleicht zusätzlich Claudes Auswahl mit dem gewählten Stil.
 
 **Claude gegen Regeln, vollautomatisch (Schattendepot, `bot/shadow.py`, `python -m bot.shadow`).** Ob Claude allein besser wählt als die Regeln, lässt sich historisch nicht prüfen. Deshalb misst der Bot es nach vorn, ohne dass du etwas tun musst:
 1. An jedem Handelstag wählt Claude **ohne Regelvorschlag** 6 Titel aus denselben 40 Kandidaten (eigener Aufruf, ohne Werkzeuge, rund 0,15 $ Rechenwert; es wird nichts gekauft). Dazu speichert der Bot die Auswahl der Regeln vom selben Tag und alle Kurse als Maßstab (Durchschnitt aller Titel).

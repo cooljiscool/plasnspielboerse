@@ -3,7 +3,7 @@ import json
 import os
 from datetime import date, datetime
 
-from . import analysts, brain, config, edgar, fundamentals, journal, kronos_signal, macro, market, quiver, research, risk, rules, shadow, social, statements, track
+from . import analysts, brain, config, edgar, fundamentals, journal, kronos_signal, macro, market, quiver, rank, research, risk, rules, shadow, social, statements, track
 from .executor import DryRunExecutor, PlaywrightExecutor
 
 
@@ -56,8 +56,21 @@ def main():
             pos["peak"] = max(pos.get("peak") or before or pos["avg_price"], prices.get(isin, pos["avg_price"]))
         total = risk.portfolio_value(pf, prices)
 
+        # Startstand merken (einmal): Kurse aller Titel und Depotwert am ersten Lauf. Daraus schätzt der Bot seinen Rang gegen Zufallsdepots (bot/rank.py, Stil "turnier").
+        def rank_estimate():
+            start = load("start.json", None)
+            if not start:
+                start = {"datum": today.isoformat(), "depotwert": total, "kurse": dict(prices)}
+                save("start.json", start)
+            order = list(start["kurse"])
+            p0 = [start["kurse"][i] for i in order]
+            p1 = [prices.get(i, float("nan")) for i in order]
+            regime["tage_seit_start"] = (today - datetime.fromisoformat(start["datum"]).date()).days
+            regime["rang_proxy"] = round(rank.proxy(p0, p1, total / start["depotwert"] - 1), 3)
+        optional("Rangschätzung", rank_estimate)
+
         # Engere Auswahl: Depottitel plus die stärksten nach Regelscore bekommen Fundamentaldaten und Recherche.
-        top = sorted(snap, key=lambda i: rules.active_score()(snap[i], universe[i].get("stars", 0)), reverse=True)
+        top = sorted(snap, key=lambda i: rules.active_score(regime=regime)(snap[i], universe[i].get("stars", 0)), reverse=True)
         shortlist = [i for i in dict.fromkeys([*pf["positions"], *top[:config.SHORTLIST]]) if i in snap]
         try:
             for isin, f in fundamentals.get(universe, snap, shortlist, today).items():
@@ -139,7 +152,7 @@ def main():
         if provider == "claude_cli" and not shadow.has_today(shadow_rows, today):   # Claudes eigene Auswahl des Tages, ohne Regelvorschlag; es wird nichts gekauft
             def own_picks():
                 picks, used = brain.shadow_picks(pf, universe, snap, news, today, total, regime, research_info, macro_info)
-                return shadow.add(shadow_rows, today, picks, shadow.rule_picks(snap, universe), prices), used
+                return shadow.add(shadow_rows, today, picks, shadow.rule_picks(snap, universe, regime=regime), prices), used
             got = optional("Schattendepot Auswahl", own_picks)
             shadow_used = got[1] if got else None
         if shadow_rows:
@@ -167,7 +180,7 @@ def main():
     log = {"time": datetime.now().isoformat(timespec="seconds"), "live": config.LIVE, "total_before": total,
            "total_after": total_after, "cash": pf["cash"], "holdings": holdings,
            "market_view": proposal["market_view"], "provider": proposal.get("provider"),
-           "fallback_reason": proposal.get("fallback_reason"), "guard": proposal.get("guard"), "kronos": kronos_info, "regime": regime,
+           "fallback_reason": proposal.get("fallback_reason"), "guard": proposal.get("guard"), "kronos": kronos_info, "regime": regime, "stil": rules.effective_style(regime=regime),
            "makro": ({"warnsignale": macro_info.get("warnsignale", [])} if macro_info else None),
            "daten": data_info or None, "verbrauch": {"recherche": (research_info or {}).get("verbrauch"), "entscheidung": proposal.get("verbrauch"), "schattendepot": shadow_used},
            "vergleich": ({"urteil": shadow_report["urteil"], "text": shadow_report["text"], "gruppen": shadow_report["gruppen"], "freiheit": free} if shadow_report else None),

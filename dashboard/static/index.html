@@ -144,12 +144,9 @@ svg{width:100%;height:auto;display:block}
         <option value="aus">Aus: immer der Regelvorschlag als Grundlage</option>
       </select></label>
     <p class="mute" style="margin:-6px 0 12px">Der Vergleich läuft immer mit (Übersicht, „Claude gegen Regeln“); die Einstellung bestimmt nur, ob der Bot daraus selbst Konsequenzen zieht.</p>
-    <label>Stil: Sicherheit gegen Spitzenplatz
-      <select id="style">
-        <option value="sicher">Sicher: 6 Titel, Volatilitätsbremse (Standard, Rang 67 %)</option>
-        <option value="angriff">Angriff: 5 volatile Titel, keine Bremse (Rang 72 %, höhere Streuung)</option>
-      </select></label>
-    <p class="mute" style="margin:-6px 0 12px">Angriff erhöht die Chance auf einen Spitzenplatz, aber auch auf ein schlechtes Jahr (Messwerte im README). Wirkt ab dem nächsten Lauf.</p>
+    <label>Strategie und Risiko
+      <select id="style"></select></label>
+    <p class="mute" id="styleText" style="margin:-6px 0 12px"></p>
     <label>Nachhaltigkeitswertung: Plätze im Depot für Titel mit Stern
       <select id="nh_slots">
         <option value="0">0: nur Gesamtwertung (Standard)</option>
@@ -225,6 +222,9 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
   refreshAll(); window.scrollTo(0, 0);
 });
 
+let STILE = [];
+function showStyle() { const s = STILE.find(x => x.key === $('style').value); $('styleText').textContent = s ? `Risiko ${s.risiko} von 5. ${s.text}` : ''; }
+$('style').addEventListener('change', showStyle);
 function renderStatus() {
   const p = $('stateP'); p.className = 'pill' + (S.running ? ' run' : S.enabled ? ' on' : '');
   p.textContent = S.running ? 'läuft …' : S.enabled ? 'aktiv' : 'gestoppt';
@@ -325,7 +325,7 @@ $('btnLive').onclick = act(async () => {
 
 async function loadSettingsForm() {
   try {
-    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model; $('provider').value = st.provider; $('research').checked = st.research; $('kronos').checked = st.kronos; $('nh_slots').value = String(st.nh_slots); $('style').value = st.style; $('freiheit').value = st.freiheit;
+    const st = await api('/api/status'); $('times').value = st.times.join(', '); $('model').value = st.model; $('provider').value = st.provider; $('research').checked = st.research; $('kronos').checked = st.kronos; $('nh_slots').value = String(st.nh_slots); STILE = st.stile; $('style').replaceChildren(...st.stile.map(x => el('option', {value: x.key}, '●'.repeat(x.risiko) + '○'.repeat(5 - x.risiko) + '  ' + x.label))); $('style').value = st.style; showStyle(); $('freiheit').value = st.freiheit;
     $('f_selectors').value = (await api('/api/file/selectors')).text; $('f_universe').value = (await api('/api/file/universe')).text;
   } catch (e) {}
 }

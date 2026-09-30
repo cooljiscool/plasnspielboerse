@@ -38,9 +38,9 @@ def save(rows: list) -> None:
     json.dump(rows, open(_path(), "w"), ensure_ascii=False)
 
 
-def rule_picks(snap: dict, universe: dict, k: int = PICKS) -> list:
+def rule_picks(snap: dict, universe: dict, k: int = PICKS, regime: dict = None) -> list:
     """Auswahl der Regeln: die k stärksten kaufbaren Titel nach dem Score des eingestellten Stils."""
-    score = rules.active_score()
+    score = rules.active_score(regime=regime)
     ranked = sorted(snap, key=lambda i: score(snap[i], universe[i].get("stars", 0)), reverse=True)
     return [i for i in ranked if rules.can_buy(snap[i], "risk_on", rules.PARAMS)][:k]
 

@@ -10,6 +10,8 @@ from functools import wraps
 
 from flask import Flask, jsonify, request, send_from_directory, session
 
+from bot import rules
+
 from .runner import PROVIDERS, Runner, Store, valid_times
 
 BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -143,8 +145,8 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
                 return jsonify(error="Freiheit: auto oder aus"), 400
             changes["freiheit"] = body["freiheit"]
         if "style" in body:
-            if body["style"] not in ("sicher", "angriff"):
-                return jsonify(error="Stil: sicher oder angriff"), 400
+            if body["style"] not in rules.STYLES:
+                return jsonify(error="Stil: " + ", ".join(rules.STYLES)), 400
             changes["style"] = body["style"]
         if "nh_slots" in body:
             if not (isinstance(body["nh_slots"], int) and not isinstance(body["nh_slots"], bool) and 0 <= body["nh_slots"] <= 6):

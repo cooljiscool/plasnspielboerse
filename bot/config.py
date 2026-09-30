@@ -33,7 +33,8 @@ QUIVER_TOKEN = os.environ.get("QUIVER_API_TOKEN", "")   # optional, kostenpflich
 MCP_CONFIG = os.environ.get("BOT_RESEARCH_MCP_CONFIG", "")   # optional: Datei mit MCP-Servern nur zum Lesen für die Recherche (bot/mcp.py)
 MCP_TOOLS = os.environ.get("BOT_RESEARCH_MCP_TOOLS", "")     # dazu die einzeln freigegebenen Nur-Lese-Werkzeuge, z. B. mcp__liquid__get_markets
 FREEDOM = "aus" if os.environ.get("BOT_FREEDOM") == "aus" else "auto"   # "auto": hat Claudes Schattendepot die Regeln sicher geschlagen (bot/shadow.py), darf er freier wählen; "aus": nie
-STYLE = os.environ.get("BOT_STYLE", "sicher") if os.environ.get("BOT_STYLE") in ("sicher", "angriff") else "sicher"   # "angriff": 5 volatile Titel mit hohem Beta, keine Volatilitätsbremse (Chance auf Spitzenplätze, höhere Streuung), siehe README
+STYLES = ("sicher", "breit", "turnier", "angriff", "jackpot")   # Strategie-Stile, Beschreibung und Messwerte in bot/rules.py (STYLES)
+STYLE = os.environ.get("BOT_STYLE", "sicher") if os.environ.get("BOT_STYLE") in STYLES else "sicher"
 NH_SLOTS = min(6, max(0, int(os.environ.get("BOT_NH_SLOTS", "0") or 0)))   # Plätze im Depot, die für Titel mit Nachhaltigkeits-Stern reserviert sind (0 = nur Gesamtwertung), siehe README
 KRONOS = os.environ.get("BOT_KRONOS", "0") == "1"       # Kronos-Prognose (optional, braucht PyTorch, siehe scripts/setup_kronos.sh)
 KRONOS_SIZE = os.environ.get("BOT_KRONOS_SIZE", "small")   # mini | small | base
