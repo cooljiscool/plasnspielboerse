@@ -11,6 +11,7 @@ ISIN_RE = re.compile(r"\b[A-Z]{2}[A-Z0-9]{9}\d\b")
 PLACEHOLDER_RE = re.compile(r"\{(\w+)\}")
 LOAD_TRIES, LOAD_WAIT_MS = 8, 1500   # so oft (und mit dieser Pause) wird ein halb geladenes Depot neu gelesen
 LOGIN_TRIES, LOGIN_WAIT_MS = 1, 15000   # genau ein Anmeldeversuch: Die Plattform sperrt das Konto nach mehr als 3 falschen Passwörtern
+NAV_TIMEOUT_MS = 60000
 OPTIONAL_TIMEOUT_MS = 4000   # so lange wird auf einen Schritt mit "optional": true gewartet (etwa ein Bestätigungsfenster, das nicht immer erscheint)
 
 
@@ -92,6 +93,7 @@ class PlaywrightExecutor:
         self.browser = self._launch()
         self.page = self.browser.new_context(viewport={"width": 1400, "height": 1000}, locale="de-DE", timezone_id="Europe/Berlin").new_page()
         self.page.set_default_timeout(20000)
+        self.page.set_default_navigation_timeout(NAV_TIMEOUT_MS)
         try:
             self._login()
             self._select_depot()
@@ -104,12 +106,16 @@ class PlaywrightExecutor:
             raise
         return self
 
+    def _goto(self, url: str) -> None:
+        """Seite öffnen und nur auf das Grundgerüst warten: Die Plattform lädt Bilder und Zusatzdienste lange, vor allem bei Andrang."""
+        self.page.goto(url, wait_until="domcontentloaded")
+
     def _login(self) -> None:
         """Anmelden (LOGIN_TRIES Versuche). Wiederholt wird nur, wenn gar nichts geschah; bei falschem Passwort gilt jeder Versuch, nach mehr als 3 sperrt die Plattform das Konto."""
         self.answers = []
         self.page.on("response", lambda r: self.answers.append(f"{r.request.method} {r.url.split('?')[0][-60:]} -> {r.status}") if r.request.method in ("POST", "PUT") else None)
         for attempt in range(LOGIN_TRIES):
-            self.page.goto(self.sel["login_url"])
+            self._goto(self.sel["login_url"])
             self._run_steps(self.sel.get("pre_login_steps", []), {})
             self.page.wait_for_selector(self.sel["login_button"])
             self.page.wait_for_timeout(1500)
@@ -174,7 +180,7 @@ class PlaywrightExecutor:
     def get_portfolio(self, previous: dict | None = None) -> dict:
         s, page = self.sel["portfolio"], self.page
         try:
-            page.goto(s["url"])
+            self._goto(s["url"])
             self._select_depot()                      # nach dem Neuladen der Seite gilt wieder das Standarddepot
             self._run_steps(s.get("steps", []), {})
             page.wait_for_selector(s["cash_selector"])
@@ -232,7 +238,7 @@ class PlaywrightExecutor:
             opt = {"timeout": OPTIONAL_TIMEOUT_MS} if st.get("optional") else {}
             try:
                 if act == "goto":
-                    self.page.goto(val)
+                    self._goto(val)
                 elif act == "click":
                     self.page.click(target, **opt)
                 elif act == "fill":

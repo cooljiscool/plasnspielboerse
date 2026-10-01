@@ -177,7 +177,7 @@ def test_testorder_reports_failures_and_unknown_isins(monkeypatch, tmp_path, cap
 
 def test_login_makes_exactly_one_attempt_so_a_wrong_password_cannot_lock_the_account():
     class P(Page):
-        def goto(self, url): self.calls.append(("goto", url, {}))
+        def goto(self, url, **kw): self.calls.append(("goto", url, {}))
         def wait_for_timeout(self, ms): pass
         def on(self, event, fn): pass
         def wait_for_selector(self, sel, **kw):
