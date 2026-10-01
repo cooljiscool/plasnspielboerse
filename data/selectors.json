@@ -2,7 +2,11 @@
   "_hinweis": "Aus dem echten Seitenquelltext des Planspiels (Version 1.5.6, Stand 30.09.2026) abgeleitet. GEPRÜFT gegen das HTML: Anmeldung, Depotwechsel, Barbestand, Positionstabelle (Leerzustand), Marktübersicht, Kaufmaske. NOCH NICHT GESEHEN, deshalb geschätzt: Rückmeldung nach 'Ordern' (Bestätigungsfenster oder Meldung), Verkaufsmaske, Zeilen der Positionstabelle mit echten Positionen, Kaufmaske des Wettbewerbsdepots nach dem ersten Handelstag (01.10.2026 08:00). Alle Selektoren sind unabhängig von der Sprache der Seite (ids und Attribute statt Beschriftungen), nur die Kauf-Schaltflächen heißen 'Kauf <Name>'.",
   "login_url": "https://trading.planspiel-boerse.de/web/auth/login",
   "pre_login_steps": [
-    {"do": "click", "selector": "a#de:not(.d-none)", "optional": true}
+    {
+      "do": "click",
+      "selector": "a#de:not(.d-none)",
+      "optional": true
+    }
   ],
   "user_field": "input#username",
   "password_field": "input#password",
@@ -11,12 +15,32 @@
   "depot_switch": {
     "_hinweis": "Kopfleiste der Depotseite: Optionsfelder #depot (Schüler:innenwettbewerb) und #training (Trainings-Depot). Das aktive trägt die Klasse 'active'. Geklickt wird die Beschriftung (label[for=...]), das Optionsfeld selbst ist evtl. unsichtbar.",
     "test_steps": [
-      {"do": "click", "selector": "a.nav-link[href=\"/web/account\"]"},
-      {"do": "click", "selector": "label[for=\"training\"]"}
+      {
+        "do": "goto",
+        "value": "https://trading.planspiel-boerse.de/web/account"
+      },
+      {
+        "do": "wait",
+        "selector": "label[for=\"training\"]"
+      },
+      {
+        "do": "click",
+        "selector": "label[for=\"training\"]"
+      }
     ],
     "echt_steps": [
-      {"do": "click", "selector": "a.nav-link[href=\"/web/account\"]"},
-      {"do": "click", "selector": "label[for=\"depot\"]"}
+      {
+        "do": "goto",
+        "value": "https://trading.planspiel-boerse.de/web/account"
+      },
+      {
+        "do": "wait",
+        "selector": "label[for=\"depot\"]"
+      },
+      {
+        "do": "click",
+        "selector": "label[for=\"depot\"]"
+      }
     ],
     "test_marker": "input#training.active",
     "echt_marker": "input#depot.active",
@@ -50,28 +74,92 @@
       "europa": "Selection Europe"
     },
     "buy_steps": [
-      {"do": "click", "selector": "label[for=\"market\"]"},
-      {"do": "click", "selector": "label[for=\"{tab}\"]"},
-      {"do": "click", "selector": "tr.mat-mdc-row:has-text(\"{isin}\") button[aria-label^=\"Kauf \"]"},
-      {"do": "wait", "selector": "app-order input#quantity"},
-      {"do": "click", "selector": "app-order label[for=\"type1\"]"},
-      {"do": "fill", "selector": "app-order input#quantity", "value": "{shares}"},
-      {"do": "click", "selector": "app-order label[for=\"subTypeBest\"]"},
-      {"do": "click", "selector": "app-order label[for=\"valid1\"]"},
-      {"do": "click", "selector": "app-order button.order-button"},
-      {"do": "click", "selector": "mat-dialog-container button:text-matches(\"^\\\\s*(Bestätigen|Ordern|Order aufgeben|Jetzt ordern|Kaufen|Ja|Weiter)\\\\s*$\", \"i\")", "optional": true}
+      {
+        "do": "click",
+        "selector": "label[for=\"market\"]"
+      },
+      {
+        "do": "click",
+        "selector": "label[for=\"{tab}\"]"
+      },
+      {
+        "do": "click",
+        "selector": "tr.mat-mdc-row:has-text(\"{isin}\") button[aria-label^=\"Kauf \"]"
+      },
+      {
+        "do": "wait",
+        "selector": "app-order input#quantity"
+      },
+      {
+        "do": "click",
+        "selector": "app-order label[for=\"type1\"]"
+      },
+      {
+        "do": "fill",
+        "selector": "app-order input#quantity",
+        "value": "{shares}"
+      },
+      {
+        "do": "click",
+        "selector": "app-order label[for=\"subTypeBest\"]"
+      },
+      {
+        "do": "click",
+        "selector": "app-order label[for=\"valid1\"]"
+      },
+      {
+        "do": "click",
+        "selector": "app-order button.order-button"
+      },
+      {
+        "do": "click",
+        "selector": "mat-dialog-container button:text-matches(\"^\\\\s*(Bestätigen|Ordern|Order aufgeben|Jetzt ordern|Kaufen|Ja|Weiter)\\\\s*$\", \"i\")",
+        "optional": true
+      }
     ],
     "sell_steps": [
-      {"do": "click", "selector": "label[for=\"market\"]"},
-      {"do": "click", "selector": "label[for=\"{tab}\"]"},
-      {"do": "click", "selector": "tr.mat-mdc-row:has-text(\"{isin}\") button[aria-label^=\"Kauf \"]"},
-      {"do": "wait", "selector": "app-order input#quantity"},
-      {"do": "click", "selector": "app-order label.selector-item_label:text-matches(\"^\\\\s*Verkauf\", \"i\")"},
-      {"do": "fill", "selector": "app-order input#quantity", "value": "{shares}"},
-      {"do": "click", "selector": "app-order label[for=\"subTypeBest\"]"},
-      {"do": "click", "selector": "app-order label[for=\"valid1\"]"},
-      {"do": "click", "selector": "app-order button.order-button"},
-      {"do": "click", "selector": "mat-dialog-container button:text-matches(\"^\\\\s*(Bestätigen|Ordern|Order aufgeben|Jetzt ordern|Verkaufen|Ja|Weiter)\\\\s*$\", \"i\")", "optional": true}
+      {
+        "do": "click",
+        "selector": "label[for=\"market\"]"
+      },
+      {
+        "do": "click",
+        "selector": "label[for=\"{tab}\"]"
+      },
+      {
+        "do": "click",
+        "selector": "tr.mat-mdc-row:has-text(\"{isin}\") button[aria-label^=\"Kauf \"]"
+      },
+      {
+        "do": "wait",
+        "selector": "app-order input#quantity"
+      },
+      {
+        "do": "click",
+        "selector": "app-order label.selector-item_label:text-matches(\"^\\\\s*Verkauf\", \"i\")"
+      },
+      {
+        "do": "fill",
+        "selector": "app-order input#quantity",
+        "value": "{shares}"
+      },
+      {
+        "do": "click",
+        "selector": "app-order label[for=\"subTypeBest\"]"
+      },
+      {
+        "do": "click",
+        "selector": "app-order label[for=\"valid1\"]"
+      },
+      {
+        "do": "click",
+        "selector": "app-order button.order-button"
+      },
+      {
+        "do": "click",
+        "selector": "mat-dialog-container button:text-matches(\"^\\\\s*(Bestätigen|Ordern|Order aufgeben|Jetzt ordern|Verkaufen|Ja|Weiter)\\\\s*$\", \"i\")",
+        "optional": true
+      }
     ],
     "stop_steps": [],
     "confirmation_marker": ":is(mat-dialog-container, .mat-mdc-snack-bar-container, simple-snack-bar, .toast-message, .alert-success):visible",
