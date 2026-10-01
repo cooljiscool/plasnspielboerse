@@ -157,6 +157,8 @@ class PlaywrightExecutor:
         s = self.sel["portfolio"]
         positions = {}
         for row in self.page.locator(s["row_selector"]).all():
+            if not row.locator(s["isin_cell"]).count():   # Zusatz- oder Detailzeile ohne Namensspalte: keine Position
+                continue
             isin = find_isin(row.locator(s["isin_cell"]).inner_text())
             shares = int(parse_de_number(row.locator(s["shares_cell"]).inner_text()))
             avg = parse_de_number(row.locator(s["avg_price_cell"]).inner_text())
