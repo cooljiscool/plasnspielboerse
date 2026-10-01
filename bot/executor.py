@@ -141,6 +141,10 @@ class PlaywrightExecutor:
         marker = sw.get(f"{want}_marker")
         if marker:
             self.page.wait_for_selector(marker, state="attached")   # Zustandsmerkmal (z. B. angehaktes Optionsfeld), muss nicht sichtbar sein
+        if sw.get(f"{want}_content"):                # erst wenn der Inhalt des gewählten Depots wirklich da ist, sonst wird kurz noch der Bildschirm des anderen Depots gelesen
+            self.page.wait_for_selector(sw[f"{want}_content"], state="attached")
+            if sw.get(f"{other}_content"):
+                self.page.wait_for_selector(sw[f"{other}_content"], state="detached")
         if sw.get(f"{other}_marker") and self.page.locator(sw[f"{other}_marker"]).count():
             raise RuntimeError(f"Es ist das {'Wettbewerbsdepot' if other == 'echt' else 'Testdepot'} aktiv, gewollt ist das {'Wettbewerbsdepot' if want == 'echt' else 'Testdepot'}. Es wird nicht gehandelt.")
 

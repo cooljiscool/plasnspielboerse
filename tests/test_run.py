@@ -188,6 +188,15 @@ def test_executor_selects_the_configured_depot_and_checks_the_marker(monkeypatch
     assert page.actions == [("click", "#t"), ("wait", ".im-test", {"state": "attached"})]
 
 
+def test_executor_waits_for_the_content_of_the_chosen_depot(monkeypatch):
+    monkeypatch.setattr(config, "DEPOT", "test")
+    sw = {**SWITCH, "test_content": "app-training-depot", "echt_content": "app-depot1"}
+    page = FakePage()
+    executor_with({"depot_switch": sw}, page)._select_depot()
+    assert page.actions == [("click", "#t"), ("wait", ".im-test", {"state": "attached"}), ("wait", "app-training-depot", {"state": "attached"}),
+                            ("wait", "app-depot1", {"state": "detached"})]     # erst lesen, wenn der Bildschirm des anderen Depots weg ist
+
+
 def test_executor_refuses_to_trade_in_the_wrong_or_an_unknown_depot(monkeypatch):
     monkeypatch.setattr(config, "DEPOT", "echt")
     with pytest.raises(RuntimeError, match="depot_switch"):

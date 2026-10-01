@@ -19,7 +19,9 @@
       {"do": "click", "selector": "label[for=\"depot\"]"}
     ],
     "test_marker": "input#training.active",
-    "echt_marker": "input#depot.active"
+    "echt_marker": "input#depot.active",
+    "test_content": "app-training-depot app-portfolio",
+    "echt_content": "app-depot1 app-portfolio"
   },
   "portfolio": {
     "url": "https://trading.planspiel-boerse.de/web/account",
