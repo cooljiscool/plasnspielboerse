@@ -80,7 +80,8 @@
       },
       {
         "do": "click",
-        "selector": "label[for=\"{tab}\"]"
+        "selector": "label[for=\"{tab}\"]",
+        "js": true
       },
       {
         "do": "click",
@@ -124,7 +125,8 @@
       },
       {
         "do": "click",
-        "selector": "label[for=\"{tab}\"]"
+        "selector": "label[for=\"{tab}\"]",
+        "js": true
       },
       {
         "do": "click",

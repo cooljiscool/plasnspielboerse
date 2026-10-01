@@ -228,7 +228,7 @@ class PlaywrightExecutor:
     # --- Schreiben ---
     def _run_steps(self, steps: list, values: dict) -> None:
         """Führt die Schritte aus selectors.json aus. Schritt-Felder: do, selector, value, optional (true: erscheint das Element nicht binnen weniger Sekunden, weiter),
-        state (nur bei wait: attached, visible, hidden, detached)."""
+        state (nur bei wait: attached, visible, hidden, detached), js (nur bei click: Klick per Skript, auch für nicht sichtbare Elemente)."""
         for st in steps:
             val = fill_placeholders(st.get("value", ""), values)
             act = st["do"]
@@ -239,6 +239,8 @@ class PlaywrightExecutor:
             try:
                 if act == "goto":
                     self._goto(val)
+                elif act == "click" and st.get("js"):   # Klick direkt im Seitenskript: auch für Elemente, die in einer Schiebeleiste außerhalb des Sichtfelds liegen
+                    self.page.dispatch_event(target, "click", **opt)
                 elif act == "click":
                     self.page.click(target, **opt)
                 elif act == "fill":

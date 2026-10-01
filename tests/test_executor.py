@@ -25,6 +25,7 @@ class Page:
             raise TimeoutError(sel)
 
     def click(self, sel, **kw): self._do("click", sel, **kw)
+    def dispatch_event(self, sel, ev, **kw): self._do("dispatch:" + ev, sel, **kw)
     def fill(self, sel, val, **kw): self._do("fill", sel, value=val, **kw)
     def wait_for_selector(self, sel, **kw): self._do("wait", sel, **kw)
 
@@ -190,3 +191,14 @@ def test_login_makes_exactly_one_attempt_so_a_wrong_password_cannot_lock_the_acc
         ex._login()
     assert len([c for c in ex.page.calls if c[0] == "goto"]) == 1
     assert len([c for c in ex.page.calls if c[0] == "click"]) == 1
+
+
+def test_js_click_is_used_for_elements_outside_the_visible_slider():
+    page = Page()
+    executor(page=page)._run_steps([{"do": "click", "selector": 'label[for="{tab}"]', "js": True}, {"do": "click", "selector": "#b"}], {"tab": "ATX"})
+    assert [(c[0], c[1]) for c in page.calls] == [("dispatch:click", 'label[for="ATX"]'), ("click", "#b")]
+
+
+def test_shipped_selectors_click_the_market_tab_by_script(sel):
+    for key in ("buy_steps", "sell_steps"):
+        assert all(st.get("js") for st in sel["order"][key] if "{tab}" in st.get("selector", ""))
