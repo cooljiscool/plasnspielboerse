@@ -484,6 +484,64 @@ def _style_report(refresh: bool):
                   f"{int((df.pct <= .1).sum()):>20} von {len(df)}{pl.median():>+9,.0f}{pl.mean():>+10,.0f}{pl.min():>+15,.0f}{pl.max():>+9,.0f}", flush=True)
 
 
+def shifted_windows(dates: pd.DatetimeIndex, days: int, min_bar: int = 260):
+    """Wie planspiel_windows, aber alles um `days` Kalendertage später (Start und Ende): prüft, ob ein Ergebnis am genauen Starttermin hängt."""
+    out = []
+    for y in range(dates[0].year, dates[-1].year):
+        t0, t1 = pd.Timestamp(y, 10, 1) + pd.Timedelta(days=days), pd.Timestamp(y + 1, 1, 25) + pd.Timedelta(days=days)
+        s = int(dates.searchsorted(t0))
+        e = int(dates.searchsorted(t1, side="right")) - 1
+        if s >= min_bar and e < len(dates) and dates[e] >= t1 - pd.Timedelta(days=5):
+            out.append((y, s, e))
+    return out
+
+
+def _swap_rows(d, windows, strat) -> pd.DataFrame:
+    rows = []
+    for y, s, e in windows:
+        sim = bt.simulate(d, s, e, strat, 2)
+        ret = bt.stats(sim["equity"])["return"]
+        rows.append({"year": y, "start": s, "ret": ret, "pct": float((_random(d, s, e) < ret).mean()), "fees": sim["fees"], "trades": sim["trades"]})
+    return pd.DataFrame(rows)
+
+
+def _swap_report(refresh: bool):
+    """Tauschregel (rules: Option "swap") gegen die bisherige Strategie: je Stil Basis und Varianten, auf den 22 Planspiel-Jahren und auf um 10 bis 45 Tage verschobenen Fenstern."""
+    import functools
+    import itertools
+    import math
+
+    rows = _official_rows()
+    hist = _official_history(rows, refresh)
+    d = bt.Data.from_frames(hist["close"], hist["high"], hist["low"], hist["open"], [r["yf"] for r in rows])
+    sec = {r["yf"]: r.get("sector") for r in rows}
+    for c in d.cols:
+        d.uni[c]["sector"] = sec.get(c)
+    base_w = planspiel_windows(d.dates)
+    shift_w = [(sh, shifted_windows(d.dates, sh)) for sh in (10, 20, 30, 45)]
+    print(f"Tauschregel: {len(base_w)} Planspiel-Jahre (Start 1.10.) und {sum(len(x) for _, x in shift_w)} verschobene Fenster, je 50.000 €, amtliches Universum in Euro.")
+    print("hold = Rang-Anteil, ab dem ein gehaltener Titel tauschbar ist (0,30 = schlechter als die besten 30 %); cand = Ersatz muss unter den besten cand-Anteil; max = Tausche je Lauf.\n")
+    head = f"{'Stil':8}{'hold':>6}{'cand':>6}{'max':>4}{'Ø Rang':>8}{'verschoben':>11}{'Ø Gewinn':>10}{'Median':>9}{'schlechtest.':>13}{'bestes':>9}{'Käufe+Verk.':>12}{'Gebühren':>10}{'besser (22)':>12}{'Diff €':>9}{'t':>6}{'besser (alle)':>14}"
+    print(head)
+    for style in ("breit", "sicher"):
+        variants = [None] + [{"hold": h, "cand": c, "max": m} for h, c, m in itertools.product((0.15, 0.30, 0.50), (0.03, 0.08), (1, 2))]
+        base = None
+        for sw in variants:
+            strat = functools.partial(rules.decide, params={"style": style, **({"swap": sw} if sw else {})})
+            a = _swap_rows(d, base_w, strat)
+            b = pd.concat([_swap_rows(d, w, strat) for _, w in shift_w], ignore_index=True)
+            if base is None:
+                base = (a, b)
+            pl = a.ret * 50000
+            da = (a.ret - base[0].ret) * 50000
+            t = float(da.mean() / (da.std(ddof=1) / math.sqrt(len(da)))) if sw and da.std(ddof=1) > 0 else 0.0
+            both = pd.concat([a, b], ignore_index=True)
+            both0 = pd.concat(base, ignore_index=True)
+            better_all = float((both.ret.to_numpy() > both0.ret.to_numpy()).mean()) if sw else 0.0
+            print(f"{style:8}{(sw or {}).get('hold', '-'):>6}{(sw or {}).get('cand', '-'):>6}{(sw or {}).get('max', '-'):>4}{a.pct.mean() * 100:>7.1f}%{b.pct.mean() * 100:>10.1f}%{pl.mean():>+10,.0f}{pl.median():>+9,.0f}"
+                  f"{pl.min():>+13,.0f}{pl.max():>+9,.0f}{a.trades.mean():>12.1f}{a.fees.mean():>10,.0f}{(str(int((da > 0).sum())) + ' von ' + str(len(da))) if sw else '-':>12}{da.mean() if sw else 0:>+9,.0f}{t:>6.1f}{better_all * 100 if sw else 0:>13.0f}%", flush=True)
+
+
 def _protocol_report(year: int, refresh: bool):
     """Protokoll eines Planspiel-Jahres für jeden Strategie-Stil (Markdown auf die Standardausgabe): jede Order mit Datum, Kurs, Stückzahl, Gebühr und Begründung, das Ergebnis je Wertpapier
     und der Verlauf des Depotwerts. Mit der Branchenbegrenzung des Live-Betriebs (höchstens 2 je Branche); daneben das Ergebnis ohne sie, wie in den Tabellen der README."""
@@ -624,12 +682,15 @@ def main():
     ap.add_argument("--overlays", action="store_true", help="Marktbreite und Schutzschalter bei Depotrückgang als Überlagerung testen (Markt alle)")
     ap.add_argument("--protokoll", type=int, metavar="JAHR", help="Protokoll eines Planspiel-Jahres (Start 1.10. dieses Jahres) für alle Stile: jede Order mit Begründung, Ergebnis je Wertpapier (amtliches Universum, Euro)")
     ap.add_argument("--strategien", action="store_true", help="Alle Strategie-Stile (sicher, breit, turnier, angriff, jackpot) über die 22 Planspiel-Jahre messen (amtliches Universum, Euro)")
+    ap.add_argument("--tausch", action="store_true", help="Tauschregel (schwacher gehaltener Titel gegen klar besseren) gegen die bisherige Strategie messen (amtliches Universum, Euro)")
     ap.add_argument("--trefferquote", action="store_true", help="Wie oft liegt die Auswahl richtig? Trefferquote der Käufe und Ergebnis der Positionen (amtliches Universum, Euro)")
     a = ap.parse_args()
     if a.protokoll:
         return _protocol_report(a.protokoll, a.refresh)
     if a.strategien:
         return _style_report(a.refresh)
+    if a.tausch:
+        return _swap_report(a.refresh)
     if a.trefferquote:
         return _hit_report(a.refresh, a.years)
     if a.official:

@@ -193,6 +193,35 @@ def decide(pf: dict, universe: dict, snap: dict, total: float, regime: dict = No
         sold.add(isin)
     kept = [i for i in kept if i not in sold]
 
+    # 1b. Tausch (Option "swap", Standard aus): Ein gehaltener Titel, der in der Rangliste weit zurückgefallen ist, wird durch den stärksten kaufbaren Titel ersetzt,
+    # wenn dieser in der Spitze liegt. Je Lauf höchstens "max" Tausche. Die Käufe unten besetzen den frei gewordenen Platz.
+    sw = P.get("swap")
+    if sw and ranked:
+        n_all = len(ranked)
+        for _ in range(int(sw.get("max", 1))):
+            weak = [i for i in kept if rank.get(i, 10 ** 6) >= sw["hold"] * n_all]
+            if not weak:
+                break
+            worst = max(weak, key=lambda i: rank.get(i, 10 ** 6))
+            secs = {}
+            for i in kept:
+                sec = snap[i].get("sector") or universe[i].get("sector")
+                if i != worst and sec:
+                    secs[sec] = secs.get(sec, 0) + 1
+            def fits(c):
+                m = snap[c]
+                sec = m.get("sector") or universe[c].get("sector")
+                return (c not in pf["positions"] and not any(o["isin"] == c for o in orders) and can_buy(m, regime["label"], P)
+                        and (P.get("min_score") is None or score_fn(m, universe[c].get("stars", 0)) > P["min_score"])
+                        and not (sec and secs.get(sec, 0) >= config.MAX_PER_SECTOR))
+            cand = next((c for c in ranked[:max(1, int(sw["cand"] * n_all))] if fits(c)), None)
+            if cand is None:
+                break
+            orders.append({"action": "sell", "isin": worst, "stop": False,
+                           "reason": f"Tausch: Rang {rank[worst] + 1} gegen Rang {rank[cand] + 1} ({universe[cand].get('name', cand)})"})
+            sold.add(worst)
+            kept.remove(worst)
+
     # 2. Käufe: freie Plätze mit den stärksten, zulässigen Titeln füllen
     sectors = {}
     for i in kept:
