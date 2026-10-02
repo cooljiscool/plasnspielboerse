@@ -542,6 +542,54 @@ def _swap_report(refresh: bool):
                   f"{pl.min():>+13,.0f}{pl.max():>+9,.0f}{a.trades.mean():>12.1f}{a.fees.mean():>10,.0f}{(str(int((da > 0).sum())) + ' von ' + str(len(da))) if sw else '-':>12}{da.mean() if sw else 0:>+9,.0f}{t:>6.1f}{better_all * 100 if sw else 0:>13.0f}%", flush=True)
 
 
+def _gap_rows(d, windows, strat, step: int = 1):
+    """Eine Zeile je Fenster; dazu die Verkäufe wegen Kurslücke mit der Kursentwicklung der folgenden 20 Handelstage (positiv = der Titel stieg danach weiter)."""
+    rows, gaps = [], []
+    for y, s, e in windows:
+        log = []
+        sim = bt.simulate(d, s, e, strat, step, log=log)
+        ret = bt.stats(sim["equity"])["return"]
+        rows.append({"year": y, "start": s, "ret": ret, "pct": float((_random(d, s, e) < ret).mean()), "fees": sim["fees"], "trades": sim["trades"]})
+        for o in log:
+            if o["aktion"] == "sell" and "Kurslücke" in (o.get("grund") or ""):
+                i = int(d.dates.get_indexer([pd.Timestamp(o["datum"])], method="nearest")[0])
+                j = min(i + 20, len(d.dates) - 1)
+                p0, p1 = d.px(i, o["isin"]), d.px(j, o["isin"])
+                if p0 and p1 and p0 == p0 and p1 == p1:
+                    gaps.append(p1 / p0 - 1)
+    return pd.DataFrame(rows), gaps
+
+
+def _gap_report(refresh: bool):
+    """Regel "Verkauf nach Kurslücke" (rules: Option gap_stop): Verkauf, wenn ein gehaltener Titel an einem Tag mehr als X fällt; kein Wiederkauf, solange er in 5 Tagen um mehr als X fiel.
+    Gemessen mit täglicher Entscheidung (wie der Live-Betrieb) auf den 22 Planspiel-Jahren und auf um 30 Tage verschobenen Fenstern."""
+    import functools
+    import math
+
+    rows = _official_rows()
+    hist = _official_history(rows, refresh)
+    d = bt.Data.from_frames(hist["close"], hist["high"], hist["low"], hist["open"], [r["yf"] for r in rows])
+    sec = {r["yf"]: r.get("sector") for r in rows}
+    for c in d.cols:
+        d.uni[c]["sector"] = sec.get(c)
+    wins = [("22 Jahre", planspiel_windows(d.dates)), ("verschoben", shifted_windows(d.dates, 30))]
+    print("Verkauf nach Kurslücke, Stil breit, tägliche Entscheidung, je 50.000 €, amtliches Universum in Euro.")
+    print(f"{'Schwelle':>9}{'Ø Rang':>8}{'verschoben':>11}{'Ø Gewinn':>10}{'schlechtest.':>13}{'bestes':>9}{'Orders':>8}{'Gebühren':>10}{'Auslös./Jahr':>13}{'danach 20 T':>12}{'besser (22)':>12}{'Diff €':>9}{'t':>6}")
+    base = None
+    for thr in (None, 0.08, 0.10, 0.12, 0.15, 0.20):
+        strat = functools.partial(rules.decide, params={"style": "breit", **({"gap_stop": thr} if thr else {})})
+        a, ga = _gap_rows(d, wins[0][1], strat)
+        b, gb = _gap_rows(d, wins[1][1], strat)
+        if base is None:
+            base = (a, b)
+        pl = a.ret * 50000
+        da = (a.ret - base[0].ret) * 50000
+        t = float(da.mean() / (da.std(ddof=1) / math.sqrt(len(da)))) if thr and da.std(ddof=1) > 0 else 0.0
+        after = (sum(ga) / len(ga) * 100) if ga else float("nan")
+        print(f"{(f'{thr:.0%}' if thr else 'ohne'):>9}{a.pct.mean() * 100:>7.1f}%{b.pct.mean() * 100:>10.1f}%{pl.mean():>+10,.0f}{pl.min():>+13,.0f}{pl.max():>+9,.0f}{a.trades.mean():>8.1f}{a.fees.mean():>10,.0f}"
+              f"{(len(ga) / len(a)) if thr else 0:>13.1f}{after if thr else 0:>+11.1f}%{(str(int((da > 0).sum())) + ' von ' + str(len(da))) if thr else '-':>12}{da.mean() if thr else 0:>+9,.0f}{t:>6.1f}", flush=True)
+
+
 def _protocol_report(year: int, refresh: bool):
     """Protokoll eines Planspiel-Jahres für jeden Strategie-Stil (Markdown auf die Standardausgabe): jede Order mit Datum, Kurs, Stückzahl, Gebühr und Begründung, das Ergebnis je Wertpapier
     und der Verlauf des Depotwerts. Mit der Branchenbegrenzung des Live-Betriebs (höchstens 2 je Branche); daneben das Ergebnis ohne sie, wie in den Tabellen der README."""
@@ -683,6 +731,7 @@ def main():
     ap.add_argument("--protokoll", type=int, metavar="JAHR", help="Protokoll eines Planspiel-Jahres (Start 1.10. dieses Jahres) für alle Stile: jede Order mit Begründung, Ergebnis je Wertpapier (amtliches Universum, Euro)")
     ap.add_argument("--strategien", action="store_true", help="Alle Strategie-Stile (sicher, breit, turnier, angriff, jackpot) über die 22 Planspiel-Jahre messen (amtliches Universum, Euro)")
     ap.add_argument("--tausch", action="store_true", help="Tauschregel (schwacher gehaltener Titel gegen klar besseren) gegen die bisherige Strategie messen (amtliches Universum, Euro)")
+    ap.add_argument("--luecke", action="store_true", help="Verkauf nach Kurslücke (Titel fällt an einem Tag um X %%) gegen Halten messen (amtliches Universum, Euro)")
     ap.add_argument("--trefferquote", action="store_true", help="Wie oft liegt die Auswahl richtig? Trefferquote der Käufe und Ergebnis der Positionen (amtliches Universum, Euro)")
     a = ap.parse_args()
     if a.protokoll:
@@ -691,6 +740,8 @@ def main():
         return _style_report(a.refresh)
     if a.tausch:
         return _swap_report(a.refresh)
+    if a.luecke:
+        return _gap_report(a.refresh)
     if a.trefferquote:
         return _hit_report(a.refresh, a.years)
     if a.official:

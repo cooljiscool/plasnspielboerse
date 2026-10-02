@@ -45,7 +45,7 @@ def max_jump(close: pd.DataFrame, days: int = 300) -> pd.Series:
 class Frames:
     """Alle Kennzahlen als Arrays (Zeilen = Handelstage, Spalten = Titel)."""
 
-    ROUND = {"ret_5d": 4, "ret_20d": 4, "ret_60d": 4, "ret_120d": 4, "mom_12_1": 4, "vol_20d": 3, "vol_60d": 3,
+    ROUND = {"ret_1d": 4, "ret_5d": 4, "ret_20d": 4, "ret_60d": 4, "ret_120d": 4, "mom_12_1": 4, "vol_20d": 3, "vol_60d": 3,
              "rsi14": 1, "atr_pct": 4, "dist_hi": 3, "rel_60d": 4, "beta": 2, "beta_mkt": 2,
              "resid_60d": 4, "resid_120d": 4}
 
@@ -55,7 +55,7 @@ class Frames:
         low = close if low is None else low
         self.cols, self.dates = list(close.columns), close.index
         f = {"price": close}
-        for n in (5, 20, 60, 120):
+        for n in (1, 5, 20, 60, 120):
             f[f"ret_{n}d"] = close / close.shift(n) - 1
         daily = close / close.shift(1) - 1
         f["mom_12_1"] = close.shift(21) / close.shift(252) - 1    # 12-Monats-Momentum ohne den letzten Monat

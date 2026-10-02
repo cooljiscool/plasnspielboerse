@@ -101,6 +101,8 @@ def can_buy(m: dict, regime_label: str = "risk_on", P: dict = None) -> bool:
     P = P or PARAMS
     if m["price"] < config.MIN_PRICE_EUR or m["vol_20d"] > P.get("max_vol", MAX_VOL) or m["ret_20d"] <= -0.10:
         return False
+    if P.get("gap_stop") and m.get("ret_5d", 0.0) <= -P["gap_stop"]:
+        return False   # nach einem Absturz in den letzten 5 Tagen nicht (wieder) kaufen
     if P["trend_filter"] and (m.get("above_sma50") is False or m.get("trend_up") is False):
         return False
     if P["rsi_filter"] and m.get("rsi14", 50) > RSI_MAX:
@@ -173,6 +175,8 @@ def decide(pf: dict, universe: dict, snap: dict, total: float, regime: dict = No
         peak = pos.get("peak") or pos["avg_price"]
         if P["hard_stop"] and price <= pos["avg_price"] * (1 - HARD_STOP):
             reason, stop = f"Notfall-Stopp: {price / pos['avg_price'] - 1:+.1%} zum Einstand", True
+        elif P.get("gap_stop") and m.get("ret_1d", 0.0) <= -P["gap_stop"]:
+            reason, stop = f"Kurslücke: {m['ret_1d']:+.1%} an einem Tag", True
         elif P["trailing"] and peak > pos["avg_price"] * 1.03 and price <= peak * (1 - trail_pct(m)):
             reason, stop = f"Trailing-Stop: {price / peak - 1:+.1%} vom Hoch seit Kauf", True
         elif P["trend_break"] and m["ret_20d"] < TREND_BREAK:
