@@ -155,3 +155,25 @@ Nach zwei Minuten muss das Dashboard wieder erreichbar sein. Das Hochfahren star
 - **Dashboard nicht erreichbar:** `docker compose ps` im Ordner `plasnspielboerse`, `docker compose logs dashboard`.
 - **Baut sehr langsam oder bricht ab:** Weniger als 4 GB Arbeitsspeicher. `free -h` prüfen, ggf. eine Auslagerungsdatei anlegen: `sudo fallocate -l 4G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile`.
 - **Laptop wird heiß oder laut:** Luftzufuhr prüfen, Staub entfernen, Standfläche nicht weich.
+
+## Automatisches Update (optional)
+Statt jedes Mal `git pull` und `sh start.sh` von Hand einzugeben, kann der Server das selbst erledigen. Das Skript `scripts/auto_update.sh` prüft per Cron regelmäßig, ob es auf dem Branch neue Änderungen gibt, holt sie und baut den Container neu. Den Container tauscht es **nur aus, wenn gerade kein Lauf des Bots arbeitet**, damit nie ein Handelslauf abgebrochen wird.
+
+**Einrichten (einmal, per SSH im Ordner `plasnspielboerse`):**
+```
+crontab -e
+```
+Beim ersten Mal fragt Ubuntu nach einem Editor: `1` (nano) wählen. Ans Ende der Datei diese Zeile schreiben (alles in einer Zeile):
+```
+*/10 * * * * cd /home/jakob/plasnspielboerse && sh scripts/auto_update.sh >> /home/jakob/auto_update.log 2>&1
+```
+Speichern mit Strg+O, Enter, beenden mit Strg+X. Der Benutzer (hier `jakob`) muss in der Gruppe `docker` sein, das ist nach der Installation nach Anleitung der Fall.
+
+**Prüfen:** `tail -20 ~/auto_update.log` zeigt, was passiert ist (neuer Stand, Build, Austausch oder Fehler).
+
+**Ausschalten:** `crontab -e` und die Zeile löschen oder mit `#` davor auskommentieren.
+
+**Gut zu wissen:**
+- Das Skript folgt dem Branch, der gerade ausgecheckt ist (`git branch` zeigt ihn). Wechselst du den Branch, folgt es dem neuen.
+- Änderungen von Hand am Server (zum Beispiel im Dashboard bearbeitete `selectors.json` oder eine neu geladene `universe.json`), die auch im Repo geändert wurden, verhindern das automatische Zusammenführen. Dann steht im Log „lokale Änderungen im Weg“, und der Server bleibt auf dem alten Stand, bis du es von Hand löst.
+- Jede neue Version geht damit **sofort live**, auch im Wettbewerbsdepot. Solange noch viel gebaut und getestet wird, ist das bequem. Läuft alles stabil, ist es sicherer, das Auto-Update auszuschalten und nur bewusst von Hand zu aktualisieren.
