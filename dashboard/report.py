@@ -25,12 +25,19 @@ def _when(iso) -> str:
         return "?"
 
 
-def _version(base: str) -> str:
+def _version(base: str, state_dir: str = None) -> str:
+    """Stand der Software: start.sh schreibt ihn beim Bauen nach state/version.txt (der Container selbst hat kein git)."""
+    try:
+        text = open(os.path.join(state_dir, "version.txt"), encoding="utf-8-sig").read().strip()
+        if text:
+            return text
+    except (OSError, TypeError):
+        pass
     try:
         out = subprocess.run(["git", "-C", base, "log", "-1", "--format=%h %s"], capture_output=True, text=True, timeout=3)
-        return out.stdout.strip() or "unbekannt"
+        return out.stdout.strip() or "unbekannt (start.sh neu ausführen)"
     except Exception:  # noqa: BLE001 – ohne git im Container
-        return "unbekannt"
+        return "unbekannt (start.sh neu ausführen)"
 
 
 def _logs(log_dir: str, n: int) -> list:
@@ -54,7 +61,7 @@ def build(store, runner, base: str, log_dir: str, now: datetime = None) -> str:
     add = lines.append
 
     add(f"STATUSBERICHT {now.strftime('%d.%m.%Y %H:%M')} (Berliner Zeit)")
-    add(f"Software: {_version(base)}")
+    add(f"Software: {_version(base, store.dir)}")
     add("")
     add("EINSTELLUNGEN")
     add(f"Modus: {'LIVE' if s['live'] else 'Trockenlauf'} | Depot: {DEPOTS.get(s['depot'], s['depot'])} | Stil: {s['style']} | Claude-Freiheit: {s['freiheit']}")
@@ -93,7 +100,8 @@ def build(store, runner, base: str, log_dir: str, now: datetime = None) -> str:
         same = [e for e in logs if e.get("depot") == last.get("depot") and e.get("total_after") is not None]
         if len(same) > 1:
             pts = same[-10:]
-            add("Verlauf: " + " → ".join(f"{_when(e['time'])} {_eur(e['total_after'])}" for e in pts[::max(1, len(pts) // 6)]) + f" → {_when(pts[-1]['time'])} {_eur(pts[-1]['total_after'])}")
+            keep = sorted(set(range(0, len(pts), max(1, len(pts) // 6))) | {len(pts) - 1})
+            add("Verlauf: " + " → ".join(f"{_when(pts[k]['time'])} {_eur(pts[k]['total_after'])}" for k in keep))
         for isin, p in (last.get("holdings") or {}).items():
             chg = p["price"] / p["avg_price"] - 1 if p.get("avg_price") else 0
             add(f"- {p['name'][:30]:30s} {p['shares']:5d} Stück  Einstand {p['avg_price']:9.2f}  Kurs {p['price']:9.2f}  {chg:+.1%}")

@@ -331,3 +331,14 @@ def test_finished_runs_are_recorded_with_their_output_for_the_report(authed, app
     assert hist[-1]["kind"] == "selftest" and hist[-1]["code"] == 3 and "Traceback: kaputt" in hist[-1]["tail"]
     text = authed.get("/api/report").get_json()["text"]
     assert "Selbsttest" in text and "FEHLER (Code 3)" in text and "Traceback: kaputt" in text
+
+
+def test_report_shows_the_version_from_the_state_folder_and_the_series_without_duplicates(authed, app, tmp_path):
+    (tmp_path / "state" / "version.txt").write_text("abc1234 Beispiel (2026-10-07)\n")
+    for k in range(12):
+        _log(tmp_path, f"20261002-{1000 + k}.json", time=f"2026-10-02T{9 + k % 10:02d}:{k:02d}:00", total_after=49000.0 - 10 * k)
+    text = authed.get("/api/report").get_json()["text"]
+    assert "Software: abc1234 Beispiel (2026-10-07)" in text
+    series = next(line for line in text.splitlines() if line.startswith("Verlauf:"))
+    points = series.removeprefix("Verlauf: ").split(" → ")
+    assert len(points) == len(set(points)) and points[-1].endswith("48.890 €")        # letzter Punkt genau einmal

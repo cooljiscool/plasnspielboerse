@@ -13,6 +13,7 @@ else
   echo ".env vorhanden, das Passwort bleibt wie es ist."
 fi
 mkdir -p state data logs
+git log -1 --format='%h %s (%cd)' --date=short > state/version.txt 2>/dev/null || true   # Stand der Software für den Statusbericht im Dashboard
 docker compose up -d --build
 echo
 echo "Fertig. Das Dashboard läuft auf http://localhost:8080 (vom Handy: Tailscale, siehe ANLEITUNG.md Schritt 5)."

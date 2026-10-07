@@ -16,6 +16,7 @@ if (-not (Test-Path ".env")) {
     Write-Host ".env vorhanden, das Passwort bleibt wie es ist."
 }
 New-Item -ItemType Directory -Force state, data, logs | Out-Null
+try { git log -1 --format='%h %s (%cd)' --date=short | Out-File -Encoding utf8 state/version.txt } catch {}   # Stand der Software für den Statusbericht im Dashboard
 docker compose up -d --build
 if ($LASTEXITCODE -ne 0) { Write-Host "Docker meldet einen Fehler. Läuft Docker Desktop (Wal-Symbol unten rechts)?"; exit 1 }
 Write-Host ""
