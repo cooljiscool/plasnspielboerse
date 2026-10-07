@@ -127,7 +127,7 @@ class Runner:
             self.proc = subprocess.Popen([self.python, *cmd], cwd=self.base, env=self._env(live, "test" if kind == "testorder" else None),
                                          stdout=out, stderr=subprocess.STDOUT)
             self.last = {"kind": kind, "live": live, "start": datetime.now(TZ).isoformat(timespec="seconds"),
-                         "end": None, "code": None}
+                         "end": None, "code": None, "depot": "test" if kind == "testorder" else self.store.settings()["depot"]}
             self.store._write("last_run.json", self.last)
             threading.Thread(target=self._wait, args=(self.proc, out), daemon=True).start()
             return True
@@ -139,6 +139,15 @@ class Runner:
             if self.last and self.last["end"] is None:
                 self.last.update(end=datetime.now(TZ).isoformat(timespec="seconds"), code=code)
                 self.store._write("last_run.json", self.last)
+                self._remember(dict(self.last), self.output(8) if code else "")
+
+    def _remember(self, entry: dict, tail: str = "") -> None:
+        """Hängt den beendeten Vorgang an state/run_history.json an (die letzten 40, bei Fehlern mit den letzten Ausgabezeilen). Grundlage des Statusberichts."""
+        hist = self.store._read("run_history.json", [])
+        if tail:
+            entry["tail"] = tail
+        hist.append(entry)
+        self.store._write("run_history.json", hist[-40:])
 
     def kill(self) -> bool:
         with self.lock:

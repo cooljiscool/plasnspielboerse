@@ -147,6 +147,7 @@ Nach zwei Minuten muss das Dashboard wieder erreichbar sein. Das Hochfahren star
 - **Status:** `docker compose ps`. **Neu starten:** `docker compose restart`.
 - **Platz prüfen:** `df -h /` (wird es voll: `docker system prune -f`).
 - **Sicherung** (etwa wöchentlich) vom normalen PC aus: `scp -r bot@192.168.178.42:plasnspielboerse/state bot@192.168.178.42:plasnspielboerse/data bot@192.168.178.42:plasnspielboerse/logs .` Im Ordner `state` liegen deine Zugangsdaten, bewahre die Kopie sicher auf.
+- **Statusbericht:** Im Dashboard, Tab Steuerung, Knopf **Statusbericht**. Er zeigt auf einen Blick die letzten Vorgänge (ok oder Fehler, bei Fehlern mit den letzten Ausgabezeilen), den Depotwert, die Positionen, abgelehnte Orders und Auffälligkeiten (zum Beispiel ein Titel nahe am Stopp oder ein Lauf, der ausblieb). Mit **Kopieren** übernimmst du den Text, um ihn jemandem zu schicken. Zugangsdaten stehen nie darin, nur ob sie gesetzt sind.
 
 ## 13. Wenn etwas nicht klappt
 - **Laptop startet nicht vom Stick:** Im BIOS Secure Boot testweise ausschalten, Bootreihenfolge prüfen.

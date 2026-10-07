@@ -280,3 +280,54 @@ def test_depot_mode_defaults_to_test_and_needs_a_confirmation_for_the_real_depot
     assert app.runner._env(False)["BOT_DEPOT"] == "echt"
     assert authed.post("/api/depot", headers=H, json={"depot": "test"}).get_json()["depot"] == "test"    # zurück ohne Bestätigung
     assert authed.post("/api/depot", headers=H, json={"depot": "beide"}).status_code == 400
+
+
+def _log(tmp_path, name, **kw):
+    entry = {"time": "2026-10-02T13:32:05", "live": True, "depot": "echt", "total_before": 49658.4, "total_after": 49658.4, "cash": 2653.78, "stil": "breit",
+             "holdings": {"IE00BKVD2N49": {"name": "Seagate Technology Holdings plc", "shares": 9, "avg_price": 826.0, "price": 700.0},
+                          "DE0006200108": {"name": "INDUS Holding AG", "shares": 197, "avg_price": 41.15, "price": 40.95}},
+             "market_view": "Alles halten.", "provider": "claude_cli", "fallback_reason": None, "approved": [],
+             "rejected": [{"order": {"action": "buy", "isin": "X"}, "why": "nach Limits (20 %-Regel/Cash) zu klein"}], "verbrauch": {"entscheidung": {"kosten_usd": 0.18}},
+             "vergleich": {"urteil": "zu_frueh", "text": "Zu früh für ein Urteil."}, "research": {"error": None}}
+    entry.update(kw)
+    (tmp_path / "logs" / name).write_text(json.dumps(entry))
+
+
+def test_report_summarises_the_state_without_secrets(authed, app, tmp_path):
+    app.store.update_secrets({"PSB_PASSWORD": "geheim-xyz-123", "PSB_USER": "team42"})
+    app.store.save_settings(live=True, depot="echt", enabled=True)
+    _log(tmp_path, "20261002-1332.json", market_view="Passwort geheim-xyz-123 darf nie erscheinen")
+    (tmp_path / "state" / "run_history.json").write_text(json.dumps([
+        {"kind": "run", "live": True, "depot": "echt", "start": "2026-10-02T09:20:00+02:00", "end": "2026-10-02T09:27:00+02:00", "code": 0},
+        {"kind": "testorder", "live": False, "depot": "test", "start": "2026-10-02T10:00:00+02:00", "end": "2026-10-02T10:01:00+02:00", "code": 1, "tail": "[FAIL] Zeitüberschreitung"}]))
+    text = authed.get("/api/report").get_json()["text"]
+    for part in ("STATUSBERICHT", "Wettbewerbsdepot", "Stil: sicher", "Zeitplan: AN", "PSB_PASSWORD ja", "Seagate", "49.658 €", "FEHLER (Code 1)", "Zeitüberschreitung", "Test-Order"):
+        assert part in text, part
+    assert "Seagate Technology Holdings plc liegt -15% zum Einstand" in text    # Warnung bei −15 %
+    assert "1 fehlgeschlagene" in text and "nach Limits" in text
+    assert "geheim-xyz-123" not in text and "team42" not in text            # nie Zugangsdaten
+    assert "***" in text                                                    # an der Stelle, wo es im Text stand
+
+
+def test_report_without_logs_still_works_and_requires_login(c, app):
+    assert c.get("/api/report").status_code == 401
+    assert c.post("/api/login", json={"password": PW}).status_code == 200
+    text = c.get("/api/report").get_json()["text"]
+    assert "noch kein Lauf" in text and "keine" in text
+
+
+def test_finished_runs_are_recorded_with_their_output_for_the_report(authed, app, tmp_path):
+    fake = tmp_path / "fakepython"
+    fake.write_text("#!/bin/sh\necho 'Zeile A'\necho 'Traceback: kaputt'\nexit 3\n")
+    fake.chmod(0o755)
+    app.runner.python = str(fake)
+    assert authed.post("/api/control", headers=H, json={"action": "selftest"}).get_json()["running"] is True
+    import time
+    for _ in range(80):
+        hist = app.store._read("run_history.json", [])
+        if hist:
+            break
+        time.sleep(0.1)
+    assert hist[-1]["kind"] == "selftest" and hist[-1]["code"] == 3 and "Traceback: kaputt" in hist[-1]["tail"]
+    text = authed.get("/api/report").get_json()["text"]
+    assert "Selbsttest" in text and "FEHLER (Code 3)" in text and "Traceback: kaputt" in text

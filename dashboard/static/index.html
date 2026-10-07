@@ -94,6 +94,7 @@ svg{width:100%;height:auto;display:block}
     <button class="danger" id="btnStop">■ Stopp<br><small>Notaus</small></button>
     <button id="btnRun">Jetzt ausführen</button>
     <button id="btnTest">Selbsttest</button>
+    <button id="btnReport" style="grid-column:1/-1">Statusbericht<br><small>Zustand des Bots als Text zum Kopieren, ohne Zugangsdaten</small></button>
     <button id="btnTestOrder">Test-Order<br><small>1 Stück im Testdepot kaufen und verkaufen</small></button>
     <button id="btnUni" style="grid-column:1/-1">Wertpapierliste des Planspiels laden<br><small>amtliche Liste von planspiel-boerse.de, dauert 1 bis 2 Minuten</small></button>
   </div>
@@ -103,6 +104,10 @@ svg{width:100%;height:auto;display:block}
     <p class="mute" style="margin:8px 0 0">Trockenlauf bucht nur lokal. Live sendet echte Orders an die Plattform, und zwar in das gewählte Depot:</p>
     <div class="row" style="margin-top:8px"><b id="depotText">Test-Depot</b><button id="btnDepot" style="width:auto;padding:10px 16px">wechseln</button></div>
     <p class="mute" style="margin:8px 0 0">Das <b>Test-Depot</b> (Standard) zählt nicht für den Rang: Hier kannst du den Live-Ablauf gefahrlos prüfen. Nur im <b>Wettbewerbsdepot</b> zählen die Orders.</p>
+  </div>
+  <div class="card hidden" id="reportCard">
+    <div class="row"><b>Statusbericht</b><span><button id="reportCopy" style="width:auto;padding:8px 14px">Kopieren</button> <button id="reportClose" style="width:auto;padding:8px 14px">Schließen</button></span></div>
+    <textarea id="reportText" readonly spellcheck="false" style="min-height:320px"></textarea>
   </div>
   <h2>Ausgabe letzter Vorgang</h2>
   <pre id="out">–</pre>
@@ -321,6 +326,13 @@ $('btnStart').onclick = act(async () => { S = await api('/api/control', {action:
 $('btnStop').onclick = act(async () => { if (!confirm('Alles stoppen? Ein laufender Vorgang wird abgebrochen.')) return; S = await api('/api/control', {action: 'stop'}); renderStatus(); }, 'Gestoppt');
 $('btnRun').onclick = act(async () => { if (S.live && !confirm('LIVE: Jetzt echte Orders erzeugen?')) return; S = await api('/api/control', {action: 'run'}); renderStatus(); }, 'Lauf gestartet');
 $('btnUni').onclick = act(async () => { if (!confirm('Die Wertpapierliste (data/universe.json) wird durch die aktuelle amtliche Liste ersetzt. Fortfahren?')) return; S = await api('/api/control', {action: 'universe'}); renderStatus(); }, 'Wertpapierliste wird geladen');
+$('btnReport').onclick = act(async () => { const r = await api('/api/report'); $('reportText').value = r.text; $('reportCard').classList.remove('hidden'); $('reportCard').scrollIntoView({behavior: 'smooth'}); });
+$('reportClose').onclick = () => $('reportCard').classList.add('hidden');
+$('reportCopy').onclick = async () => {
+  const t = $('reportText'); t.focus(); t.select(); t.setSelectionRange(0, t.value.length);
+  try { if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(t.value); else if (!document.execCommand('copy')) throw new Error('x'); toast('Kopiert'); }
+  catch (e) { toast('Text ist markiert: lange drücken und „Kopieren“ wählen'); }
+};
 $('btnTestOrder').onclick = act(async () => { if (!confirm('Im Test-Depot wird 1 Stück BASF gekauft und wieder verkauft (zählt nicht für den Rang). Fortfahren?')) return; S = await api('/api/control', {action: 'testorder'}); renderStatus(); }, 'Test-Order gestartet');
 $('btnTest').onclick = act(async () => { S = await api('/api/control', {action: 'selftest'}); renderStatus(); }, 'Selbsttest gestartet');
 $('btnDepot').onclick = act(async () => {

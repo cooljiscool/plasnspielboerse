@@ -12,6 +12,7 @@ from flask import Flask, jsonify, request, send_from_directory, session
 
 from bot import rules
 
+from . import report
 from .runner import PROVIDERS, Runner, Store, valid_times
 
 BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -201,6 +202,11 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
                        decisions=[{k: e.get(k) for k in ("time", "live", "market_view", "provider", "fallback_reason", "guard", "kronos", "makro", "daten", "regime", "research",
                                                     "approved", "rejected", "depot")}
                                   for e in reversed(entries[-30:])])
+
+    @app.get("/api/report")
+    @auth
+    def status_report():
+        return jsonify(text=report.build(store, runner, BASE, log_dir))
 
     @app.get("/api/output")
     @auth
