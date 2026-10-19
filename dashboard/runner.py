@@ -19,6 +19,16 @@ TIME_RE = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
 SLOT_WINDOW = timedelta(minutes=10)
 
 
+TAIL_KEYS = ("Sichtbarer Text", "Antworten der Plattform", "Anmeldung abgelehnt", "[FAIL]", "Error", "Timeout", "waiting for", "Fehler")
+
+
+def diagnostic_tail(text: str, key_lines: int = 8, last: int = 4, width: int = 240) -> str:
+    """Auszug aus der Ausgabe eines fehlgeschlagenen Vorgangs: die letzten Zeilen plus die Zeilen mit Diagnose (Seitentext, Antworten der Plattform, Fehlermeldungen)."""
+    lines = [ln.rstrip() for ln in text.splitlines() if ln.strip()]
+    keep = set(sorted(i for i, ln in enumerate(lines) if any(k in ln for k in TAIL_KEYS))[-key_lines:]) | set(range(max(0, len(lines) - last), len(lines)))
+    return "\n".join(lines[i][:width] for i in sorted(keep))
+
+
 class Store:
     """Legt Einstellungen und Zugangsdaten im State-Ordner ab (Dateirechte 600, nicht im Repo)."""
 
@@ -139,7 +149,12 @@ class Runner:
             if self.last and self.last["end"] is None:
                 self.last.update(end=datetime.now(TZ).isoformat(timespec="seconds"), code=code)
                 self.store._write("last_run.json", self.last)
-                self._remember(dict(self.last), self.output(8) if code else "")
+                full = self.output(80) if code else ""
+                if code and "Anmeldung abgelehnt" in full:   # die Plattform lehnt die Zugangsdaten ab: Zeitplan stoppen, sonst sperrt jeder weitere Versuch das Konto
+                    self.store.save_settings(enabled=False)
+                    self.last["auto_stop"] = "Anmeldung abgelehnt"
+                    self.store._write("last_run.json", self.last)
+                self._remember(dict(self.last), diagnostic_tail(full) if code else "")
 
     def _remember(self, entry: dict, tail: str = "") -> None:
         """Hängt den beendeten Vorgang an state/run_history.json an (die letzten 40, bei Fehlern mit den letzten Ausgabezeilen). Grundlage des Statusberichts."""

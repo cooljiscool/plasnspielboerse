@@ -7,10 +7,15 @@ from datetime import date, datetime
 from . import config
 
 
+class LoginRejected(RuntimeError):
+    """Die Plattform hat die Anmeldung ausdrücklich abgelehnt (falsches Passwort, gesperrtes Konto). Das Dashboard stoppt dann den Zeitplan, damit keine weiteren Versuche das Konto sperren."""
+
+
 ISIN_RE = re.compile(r"\b[A-Z]{2}[A-Z0-9]{9}\d\b")
 PLACEHOLDER_RE = re.compile(r"\{(\w+)\}")
 LOAD_TRIES, LOAD_WAIT_MS = 8, 1500   # so oft (und mit dieser Pause) wird ein halb geladenes Depot neu gelesen
-LOGIN_TRIES, LOGIN_WAIT_MS = 1, 15000   # genau ein Anmeldeversuch: Die Plattform sperrt das Konto nach mehr als 3 falschen Passwörtern
+LOGIN_TRIES, LOGIN_WAIT_MS = 2, 30000   # zweiter Versuch nur, wenn der erste gar nichts abgeschickt hat (die Plattform sperrt das Konto nach mehr als 3 falschen Passwörtern)
+REJECT_RE = re.compile(r"falsch|gesperrt|ungültig|incorrect|invalid|locked|zu viele", re.I)
 NAV_TIMEOUT_MS = 60000
 OPTIONAL_TIMEOUT_MS = 4000   # so lange wird auf einen Schritt mit "optional": true gewartet (etwa ein Bestätigungsfenster, das nicht immer erscheint)
 
@@ -111,10 +116,13 @@ class PlaywrightExecutor:
         self.page.goto(url, wait_until="domcontentloaded")
 
     def _login(self) -> None:
-        """Anmelden (LOGIN_TRIES Versuche). Wiederholt wird nur, wenn gar nichts geschah; bei falschem Passwort gilt jeder Versuch, nach mehr als 3 sperrt die Plattform das Konto."""
-        self.answers = []
+        """Anmelden. Ein zweiter Versuch gibt es nur, wenn beim ersten gar keine Anfrage an die Plattform ging (der Klick wurde ignoriert): Dann kann kein falsches Passwort
+        gezählt worden sein. Wurde die Anmeldung abgeschickt und blieb ohne Erfolg, ist Schluss, bei ausdrücklicher Ablehnung mit LoginRejected."""
+        self.answers, sent = [], []
+        self.page.on("request", lambda r: sent.append(r.url) if r.method in ("POST", "PUT") else None)
         self.page.on("response", lambda r: self.answers.append(f"{r.request.method} {r.url.split('?')[0][-60:]} -> {r.status}") if r.request.method in ("POST", "PUT") else None)
         for attempt in range(LOGIN_TRIES):
+            n0 = len(sent)
             self._goto(self.sel["login_url"])
             self._run_steps(self.sel.get("pre_login_steps", []), {})
             self.page.wait_for_selector(self.sel["login_button"])
@@ -126,9 +134,24 @@ class PlaywrightExecutor:
                 self.page.wait_for_selector(self.sel["logged_in_marker"], timeout=LOGIN_WAIT_MS)
                 return
             except Exception as e:  # noqa: BLE001
-                if type(e).__name__ != "TimeoutError" or attempt == LOGIN_TRIES - 1:
+                if type(e).__name__ != "TimeoutError":
+                    raise
+                if len(sent) > n0:                     # abgeschickt, aber ohne Erfolg: kein zweiter Versuch
+                    self._check_rejected()
+                    raise
+                if attempt == LOGIN_TRIES - 1:
                     raise
                 self.page.wait_for_timeout(3000)
+
+    def _check_rejected(self) -> None:
+        """Erkennt eine ausdrückliche Ablehnung der Anmeldung (Antwort 401/403/429 oder Meldung wie 'falsches Passwort' bzw. 'Konto gesperrt' auf der Seite)."""
+        try:
+            text = " ".join(self.page.inner_text("body").split())
+        except Exception:  # noqa: BLE001
+            text = ""
+        codes = [a.rsplit("-> ", 1)[-1] for a in self.answers]
+        if any(c in ("401", "403", "429") for c in codes) or REJECT_RE.search(text):
+            raise LoginRejected(f"Anmeldung abgelehnt ({'; '.join(self.answers[-2:]) or 'ohne Antwort'}): {text[:200]}")
 
     def _select_depot(self) -> None:
         """Wählt nach der Anmeldung das Depot, in dem gehandelt wird (config.DEPOT: test oder echt), und prüft es an einem Erkennungsmerkmal. Ohne Abschnitt `depot_switch`

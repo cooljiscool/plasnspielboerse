@@ -40,6 +40,15 @@ def _version(base: str, state_dir: str = None) -> str:
         return "unbekannt (start.sh neu ausführen)"
 
 
+def _reason(h: dict) -> str:
+    tail = [ln.strip() for ln in (h.get("tail") or "").splitlines()]
+    for key in ("Anmeldung abgelehnt", "[FAIL]", "Sichtbarer Text", "Timeout", "Error"):
+        for ln in tail:
+            if key in ln:
+                return ln[:200]
+    return tail[-1][:200] if tail else "(keine Ausgabe)"
+
+
 def _logs(log_dir: str, n: int) -> list:
     out = []
     for p in sorted(glob.glob(os.path.join(log_dir, "*.json")))[-n:]:
@@ -90,6 +99,13 @@ def build(store, runner, base: str, log_dir: str, now: datetime = None) -> str:
     failed = [h for h in hist if h.get("end") and h.get("code") not in (0, None) and (h.get("code") or 0) > 0]
     if failed:
         warn.append(f"{len(failed)} fehlgeschlagene Vorgänge in der Aufzeichnung, zuletzt {_when(failed[-1].get('start'))}")
+        add("")
+        add("FEHLGESCHLAGENE VORGÄNGE (alle aufgezeichneten, die letzten 6)")
+        for h in reversed(failed[-6:]):
+            add(f"- {_when(h.get('start'))} {KINDS.get(h.get('kind'), h.get('kind'))}: {_reason(h)}")
+    stopped = [h for h in hist if h.get("auto_stop")]
+    if stopped:
+        warn.append(f"ZEITPLAN AUTOMATISCH GESTOPPT am {_when(stopped[-1].get('start'))} ({stopped[-1]['auto_stop']}). Zugangsdaten prüfen, erst dann den Zeitplan wieder starten")
 
     add("")
     add("DEPOT (nach dem letzten Lauf)")

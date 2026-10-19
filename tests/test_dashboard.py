@@ -342,3 +342,47 @@ def test_report_shows_the_version_from_the_state_folder_and_the_series_without_d
     series = next(line for line in text.splitlines() if line.startswith("Verlauf:"))
     points = series.removeprefix("Verlauf: ").split(" → ")
     assert len(points) == len(set(points)) and points[-1].endswith("48.890 €")        # letzter Punkt genau einmal
+
+
+def test_diagnostic_tail_keeps_the_informative_lines_and_the_end():
+    from dashboard.runner import diagnostic_tail
+    out = "\n".join(["Zeile %d" % i for i in range(40)] + ["Sichtbarer Text der Seite: Ihr Konto ist gesperrt", "Antworten der Plattform auf die Anmeldung: POST x -> 401"] + ["Zeile %d" % i for i in range(40, 70)] + ["Traceback", "playwright TimeoutError: Page.wait_for_selector"])
+    tail = diagnostic_tail(out)
+    assert "Sichtbarer Text der Seite: Ihr Konto ist gesperrt" in tail and "POST x -> 401" in tail and "TimeoutError" in tail and "Zeile 3\n" not in tail
+    assert tail.index("Sichtbarer Text") < tail.index("Traceback")                    # Reihenfolge bleibt erhalten
+    assert len(diagnostic_tail("x" * 1000)) <= 240
+
+
+def test_a_rejected_login_stops_the_schedule_automatically(authed, app, tmp_path):
+    app.store.save_settings(enabled=True)
+    fake = tmp_path / "fakepython"
+    fake.write_text("#!/bin/sh\necho 'Antworten der Plattform auf die Anmeldung: POST x -> 401'\necho 'bot.executor.LoginRejected: Anmeldung abgelehnt (POST x -> 401): Konto gesperrt'\nexit 1\n")
+    fake.chmod(0o755)
+    app.runner.python = str(fake)
+    assert authed.post("/api/control", headers=H, json={"action": "run"}).get_json()["running"] is True
+    import time
+    for _ in range(80):
+        if app.store._read("run_history.json", []):
+            break
+        time.sleep(0.1)
+    hist = app.store._read("run_history.json", [])
+    assert hist[-1]["auto_stop"] == "Anmeldung abgelehnt"
+    assert app.store.settings()["enabled"] is False                               # Zeitplan aus: keine weiteren Anmeldeversuche
+    assert authed.get("/api/status").get_json()["last"]["auto_stop"] == "Anmeldung abgelehnt"
+    text = authed.get("/api/report").get_json()["text"]
+    assert "ZEITPLAN AUTOMATISCH GESTOPPT" in text and "FEHLGESCHLAGENE VORGÄNGE" in text and "Anmeldung abgelehnt" in text
+
+
+def test_an_ordinary_failure_does_not_stop_the_schedule(authed, app, tmp_path):
+    app.store.save_settings(enabled=True)
+    fake = tmp_path / "fakepython"
+    fake.write_text("#!/bin/sh\necho 'TimeoutError: Seite zu langsam'\nexit 1\n")
+    fake.chmod(0o755)
+    app.runner.python = str(fake)
+    authed.post("/api/control", headers=H, json={"action": "run"})
+    import time
+    for _ in range(80):
+        if app.store._read("run_history.json", []):
+            break
+        time.sleep(0.1)
+    assert app.store.settings()["enabled"] is True and "auto_stop" not in app.store._read("run_history.json", [])[-1]

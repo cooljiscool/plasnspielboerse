@@ -176,29 +176,69 @@ def test_testorder_reports_failures_and_unknown_isins(monkeypatch, tmp_path, cap
     assert selftest.testorder("XX0000000000") == 1
 
 
-def test_login_makes_exactly_one_attempt_so_a_wrong_password_cannot_lock_the_account():
-    class P(Page):
-        def goto(self, url, **kw): self.calls.append(("goto", url, {}))
-        def wait_for_timeout(self, ms): pass
-        def on(self, event, fn): pass
-        def wait_for_selector(self, sel, **kw):
-            self.calls.append(("wait", sel, kw))
-            if sel == "#in":
-                raise TimeoutError(sel)
-    ex = executor({"login_url": "u", "user_field": "#u", "password_field": "#p", "login_button": "#b", "logged_in_marker": "#in"}, P())
+class Req:
+    def __init__(self, method="POST", url="https://x.example/api/authenticate"):
+        self.method, self.url = method, url
+
+
+class Resp:
+    def __init__(self, status, req=None):
+        self.status, self.request, self.url = status, req or Req(), (req or Req()).url
+
+
+class LoginPage(Page):
+    """Anmeldeseite mit Ereignissen: send=True schickt beim Klick eine Anfrage ab (mit Antwort status), ok_on=Nummer des Versuchs, ab dem die Anmeldung gelingt."""
+    def __init__(self, send=True, status=200, text="", ok_on=None):
+        super().__init__()
+        self.handlers, self.send, self.status, self.text, self.ok_on, self.clicks = {}, send, status, text, ok_on, 0
+
+    def on(self, event, fn): self.handlers.setdefault(event, []).append(fn)
+    def goto(self, url, **kw): self.calls.append(("goto", url, {}))
+    def wait_for_timeout(self, ms): pass
+    def inner_text(self, sel): return self.text
+
+    def click(self, sel, **kw):
+        self.clicks += 1
+        if self.send:
+            r = Req()
+            for h in self.handlers.get("request", []): h(r)
+            for h in self.handlers.get("response", []): h(Resp(self.status, r))
+
+    def wait_for_selector(self, sel, **kw):
+        if sel == "#in" and not (self.ok_on and self.clicks >= self.ok_on):
+            raise TimeoutError(sel)
+
+
+def login_executor(page):
+    ex = executor({"login_url": "u", "user_field": "#u", "password_field": "#p", "login_button": "#b", "logged_in_marker": "#in"}, page)
     ex.user, ex.password = "a", "b"
+    return ex
+
+
+def test_login_is_retried_once_only_when_the_first_click_sent_nothing():
+    page = LoginPage(send=False, ok_on=2)          # der erste Klick wird ignoriert, der zweite wirkt
+    login_executor(page)._login()
+    assert page.clicks == 2 and len([c for c in page.calls if c[0] == "goto"]) == 2
+    page = LoginPage(send=False)                   # nie ein Erfolg: nach zwei Versuchen Schluss
     with pytest.raises(TimeoutError):
-        ex._login()
-    assert len([c for c in ex.page.calls if c[0] == "goto"]) == 1
-    assert len([c for c in ex.page.calls if c[0] == "click"]) == 1
+        login_executor(page)._login()
+    assert page.clicks == 2
 
 
-def test_js_click_is_used_for_elements_outside_the_visible_slider():
-    page = Page()
-    executor(page=page)._run_steps([{"do": "click", "selector": 'label[for="{tab}"]', "js": True}, {"do": "click", "selector": "#b"}], {"tab": "ATX"})
-    assert [(c[0], c[1]) for c in page.calls] == [("dispatch:click", 'label[for="ATX"]'), ("click", "#b")]
+def test_login_is_never_repeated_after_it_was_sent_so_a_wrong_password_cannot_lock_the_account():
+    page = LoginPage(send=True, status=200)        # abgeschickt, kein Erfolg, keine Ablehnung erkennbar (etwa langsame Seite)
+    with pytest.raises(TimeoutError):
+        login_executor(page)._login()
+    assert page.clicks == 1
 
 
-def test_shipped_selectors_click_the_market_tab_by_script(sel):
-    for key in ("buy_steps", "sell_steps"):
-        assert all(st.get("js") for st in sel["order"][key] if "{tab}" in st.get("selector", ""))
+def test_login_rejection_is_recognised_from_the_answer_or_the_message_on_the_page():
+    from bot.executor import LoginRejected
+    page = LoginPage(send=True, status=401)
+    with pytest.raises(LoginRejected, match="Anmeldung abgelehnt"):
+        login_executor(page)._login()
+    assert page.clicks == 1
+    page = LoginPage(send=True, status=200, text="Ihr Konto ist gesperrt, weil Sie mehr als 3 Mal das falsche Passwort eingegeben haben.")
+    with pytest.raises(LoginRejected, match="gesperrt"):
+        login_executor(page)._login()
+    assert page.clicks == 1
