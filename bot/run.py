@@ -96,7 +96,7 @@ def main(rebuild: bool = False):
                 before = prev_pf["positions"].get(isin, {}).get("peak")
                 pos["peak"] = max(pos.get("peak") or before or pos["avg_price"], prices.get(isin, pos["avg_price"]))
             return risk.portfolio_value(depot, prices)
-        total = mark(pf)
+        total = start_total = mark(pf)
 
         # Neuaufstellung (nur mit --rebuild): alles verkaufen, das Depot neu lesen und dann wie ein gewöhnlicher Lauf nach dem eingestellten Stil neu kaufen.
         sold, left = [], []
@@ -226,7 +226,7 @@ def main(rebuild: bool = False):
     holdings = {i: {"name": universe.get(i, {}).get("name", i), "shares": p["shares"], "avg_price": p["avg_price"],
                     "price": prices.get(i, p["avg_price"])} for i, p in pf["positions"].items()}
     os.makedirs(config.LOG_DIR, exist_ok=True)
-    log = {"time": datetime.now().isoformat(timespec="seconds"), "live": config.LIVE, "depot": (config.DEPOT if config.LIVE else "lokal"), "total_before": total,
+    log = {"time": datetime.now().isoformat(timespec="seconds"), "live": config.LIVE, "depot": (config.DEPOT if config.LIVE else "lokal"), "total_before": start_total,
            "total_after": total_after, "cash": pf["cash"], "holdings": holdings,
            "market_view": proposal["market_view"], "provider": proposal.get("provider"),
            "fallback_reason": proposal.get("fallback_reason"), "guard": proposal.get("guard"), "kronos": kronos_info, "regime": regime, "stil": rules.effective_style(regime=regime),

@@ -264,6 +264,7 @@ def test_rebuild_sells_every_position_even_inside_the_minimum_holding_time_and_t
     log = last_log(tmp_path)
     assert [(o["action"], o["isin"]) for o in log["approved"]] == [("sell", "A"), ("sell", "B"), ("buy", "C")]
     assert log["neuaufstellung"] == {"verkauft": ["Titel A", "Titel B"], "nicht_verkauft": []}
+    assert log["total_before"] == pytest.approx(1000 + 50000)                                             # Wert vor den Verkäufen
     assert "Neuaufstellung: 2 Positionen werden verkauft" in capsys.readouterr().out
 
 

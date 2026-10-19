@@ -72,6 +72,17 @@ def test_can_buy_filters():
     assert not rules.can_buy(m(rel_60d=-0.02), "risk_off", on) and rules.can_buy(m(rel_60d=0.03), "risk_off", on)
 
 
+def test_takeover_candidates_whose_price_is_pinned_are_not_bought():
+    delivery_hero = m(ret_120d=0.82, ret_60d=-0.00, ret_20d=0.03, vol_20d=0.10, vol_60d=0.08)     # Barangebot 41,50 €, Kurs klebt bei 37 €
+    assert rules.pinned(delivery_hero) and not rules.can_buy(delivery_hero, "risk_on")
+    assert rules.can_buy(delivery_hero, "risk_on", {**rules.PARAMS, "takeover_filter": False})   # abschaltbar
+    for alive in (m(ret_120d=0.82, ret_60d=0.20, vol_60d=0.08),            # läuft weiter
+                  m(ret_120d=0.82, ret_60d=0.01, vol_60d=0.35),            # ruhige Phase, aber normale Schwankung
+                  m(ret_120d=0.10, ret_60d=0.01, vol_60d=0.08),            # kein Sprung: einfach ein ruhiger Titel
+                  m()):                                                    # ohne vol_60d/ret_120d nie als festgeklebt werten
+        assert not rules.pinned(alive) and rules.can_buy(alive, "risk_on")
+
+
 def test_overbought_lowers_score():
     assert rules.score_mix(m(rsi14=90.0)) < rules.score_mix(m(rsi14=60.0))
 

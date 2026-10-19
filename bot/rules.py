@@ -16,7 +16,7 @@ Indexmitglieder (zu optimistisch).
 Nicht testbar (keine historischen Daten): Termine, Fundamentaldaten, Web-Recherche; sie gelten als Vorsichtsregeln."""
 from . import config, signals
 
-PARAMS = {"trend_filter": False, "rsi_filter": True, "hard_stop": True, "trailing": False, "trend_break": False,
+PARAMS = {"trend_filter": False, "rsi_filter": True, "hard_stop": True, "trailing": False, "trend_break": False, "takeover_filter": True,
           "sma50_sell": False, "vol_weight": False, "regime": False, "earnings_blackout": True, "vol_scale": True,
           "keep_frac": 0.7, "n_positions": 6, "min_score": None, "kronos_weight": 0.0, "nh_slots": config.NH_SLOTS, "style": config.STYLE}
 
@@ -33,6 +33,9 @@ CASH_FLOOR = 0.03
 HARD_STOP = 0.25         # Notfall-Stopp: Verkauf, wenn der Kurs 25 % unter dem Einstand liegt
 TREND_BREAK = -0.08      # nur aktiv mit PARAMS["trend_break"]
 MAX_VOL = 0.55           # Titel über 55 % Jahresvolatilität werden nicht neu gekauft
+# Übernahmekandidat: großer Sprung (120 Tage), danach klebt der Kurs (60 Tage kaum Bewegung, kaum Schwankung). So sieht ein Barangebot aus (Oktober 2026: Delivery Hero/Uber 41,50 €,
+# Nagarro/Persistent 81 €); das Momentum-Ranking setzte beide unter die Top 10, im Spiel wären sie tote Plätze. Historisch griff die Regel bei 1 von 5.730 Kaufkandidaten.
+PIN_JUMP, PIN_FLAT, PIN_VOL = 0.25, 0.06, 0.15
 RSI_MAX = 85
 EARNINGS_BLACKOUT = 3    # Tage vor der Gewinnmeldung ohne Neukauf
 MIN_KEEP = 12
@@ -97,6 +100,11 @@ def score_mix(m: dict, stars: int = 0) -> float:
     return s + 0.01 * stars
 
 
+def pinned(m: dict) -> bool:
+    """Kurs klebt nach einem großen Sprung (typisch für ein laufendes Übernahmeangebot): kein Spielraum mehr nach oben bis zum Spielende."""
+    return m.get("ret_120d", 0.0) > PIN_JUMP and abs(m.get("ret_60d", 1.0)) < PIN_FLAT and m.get("vol_60d", 1.0) < PIN_VOL
+
+
 def can_buy(m: dict, regime_label: str = "risk_on", P: dict = None) -> bool:
     P = P or PARAMS
     if m["price"] < config.MIN_PRICE_EUR or m["vol_20d"] > P.get("max_vol", MAX_VOL) or m["ret_20d"] <= -0.10:
@@ -106,6 +114,8 @@ def can_buy(m: dict, regime_label: str = "risk_on", P: dict = None) -> bool:
     if P["trend_filter"] and (m.get("above_sma50") is False or m.get("trend_up") is False):
         return False
     if P["rsi_filter"] and m.get("rsi14", 50) > RSI_MAX:
+        return False
+    if P.get("takeover_filter") and pinned(m):
         return False
     if P["earnings_blackout"] and (0 <= m.get("days_to_earnings", 99) <= EARNINGS_BLACKOUT or m.get("event_soon")):
         return False
