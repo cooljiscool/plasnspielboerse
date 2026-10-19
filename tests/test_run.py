@@ -229,3 +229,116 @@ def test_live_test_depot_keeps_its_own_files_and_logs_the_depot(tmp_path, monkey
     monkeypatch.setattr(config, "DEPOT", "echt")
     run.main()
     assert (data / "portfolio.json").exists()                                                    # Wettbewerbsdepot: die gewohnten Dateien
+
+
+# --- Neuaufstellung: alles verkaufen, dann nach dem Stil neu kaufen (python -m bot.run --rebuild) ---
+def rebuild_setup(tmp_path, monkeypatch, positions, cash=1000.0, titles="ABCDEFGH"):
+    """Trockenlauf mit Depot aus positions {isin: Stück} (Einstand 90, gekauft am Spieltag 1, also noch in der Mindesthaltedauer). Alle Titel kosten 100 €.
+    Gibt zurück, was die Entscheidung gesehen hat: bei jedem Aufruf Positionen und Bargeld; vorgeschlagen wird immer der Kauf von C für 9.000 €."""
+    prepare(tmp_path, monkeypatch, provider="rules")
+    (tmp_path / "data" / "universe.json").write_text(json.dumps([{"isin": i, "name": f"Titel {i}", "yf": i, "indices": ["dax"]} for i in titles]))
+    snap = {i: {"price": 100.0, "ret_5d": 0.01, "ret_20d": 0.05, "ret_60d": 0.1, "vol_20d": 0.2} for i in titles}
+    monkeypatch.setattr(run.market, "load", lambda u: (snap, {"label": "risk_on", "score": "5/5", "exposure": 0.97, "positions": 6}))
+    pf = {"cash": cash, "buy_orders_executed": 3, "positions": {i: {"shares": n, "avg_price": 90.0, "bought": "2026-10-01"} for i, n in positions.items()}}
+    (tmp_path / "data" / "portfolio.json").write_text(json.dumps(pf))
+    seen = []
+
+    def fake(pf, universe, snap, news, today, total, regime=None, research=None, history=None, macro=None, track_record=None, freedom=""):
+        seen.append({"positions": sorted(pf["positions"]), "cash": pf["cash"], "total": total})
+        return {"market_view": "test", "orders": [{"action": "buy", "isin": "C", "amount_eur": 9000, "reason": "x"}], "provider": "rules"}
+    monkeypatch.setattr(run.brain, "decide", fake)
+    return seen
+
+
+def last_log(tmp_path):
+    return json.loads(sorted((tmp_path / "logs").glob("*.json"))[-1].read_text())
+
+
+def test_rebuild_sells_every_position_even_inside_the_minimum_holding_time_and_then_buys_on_the_empty_depot(tmp_path, monkeypatch, capsys):
+    seen = rebuild_setup(tmp_path, monkeypatch, {"A": 300, "B": 200})
+    run.main(rebuild=True)
+    assert seen == [{"positions": [], "cash": pytest.approx(1000 + 30000 - 90 + 20000 - 60), "total": pytest.approx(50850.0)}]     # Verkäufe samt Gebühr, die Entscheidung sieht ein leeres Depot
+    pf = json.loads((tmp_path / "data" / "portfolio.json").read_text())
+    assert list(pf["positions"]) == ["C"] and pf["positions"]["C"]["shares"] == 90 and pf["buy_orders_executed"] == 4
+    assert pf["cash"] == pytest.approx(50850.0 - 9000 - config.fee(9000))
+    log = last_log(tmp_path)
+    assert [(o["action"], o["isin"]) for o in log["approved"]] == [("sell", "A"), ("sell", "B"), ("buy", "C")]
+    assert log["neuaufstellung"] == {"verkauft": ["Titel A", "Titel B"], "nicht_verkauft": []}
+    assert "Neuaufstellung: 2 Positionen werden verkauft" in capsys.readouterr().out
+
+
+def test_an_ordinary_run_never_sells_the_depot(tmp_path, monkeypatch):
+    seen = rebuild_setup(tmp_path, monkeypatch, {"A": 300, "B": 200}, cash=15000.0)
+    run.main()
+    assert seen[0]["positions"] == ["A", "B"]
+    pf = json.loads((tmp_path / "data" / "portfolio.json").read_text())
+    assert sorted(pf["positions"]) == ["A", "B", "C"] and last_log(tmp_path)["neuaufstellung"] is None
+
+
+def test_rebuild_sells_in_packages_that_respect_the_order_limit_per_run(tmp_path, monkeypatch):
+    seen = rebuild_setup(tmp_path, monkeypatch, {i: 10 for i in "ABCDEFGH"}, cash=0.0)
+    assert config.MAX_ORDERS_PER_RUN == 6
+    run.main(rebuild=True)
+    assert seen[0]["positions"] == [] and len([o for o in last_log(tmp_path)["approved"] if o["action"] == "sell"]) == 8
+
+
+def test_rebuild_leaves_positions_it_cannot_price_and_says_so(tmp_path, monkeypatch):
+    seen = rebuild_setup(tmp_path, monkeypatch, {"A": 300, "Z": 5})
+    run.main(rebuild=True)
+    assert seen[0]["positions"] == ["Z"]
+    assert last_log(tmp_path)["neuaufstellung"] == {"verkauft": ["Titel A"], "nicht_verkauft": [{"name": "Z", "grund": "unbekanntes Wertpapier oder kein Kurs"}]}
+
+
+class FakePlatform:
+    """Stand-in für die echte Plattform: eigenes Depot, Verkäufe und Käufe wirken darauf; `refuse` nennt Titel, deren Verkauf die Plattform ablehnt."""
+    def __init__(self, positions, refuse=()):
+        self.state = {"cash": 1000.0, "buy_orders_executed": 3, "positions": {i: {"shares": n, "avg_price": 90.0, "bought": "2026-10-01"} for i, n in positions.items()}}
+        self.refuse, self.placed = set(refuse), []
+
+    def __enter__(self): return self
+    def __exit__(self, *a): return False
+
+    def get_portfolio(self, pf=None):
+        return json.loads(json.dumps(self.state))
+
+    def place(self, o, today):
+        self.placed.append((o["action"], o["isin"]))
+        if o["action"] == "sell":
+            if o["isin"] in self.refuse:
+                raise RuntimeError("Die Plattform meldet: Fehler")
+            self.state["cash"] += o["shares"] * o["est_price"]
+            del self.state["positions"][o["isin"]]
+        else:
+            self.state["cash"] -= o["shares"] * o["est_price"]
+            self.state["positions"][o["isin"]] = {"shares": o["shares"], "avg_price": o["est_price"], "bought": today.isoformat()}
+
+
+def test_rebuild_goes_on_when_one_sale_fails_and_reads_the_depot_again_before_buying(tmp_path, monkeypatch):
+    seen = rebuild_setup(tmp_path, monkeypatch, {"A": 300, "B": 200})
+    platform = FakePlatform({"A": 300, "B": 200}, refuse={"A"})
+    monkeypatch.setattr(config, "LIVE", True)
+    monkeypatch.setattr(config, "DEPOT", "test")
+    monkeypatch.setattr(run, "PlaywrightExecutor", lambda: platform)
+    run.main(rebuild=True)
+    assert platform.placed == [("sell", "A"), ("sell", "B"), ("buy", "C")]
+    assert seen[0]["positions"] == ["A"] and seen[0]["cash"] == pytest.approx(1000 + 20000)         # die Entscheidung sieht das neu gelesene Depot
+    log = last_log(tmp_path)
+    assert log["neuaufstellung"]["verkauft"] == ["Titel B"] and log["neuaufstellung"]["nicht_verkauft"][0]["name"] == "Titel A"
+    assert "Verkauf fehlgeschlagen" in log["neuaufstellung"]["nicht_verkauft"][0]["grund"]
+
+
+def test_rebuild_stops_without_buying_when_not_a_single_sale_goes_through(tmp_path, monkeypatch):
+    rebuild_setup(tmp_path, monkeypatch, {"A": 60, "B": 50})
+    platform = FakePlatform({"A": 60, "B": 50}, refuse={"A", "B"})
+    monkeypatch.setattr(config, "LIVE", True)
+    monkeypatch.setattr(config, "DEPOT", "test")
+    monkeypatch.setattr(run, "PlaywrightExecutor", lambda: platform)
+    with pytest.raises(RuntimeError, match="Neuaufstellung abgebrochen"):
+        run.main(rebuild=True)
+    assert [p for p in platform.placed if p[0] == "buy"] == [] and not list((tmp_path / "logs").glob("*.json"))
+
+
+def test_rebuild_on_an_empty_depot_just_buys(tmp_path, monkeypatch):
+    seen = rebuild_setup(tmp_path, monkeypatch, {}, cash=50000.0)
+    run.main(rebuild=True)
+    assert seen[0]["positions"] == [] and [o["action"] for o in last_log(tmp_path)["approved"]] == ["buy"]

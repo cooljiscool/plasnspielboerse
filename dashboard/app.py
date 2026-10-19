@@ -89,18 +89,28 @@ def create_app(password: str, state_dir=None, data_dir=None, log_dir=None, autos
     @app.post("/api/control")
     @auth
     def control():
-        action = (request.get_json(silent=True) or {}).get("action")
+        body = request.get_json(silent=True) or {}
+        action = body.get("action")
         if action == "start":
             store.save_settings(enabled=True)
         elif action == "stop":  # Notaus: Zeitplan aus und laufenden Lauf beenden
             store.save_settings(enabled=False)
             runner.kill()
-        elif action in ("run", "selftest", "testorder", "universe"):
-            if action == "testorder":
+        elif action in ("run", "rebuild", "selftest", "testorder", "universe"):
+            if action == "testorder" or (action == "rebuild" and store.settings()["live"]):
                 have = store.secret_status()
                 missing = [k for k in ("PSB_USER", "PSB_PASSWORD") if not have[k]]
                 if missing:
                     return jsonify(error="Zugangsdaten fehlen: " + ", ".join(missing)), 400
+            if action == "rebuild":   # verkauft das ganze Depot: nur mit getippter Bestätigung, und der gewählte Stil gilt danach weiter
+                if body.get("confirm") != "NEU":
+                    return jsonify(error='Zur Bestätigung "NEU" eingeben'), 400
+                style = body.get("style") or store.settings()["style"]
+                if style not in rules.STYLES:
+                    return jsonify(error="Stil: " + ", ".join(rules.STYLES)), 400
+                if runner.running():
+                    return jsonify(error="es läuft bereits ein Vorgang"), 409
+                store.save_settings(style=style)
             if not runner.start(action):
                 return jsonify(error="es läuft bereits ein Vorgang"), 409
         else:

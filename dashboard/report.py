@@ -9,7 +9,7 @@ from datetime import datetime
 
 from .runner import TZ
 
-KINDS = {"run": "Lauf", "selftest": "Selbsttest", "testorder": "Test-Order", "universe": "Wertpapierliste"}
+KINDS = {"run": "Lauf", "rebuild": "Neuaufstellung", "selftest": "Selbsttest", "testorder": "Test-Order", "universe": "Wertpapierliste"}
 DEPOTS = {"test": "Test-Depot", "echt": "Wettbewerbsdepot", "lokal": "Trockenlauf"}
 
 

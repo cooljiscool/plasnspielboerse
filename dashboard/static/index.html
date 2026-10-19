@@ -96,7 +96,17 @@ svg{width:100%;height:auto;display:block}
     <button id="btnTest">Selbsttest</button>
     <button id="btnReport" style="grid-column:1/-1">Statusbericht<br><small>Zustand des Bots als Text zum Kopieren, ohne Zugangsdaten</small></button>
     <button id="btnTestOrder">Test-Order<br><small>1 Stück im Testdepot kaufen und verkaufen</small></button>
+    <button id="btnRebuild" class="danger" style="grid-column:1/-1">Depot neu aufstellen<br><small>alle Positionen verkaufen und nach dem gewählten Stil neu kaufen</small></button>
     <button id="btnUni" style="grid-column:1/-1">Wertpapierliste des Planspiels laden<br><small>amtliche Liste von planspiel-boerse.de, dauert 1 bis 2 Minuten</small></button>
+  </div>
+  <div class="card hidden" id="rebuildCard">
+    <b>Depot neu aufstellen</b>
+    <p id="rebuildInfo" style="margin:8px 0"></p>
+    <label>Neu kaufen nach Stil (wird danach auch für alle weiteren Läufe gespeichert)
+      <select id="rebuildStyle"></select></label>
+    <p class="mute" id="rebuildStyleText" style="margin:-6px 0 12px"></p>
+    <p class="mute" style="margin:0 0 12px">Kosten: rund 0,6 % des Depots an Gebühren (Verkauf und Kauf). Die Orders lassen sich nicht rückgängig machen. Der Vorgang dauert einige Minuten, der Verlauf steht unten unter „Ausgabe letzter Vorgang“.</p>
+    <div class="grid"><button class="danger" id="rebuildGo">Jetzt neu aufstellen</button><button id="rebuildCancel">Abbrechen</button></div>
   </div>
   <h2>Modus</h2>
   <div class="card">
@@ -239,12 +249,12 @@ function renderStatus() {
   const m = $('modeP'); m.className = 'pill' + (S.live ? ' live' : ''); m.textContent = S.live ? 'LIVE' : 'Trockenlauf';
   $('schedState').textContent = S.enabled ? 'an' : 'aus';
   $('nextRun').textContent = S.enabled ? fmtTime(S.next_run) : '–';
-  const l = S.last; $('lastRun').textContent = l ? `${fmtTime(l.start)} · ${l.kind === 'run' ? 'Lauf' : 'Test'} · ${l.end ? (l.code === 0 ? 'ok' : 'Fehler ' + l.code) : 'läuft'}${l.auto_stop ? ' · Zeitplan automatisch gestoppt: ' + l.auto_stop : ''}` : '–';
+  const l = S.last; $('lastRun').textContent = l ? `${fmtTime(l.start)} · ${({run: 'Lauf', rebuild: 'Neuaufstellung'})[l.kind] || 'Test'} · ${l.end ? (l.code === 0 ? 'ok' : 'Fehler ' + l.code) : 'läuft'}${l.auto_stop ? ' · Zeitplan automatisch gestoppt: ' + l.auto_stop : ''}` : '–';
   $('modeText').textContent = S.live ? (S.depot === 'echt' ? 'LIVE im WETTBEWERBSDEPOT' : 'LIVE im Test-Depot') : 'Trockenlauf';
   $('depotText').textContent = S.depot === 'echt' ? 'Wettbewerbsdepot (zählt für den Rang)' : 'Test-Depot (zählt nicht)';
   $('btnDepot').textContent = S.depot === 'echt' ? 'auf Test-Depot' : 'auf Wettbewerbsdepot';
   $('btnLive').textContent = S.live ? 'auf Trockenlauf' : 'auf Live';
-  $('btnStart').disabled = S.enabled; $('btnRun').disabled = S.running; $('btnTest').disabled = S.running;
+  $('btnStart').disabled = S.enabled; $('btnRun').disabled = S.running; $('btnTest').disabled = S.running; $('btnRebuild').disabled = S.running; $('rebuildGo').disabled = S.running;
   for (const k of Object.keys(S.secrets)) $('s_' + k).textContent = S.secrets[k] ? '(gespeichert)' : '(fehlt)';
 }
 
@@ -335,6 +345,24 @@ $('reportCopy').onclick = async () => {
 };
 $('btnTestOrder').onclick = act(async () => { if (!confirm('Im Test-Depot wird 1 Stück BASF gekauft und wieder verkauft (zählt nicht für den Rang). Fortfahren?')) return; S = await api('/api/control', {action: 'testorder'}); renderStatus(); }, 'Test-Order gestartet');
 $('btnTest').onclick = act(async () => { S = await api('/api/control', {action: 'selftest'}); renderStatus(); }, 'Selbsttest gestartet');
+const rebuildTarget = () => S.live ? (S.depot === 'echt' ? {nom: 'das WETTBEWERBSDEPOT (zählt für den Rang)', dat: 'dem WETTBEWERBSDEPOT (zählt für den Rang)'} : {nom: 'das Test-Depot der Plattform (zählt nicht)', dat: 'dem Test-Depot der Plattform (zählt nicht)'}) : {nom: 'der Trockenlauf (nur lokal, es gehen keine Orders an die Plattform)', dat: 'dem Trockenlauf (nur lokal, es gehen keine Orders an die Plattform)'};
+function showRebuildStyle() { const s = S.stile.find(x => x.key === $('rebuildStyle').value); $('rebuildStyleText').textContent = s ? `Risiko ${s.risiko} von 5. ${s.text}` : ''; }
+$('rebuildStyle').addEventListener('change', showRebuildStyle);
+$('btnRebuild').onclick = act(async () => {
+  $('rebuildStyle').replaceChildren(...S.stile.map(x => el('option', {value: x.key}, '●'.repeat(x.risiko) + '○'.repeat(5 - x.risiko) + '  ' + x.label)));
+  $('rebuildStyle').value = S.stile.some(x => x.key === 'angriff') ? 'angriff' : S.style;
+  showRebuildStyle();
+  $('rebuildInfo').textContent = `Betroffen ist ${rebuildTarget().nom}. Alle Positionen werden verkauft, danach kauft der Bot mit dem ganzen Geld neu ein. Empfohlen für die Aufholjagd: Angriff.`;
+  $('rebuildCard').classList.remove('hidden'); $('rebuildCard').scrollIntoView({behavior: 'smooth'});
+});
+$('rebuildCancel').onclick = () => $('rebuildCard').classList.add('hidden');
+$('rebuildGo').onclick = act(async () => {
+  const style = $('rebuildStyle').value, label = (S.stile.find(x => x.key === style) || {}).label || style;
+  const c = prompt(`ALLE Positionen in ${rebuildTarget().dat} werden verkauft und neu gekauft nach dem Stil „${label}“. Das lässt sich nicht rückgängig machen.\n\nZur Bestätigung NEU eingeben:`);
+  if (c === null) return;
+  S = await api('/api/control', {action: 'rebuild', confirm: c, style}); renderStatus();
+  $('rebuildCard').classList.add('hidden');
+}, 'Neuaufstellung gestartet');
 $('btnDepot').onclick = act(async () => {
   if (S.depot === 'echt') { S = await api('/api/depot', {depot: 'test'}); }
   else { const c = prompt('Im Wettbewerbsdepot zählen alle Orders für den Rang. Zur Bestätigung ECHT eingeben:'); if (c === null) return; S = await api('/api/depot', {depot: 'echt', confirm: c}); }

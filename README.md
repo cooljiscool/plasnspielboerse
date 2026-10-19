@@ -183,6 +183,18 @@ Die Positionen der Regeln in den 22 Planspiel-Jahren (154 Käufe, sonst bewertet
 
 **Wichtig zur Branchenbegrenzung:** Ohne sie (so waren frühere Tabellen gerechnet) sah `angriff` mit Rang 72 % und `turnier` mit 70 % besser aus. Die Begrenzung, die der Live-Betrieb einhält, nimmt vor allem `angriff` den Vorsprung, weil in den Technologie-Jahren genau die Konzentration auf eine Branche gewonnen hatte. Einzelne Jahre schwanken dadurch stark (2025/26, `turnier`: 52.779 € ohne, 42.844 € mit Begrenzung).
 
+**Aufholjagd und der Knopf „Depot neu aufstellen“ (gerechnet am 19.10.2026).** Wer weit hinten liegt, verliert durch zusätzliches Risiko kaum noch Plätze und gewinnt bei Erfolg viele; es zählt der Rang, nicht die Rendite. Der Fall des echten Depots: −12,8 % nach 12 Handelstagen (zufällige 6-Titel-Depots lagen zwischen −5 und +7 %), Platz 25.707 von 26.300 in der Landes- und 140 von 150 in der Sparkassen-Tabelle. Von dort aus wurde jeder Stil über 66 Handelstage gerechnet (955 überlappende Fenster 2004 bis 2026 am amtlichen Universum, Gebühren, Branchenbegrenzung), als Feld dienen zufällige 2-Titel-Depots (passt zu den 2,3 % Teams hinter dem Depot):
+
+| | `breit` (so lassen) | `angriff` (neu aufstellen) |
+|---|---|---|
+| Median-Endwert (ab 43.614 €) | 46.800 € | 46.900 € |
+| gute 10 % der Fälle / schlechte 10 % | ab 52.900 € / bis 40.000 € | ab 56.700 € / bis 39.200 € |
+| Chance obere Hälfte / obere 10 % | 7 % / 0,1 % | 18 % / 4 % |
+| Chance, hinter den heutigen Platz zu fallen | 7 % | 13 % |
+| schlechtester Fall (66 Tage) | −27 % | −37 % |
+
+Nur den Stil umzustellen hilft nicht: Das Depot ist voll, `angriff` würde bloß die schwächste Position verkaufen und das Geld als Bargeld liegen lassen. Deshalb verkauft der Knopf **Depot neu aufstellen** (Dashboard, Tab Steuerung, `python -m bot.run --rebuild`) alle Positionen und kauft im selben Lauf nach dem gewählten Stil neu ein (nur auf Knopfdruck mit getippter Bestätigung `NEU`, nie im Zeitplan, Kosten rund 0,6 %). Nach Abstürzen der Momentum-Auswahl (20 Fälle seit 2004) lag die Auswahl in den folgenden 66 Tagen im Schnitt 2 % vor allen Titeln (in 10 von 20 Fällen vorn): kein Hinweis auf weiteres Abrutschen, aber auch keine rasche Erholung. **Vorbehalte:** Zufallsdepots statt der echten Konkurrenz, Überlebens-Verzerrung (heutige Indexmitglieder), nur rund 80 unabhängige Fenster; `angriff` profitierte in den Tests von Technologie-Jahren. Aus der Tabellenmitte heraus war `angriff` nicht besser (Rang 67 % gegen 69 % bei `sicher`): Der Vorteil entsteht nur, weil das Depot ganz hinten liegt.
+
 **Woher die Stile kommen (Recherche) und was daraus wurde:**
 - *Momentum* ist der am besten belegte Effekt. Seine Schwäche sind Crashs beim Marktwechsel ([Daniel und Moskowitz, „Momentum Crashes“](https://www.researchgate.net/publication/307823188_Momentum_Crashes)); verwaltet man das Momentum-Risiko (Volatilitätsskalierung, [Barroso und Santa-Clara](https://alphaarchitect.com/avoiding-momentum-crashes/)), sinken die Crashs und die Rendite je Risiko steigt. Das ist die Volatilitätsbremse in `sicher`.
 - *Niedrige Schwankung plus Momentum:* Die Literatur ist gemischt, in nordischen Märkten schlug keine Kombination reines Momentum ([Applied Economics 2024](https://www.tandfonline.com/doi/full/10.1080/00036846.2024.2337806)). Ich habe es getestet (Momentum je Schwankung, nur Titel unter 35 bis 40 % Volatilität): **Rang nur 43 bis 47 %, schlechter als Zufall**, deshalb kein Stil.

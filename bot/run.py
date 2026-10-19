@@ -1,6 +1,8 @@
-"""Ein Handelslauf: Daten -> Claude -> Risikoprüfung -> Ausführung -> Log.  python -m bot.run"""
+"""Ein Handelslauf: Daten -> Claude -> Risikoprüfung -> Ausführung -> Log.  python -m bot.run
+Mit --rebuild (Knopf "Depot neu aufstellen" im Dashboard): erst alle Positionen verkaufen, dann im selben Lauf nach dem eingestellten Stil neu kaufen."""
 import json
 import os
+import sys
 from datetime import date, datetime
 
 from . import analysts, brain, config, edgar, fundamentals, journal, kronos_signal, macro, market, quiver, rank, research, risk, rules, shadow, social, statements, track
@@ -31,7 +33,39 @@ def suffix() -> str:
     return "_test" if config.LIVE and config.DEPOT == "test" else ""
 
 
-def main():
+def order_fields(o: dict, universe: dict) -> dict:
+    """Angaben, die der Executor für die Plattform braucht (Name, Suchbegriff, Indizes für den Marktreiter)."""
+    o["name"] = universe[o["isin"]]["name"]
+    o["search"] = universe[o["isin"]].get("search") or o["name"]
+    o["indices"] = universe[o["isin"]].get("indices") or []
+    return o
+
+
+def rebuild_sells(executor, pf: dict, prices: dict, universe: dict, today: date) -> tuple:
+    """Neuaufstellung, Schritt 1: Jede Position wird ganz verkauft (in Paketen, die das Orderlimit je Lauf einhalten, ohne Mindesthaltedauer).
+    Schlägt ein Verkauf fehl, laufen die übrigen weiter. Ging gar keiner durch, bricht die Neuaufstellung ab, statt mit unverändertem Depot weiterzurechnen.
+    Gibt (verkaufte Orders, [(Order, Grund)] der nicht verkauften) zurück."""
+    orders = [{"action": "sell", "isin": isin, "stop": True, "reason": "Neuaufstellung: alle Positionen verkaufen, danach nach dem eingestellten Stil neu kaufen"}
+              for isin in pf["positions"]]
+    sold, left = [], []
+    for k in range(0, len(orders), config.MAX_ORDERS_PER_RUN):
+        approved, rejected = risk.validate(orders[k:k + config.MAX_ORDERS_PER_RUN], pf, prices, universe, today)
+        left += rejected
+        for o in approved:
+            order_fields(o, universe)
+            try:
+                executor.place(o, today)
+                sold.append(o)
+            except Exception as e:  # noqa: BLE001 – die übrigen Verkäufe sollen trotzdem laufen
+                left.append((o, f"Verkauf fehlgeschlagen: {str(e)[:150]}"))
+                print(f"Verkauf von {o['name']} fehlgeschlagen: {e}", flush=True)
+    if orders and not sold:
+        why = "; ".join(f"{universe.get(o['isin'], {}).get('name', o['isin'])}: {w}" for o, w in left[:3])
+        raise RuntimeError(f"Neuaufstellung abgebrochen: Kein einziger Verkauf ging durch ({why}). Das Depot ist unverändert.")
+    return sold, left
+
+
+def main(rebuild: bool = False):
     today = date.today()
     if not (config.GAME_START <= today <= config.GAME_END):
         print("Außerhalb des Spielzeitraums.")
@@ -56,10 +90,22 @@ def main():
         # Live: Depot von der Plattform lesen. Schlägt das fehl, wird nichts gehandelt (Exception bricht ab).
         pf = executor.get_portfolio(pf) if config.LIVE else executor.get_portfolio()
         prices = {i: s["price"] for i, s in snap.items()}
-        for isin, pos in pf["positions"].items():   # Höchstkurs seit Kauf für den Trailing-Stop
-            before = prev_pf["positions"].get(isin, {}).get("peak")
-            pos["peak"] = max(pos.get("peak") or before or pos["avg_price"], prices.get(isin, pos["avg_price"]))
-        total = risk.portfolio_value(pf, prices)
+
+        def mark(depot: dict) -> float:
+            for isin, pos in depot["positions"].items():   # Höchstkurs seit Kauf für den Trailing-Stop
+                before = prev_pf["positions"].get(isin, {}).get("peak")
+                pos["peak"] = max(pos.get("peak") or before or pos["avg_price"], prices.get(isin, pos["avg_price"]))
+            return risk.portfolio_value(depot, prices)
+        total = mark(pf)
+
+        # Neuaufstellung (nur mit --rebuild): alles verkaufen, das Depot neu lesen und dann wie ein gewöhnlicher Lauf nach dem eingestellten Stil neu kaufen.
+        sold, left = [], []
+        if rebuild:
+            print(f"Neuaufstellung: {len(pf['positions'])} Positionen werden verkauft, danach wird nach dem Stil „{rules.PARAMS['style']}“ neu gekauft.", flush=True)
+            sold, left = rebuild_sells(executor, pf, prices, universe, today)
+            if sold:
+                pf = executor.get_portfolio(pf) if config.LIVE else executor.get_portfolio()
+                total = mark(pf)
 
         # Startstand merken (einmal): Kurse aller Titel und Depotwert am ersten Lauf. Daraus schätzt der Bot seinen Rang gegen Zufallsdepots (bot/rank.py, Stil "turnier").
         def rank_estimate():
@@ -166,10 +212,7 @@ def main():
             save("shadow_report.json", {**(shadow_report or {}), "freiheit": free, "stand": today.isoformat()})
         approved, rejected = risk.validate(proposal["orders"], pf, prices, universe, today)
         for o in approved:
-            o["name"] = universe[o["isin"]]["name"]
-            o["search"] = universe[o["isin"]].get("search") or o["name"]
-            o["indices"] = universe[o["isin"]].get("indices") or []
-            executor.place(o, today)
+            executor.place(order_fields(o, universe), today)
         if config.LIVE and approved:
             # Kontrolle: Depot nach den Orders neu lesen.
             pf = executor.get_portfolio(pf)
@@ -193,12 +236,13 @@ def main():
            "research": ({"error": research_info.get("error"), "warning": research_info.get("warning"), "cached": research_info.get("cached", False),
                          "market": research_info.get("market"), "notes": len(research_info["notes"])}
                         if research_info else None),
-           "approved": approved,
-           "rejected": [{"order": o, "why": w} for o, w in rejected]}
+           "approved": sold + approved,
+           "rejected": [{"order": o, "why": w} for o, w in left + rejected],
+           "neuaufstellung": ({"verkauft": [o["name"] for o in sold], "nicht_verkauft": [{"name": universe.get(o["isin"], {}).get("name", o["isin"]), "grund": w} for o, w in left]} if rebuild else None)}
     json.dump(log, open(os.path.join(config.LOG_DIR, datetime.now().strftime("%Y%m%d-%H%M") + ".json"), "w"),
               indent=2, ensure_ascii=False)
     print(json.dumps(log, indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":
-    main()
+    main(rebuild="--rebuild" in sys.argv[1:])

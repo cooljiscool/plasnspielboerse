@@ -386,3 +386,64 @@ def test_an_ordinary_failure_does_not_stop_the_schedule(authed, app, tmp_path):
             break
         time.sleep(0.1)
     assert app.store.settings()["enabled"] is True and "auto_stop" not in app.store._read("run_history.json", [])[-1]
+
+
+# --- Depot neu aufstellen ---
+def _fake_bot(app, tmp_path, script):
+    fake = tmp_path / "fakepython"
+    argsfile = tmp_path / "args.txt"
+    fake.write_text(f"#!/bin/sh\n{script.format(args=argsfile)}\n")
+    fake.chmod(0o755)
+    app.runner.python = str(fake)
+    return argsfile
+
+
+def _wait_for(path):
+    import time
+    for _ in range(80):
+        if path.exists() and path.read_text().strip():
+            return path.read_text().strip()
+        time.sleep(0.1)
+    return ""
+
+
+def test_rebuild_needs_the_typed_confirmation_and_a_known_style_and_starts_the_run_with_the_flag(authed, app, tmp_path):
+    args = _fake_bot(app, tmp_path, 'echo "$@ live=$BOT_LIVE style=$BOT_STYLE" > {args}\nsleep 5')
+    post = lambda **body: authed.post("/api/control", headers=H, json={"action": "rebuild", **body})
+    assert post().status_code == 400 and post(confirm="ja").status_code == 400 and post(confirm="neu").status_code == 400        # nur genau "NEU"
+    assert post(confirm="NEU", style="lotterie").status_code == 400
+    assert not args.exists() and app.store.settings()["style"] == "sicher"                                                   # nichts gestartet, nichts verändert
+    got = post(confirm="NEU", style="angriff").get_json()
+    assert got["running"] is True and got["style"] == "angriff" and got["last"]["kind"] == "rebuild"
+    assert _wait_for(args) == "-m bot.run --rebuild live=0 style=angriff"                                                     # Trockenlauf bleibt Trockenlauf, der gewählte Stil gilt
+    assert post(confirm="NEU", style="jackpot").status_code == 409 and app.store.settings()["style"] == "angriff"             # läuft schon etwas: keine Änderung
+    authed.post("/api/control", headers=H, json={"action": "stop"})
+
+
+def test_rebuild_without_a_style_keeps_the_saved_one_and_live_mode_needs_credentials_and_runs_live(authed, app, tmp_path):
+    app.store.save_settings(style="breit", live=True, depot="echt")
+    post = lambda **body: authed.post("/api/control", headers=H, json={"action": "rebuild", "confirm": "NEU", **body})
+    assert post().status_code == 400 and "Zugangsdaten fehlen" in post().get_json()["error"]                                   # live ohne Zugangsdaten: nichts verkaufen
+    app.store.update_secrets({"PSB_USER": "u", "PSB_PASSWORD": "p"})
+    args = _fake_bot(app, tmp_path, 'echo "$@ live=$BOT_LIVE style=$BOT_STYLE depot=$BOT_DEPOT" > {args}\nsleep 5')
+    assert post().status_code == 200
+    assert _wait_for(args) == "-m bot.run --rebuild live=1 style=breit depot=echt"
+    authed.post("/api/control", headers=H, json={"action": "stop"})
+
+
+def test_the_schedule_never_starts_a_rebuild(app, tmp_path):
+    args = _fake_bot(app, tmp_path, 'echo "$@" > {args}\nsleep 5')
+    app.store.save_settings(enabled=True, times=["09:20"])
+    app.runner.tick(datetime(2026, 10, 19, 9, 21, tzinfo=TZ), "")
+    assert _wait_for(args) == "-m bot.run"
+    app.runner.kill()
+
+
+def test_a_finished_rebuild_shows_up_in_the_report_and_the_page_offers_the_button(authed, app, tmp_path):
+    (tmp_path / "state" / "run_history.json").write_text(json.dumps([
+        {"kind": "rebuild", "live": True, "depot": "echt", "start": "2026-10-19T13:30:00+02:00", "end": "2026-10-19T13:41:00+02:00", "code": 0}]))
+    assert "Neuaufstellung live Wettbewerbsdepot: ok" in authed.get("/api/report").get_json()["text"]
+    html = open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "dashboard", "static", "index.html"), encoding="utf-8").read()
+    for ident in ("btnRebuild", "rebuildCard", "rebuildStyle", "rebuildGo", "rebuildCancel"):
+        assert f'id="{ident}"' in html
+    assert "confirm: c, style" in html and "Neuaufstellung" in html                                                           # tippt "NEU" ab und schickt den Stil mit

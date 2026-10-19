@@ -127,12 +127,13 @@ class Runner:
         return self.proc is not None and self.proc.poll() is None
 
     def start(self, kind: str) -> bool:
-        """kind: 'run' (Handelslauf), 'selftest', 'testorder' (geführte Testorder, immer im Testdepot) oder 'universe' (amtliche Wertpapierliste laden). False, wenn schon ein Prozess läuft."""
+        """kind: 'run' (Handelslauf), 'rebuild' (Neuaufstellung: alles verkaufen, nach dem Stil neu kaufen; nur auf Knopfdruck, nie im Zeitplan), 'selftest', 'testorder' (geführte Testorder, immer im Testdepot)
+        oder 'universe' (amtliche Wertpapierliste laden). False, wenn schon ein Prozess läuft."""
         with self.lock:
             if self.running():
                 return False
-            live = self.store.settings()["live"] and kind == "run"
-            cmd = {"run": ["-m", "bot.run"], "selftest": ["-m", "bot.selftest"], "testorder": ["-m", "bot.selftest", "--testorder"], "universe": ["-m", "bot.universe_tool", "official"]}[kind]
+            live = self.store.settings()["live"] and kind in ("run", "rebuild")
+            cmd = {"run": ["-m", "bot.run"], "rebuild": ["-m", "bot.run", "--rebuild"], "selftest": ["-m", "bot.selftest"], "testorder": ["-m", "bot.selftest", "--testorder"], "universe": ["-m", "bot.universe_tool", "official"]}[kind]
             out = open(self.output_path, "w")
             self.proc = subprocess.Popen([self.python, *cmd], cwd=self.base, env=self._env(live, "test" if kind == "testorder" else None),
                                          stdout=out, stderr=subprocess.STDOUT)
