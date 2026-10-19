@@ -321,7 +321,7 @@ def test_finished_runs_are_recorded_with_their_output_for_the_report(authed, app
     fake.write_text("#!/bin/sh\necho 'Zeile A'\necho 'Traceback: kaputt'\nexit 3\n")
     fake.chmod(0o755)
     app.runner.python = str(fake)
-    assert authed.post("/api/control", headers=H, json={"action": "selftest"}).get_json()["running"] is True
+    assert authed.post("/api/control", headers=H, json={"action": "selftest"}).status_code == 200
     import time
     for _ in range(80):
         hist = app.store._read("run_history.json", [])
@@ -359,7 +359,7 @@ def test_a_rejected_login_stops_the_schedule_automatically(authed, app, tmp_path
     fake.write_text("#!/bin/sh\necho 'Antworten der Plattform auf die Anmeldung: POST x -> 401'\necho 'bot.executor.LoginRejected: Anmeldung abgelehnt (POST x -> 401): Konto gesperrt'\nexit 1\n")
     fake.chmod(0o755)
     app.runner.python = str(fake)
-    assert authed.post("/api/control", headers=H, json={"action": "run"}).get_json()["running"] is True
+    assert authed.post("/api/control", headers=H, json={"action": "run"}).status_code == 200   # der Attrappen-Prozess endet sofort, "running" wäre ein Wettlauf
     import time
     for _ in range(80):
         if app.store._read("run_history.json", []):

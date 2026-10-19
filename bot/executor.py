@@ -14,7 +14,7 @@ class LoginRejected(RuntimeError):
 ISIN_RE = re.compile(r"\b[A-Z]{2}[A-Z0-9]{9}\d\b")
 PLACEHOLDER_RE = re.compile(r"\{(\w+)\}")
 LOAD_TRIES, LOAD_WAIT_MS = 8, 1500   # so oft (und mit dieser Pause) wird ein halb geladenes Depot neu gelesen
-LOGIN_TRIES, LOGIN_WAIT_MS = 2, 30000   # zweiter Versuch nur, wenn der erste gar nichts abgeschickt hat (die Plattform sperrt das Konto nach mehr als 3 falschen Passwörtern)
+LOGIN_TRIES, LOGIN_WAIT_MS = 3, 30000   # weitere Versuche nur, wenn der vorige gar nichts abgeschickt hat (die Plattform sperrt das Konto nach mehr als 3 falschen Passwörtern)
 REJECT_RE = re.compile(r"falsch|gesperrt|ungültig|incorrect|invalid|locked|zu viele", re.I)
 NAV_TIMEOUT_MS = 60000
 OPTIONAL_TIMEOUT_MS = 4000   # so lange wird auf einen Schritt mit "optional": true gewartet (etwa ein Bestätigungsfenster, das nicht immer erscheint)
@@ -116,32 +116,53 @@ class PlaywrightExecutor:
         self.page.goto(url, wait_until="domcontentloaded")
 
     def _login(self) -> None:
-        """Anmelden. Ein zweiter Versuch gibt es nur, wenn beim ersten gar keine Anfrage an die Plattform ging (der Klick wurde ignoriert): Dann kann kein falsches Passwort
-        gezählt worden sein. Wurde die Anmeldung abgeschickt und blieb ohne Erfolg, ist Schluss, bei ausdrücklicher Ablehnung mit LoginRejected."""
+        """Anmelden. Die Plattform ignoriert den Klick auf "Einloggen" gelegentlich (es geht keine Anfrage hinaus, keine Meldung erscheint). Dann wird erst Enter im Passwortfeld
+        versucht, dann die Seite neu geladen (bis LOGIN_TRIES Versuche). Das ist gefahrlos, weil ohne Anfrage auch kein falsches Passwort gezählt wird. Wurde die Anmeldung
+        abgeschickt und blieb ohne Erfolg, gibt es keinen weiteren Versuch, bei ausdrücklicher Ablehnung kommt LoginRejected."""
         self.answers, sent = [], []
-        self.page.on("request", lambda r: sent.append(r.url) if r.method in ("POST", "PUT") else None)
-        self.page.on("response", lambda r: self.answers.append(f"{r.request.method} {r.url.split('?')[0][-60:]} -> {r.status}") if r.request.method in ("POST", "PUT") else None)
+        pattern = self.sel.get("login_request")             # Teil der Adresse der Anmelde-Anfrage; ohne Angabe zählt jede POST/PUT-Anfrage
+        def is_login(r): return r.method in ("POST", "PUT") and (not pattern or pattern in r.url)
+        self.page.on("request", lambda r: sent.append(r.url) if is_login(r) else None)
+        self.page.on("response", lambda r: self.answers.append(f"{r.request.method} {r.url.split('?')[0][-60:]} -> {r.status}") if is_login(r.request) else None)
         for attempt in range(LOGIN_TRIES):
             n0 = len(sent)
             self._goto(self.sel["login_url"])
+            try:
+                self.page.wait_for_load_state("load", timeout=10000)   # Skripte der Seite sollen fertig sein, bevor getippt wird
+            except Exception as e:  # noqa: BLE001
+                if type(e).__name__ != "TimeoutError":
+                    raise
             self._run_steps(self.sel.get("pre_login_steps", []), {})
             self.page.wait_for_selector(self.sel["login_button"])
             self.page.wait_for_timeout(1500)
-            self.page.fill(self.sel["user_field"], self.user)
-            self.page.fill(self.sel["password_field"], self.password)
+            for field, value in (("user_field", self.user), ("password_field", self.password)):
+                self.page.fill(self.sel[field], "")
+                self.page.type(self.sel[field], value, delay=40)       # echte Tastendrücke wie von Hand
             self.page.click(self.sel["login_button"])
+            if not self._wait_sent(sent, n0, 6000):
+                self.page.press(self.sel["password_field"], "Enter")
+                if not self._wait_sent(sent, n0, 4000):
+                    print(f"Anmeldung: Versuch {attempt + 1} von {LOGIN_TRIES} ohne Wirkung (keine Anfrage), Seite wird neu geladen", flush=True)
+                    continue
             try:
                 self.page.wait_for_selector(self.sel["logged_in_marker"], timeout=LOGIN_WAIT_MS)
+                if attempt:
+                    print(f"Anmeldung: erst im {attempt + 1}. Versuch angekommen", flush=True)
                 return
             except Exception as e:  # noqa: BLE001
                 if type(e).__name__ != "TimeoutError":
                     raise
-                if len(sent) > n0:                     # abgeschickt, aber ohne Erfolg: kein zweiter Versuch
-                    self._check_rejected()
-                    raise
-                if attempt == LOGIN_TRIES - 1:
-                    raise
-                self.page.wait_for_timeout(3000)
+                self._check_rejected()                          # abgeschickt, aber ohne Erfolg: kein weiterer Versuch
+                raise
+        raise RuntimeError(f"Die Anmeldung ließ sich nicht abschicken: Der Klick löste in {LOGIN_TRIES} Versuchen keine Anfrage aus (Seite zeigte keine Meldung)")
+
+    def _wait_sent(self, sent: list, n0: int, ms: int) -> bool:
+        """Wartet bis zu ms Millisekunden darauf, dass die Anmelde-Anfrage hinausgeht."""
+        for _ in range(ms // 250):
+            if len(sent) > n0:
+                return True
+            self.page.wait_for_timeout(250)
+        return len(sent) > n0
 
     def _check_rejected(self) -> None:
         """Erkennt eine ausdrückliche Ablehnung der Anmeldung (Antwort 401/403/429 oder Meldung wie 'falsches Passwort' bzw. 'Konto gesperrt' auf der Seite)."""

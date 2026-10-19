@@ -182,63 +182,106 @@ class Req:
 
 
 class Resp:
-    def __init__(self, status, req=None):
-        self.status, self.request, self.url = status, req or Req(), (req or Req()).url
+    def __init__(self, status, req):
+        self.status, self.request, self.url = status, req, req.url
 
 
 class LoginPage(Page):
-    """Anmeldeseite mit Ereignissen: send=True schickt beim Klick eine Anfrage ab (mit Antwort status), ok_on=Nummer des Versuchs, ab dem die Anmeldung gelingt."""
-    def __init__(self, send=True, status=200, text="", ok_on=None):
+    """Anmeldeseite mit Ereignissen. behaviour(versuch, weg) -> HTTP-Status, wenn dabei eine Anfrage hinausgeht, sonst None (weg: "click" oder "enter"; versuch zählt ab 1).
+    Die Anmeldung gilt als gelungen, wenn dabei eine Anfrage mit Status 200 hinausging."""
+    def __init__(self, behaviour, text=""):
         super().__init__()
-        self.handlers, self.send, self.status, self.text, self.ok_on, self.clicks = {}, send, status, text, ok_on, 0
+        self.behaviour, self.text, self.handlers, self.fired, self.log = behaviour, text, {}, [], []
 
     def on(self, event, fn): self.handlers.setdefault(event, []).append(fn)
     def goto(self, url, **kw): self.calls.append(("goto", url, {}))
+    def wait_for_load_state(self, state, **kw): pass
     def wait_for_timeout(self, ms): pass
     def inner_text(self, sel): return self.text
+    def type(self, sel, text, **kw): self.log.append(("type", sel))
 
-    def click(self, sel, **kw):
-        self.clicks += 1
-        if self.send:
+    @property
+    def attempt(self): return len([c for c in self.calls if c[0] == "goto"])
+
+    def _fire(self, via):
+        status = self.behaviour(self.attempt, via)
+        self.log.append((via, status))
+        if status is not None:
             r = Req()
             for h in self.handlers.get("request", []): h(r)
-            for h in self.handlers.get("response", []): h(Resp(self.status, r))
+            for h in self.handlers.get("response", []): h(Resp(status, r))
+            self.fired.append(status)
+
+    def click(self, sel, **kw): self._fire("click")
+    def press(self, sel, key, **kw): self._fire("enter")
 
     def wait_for_selector(self, sel, **kw):
-        if sel == "#in" and not (self.ok_on and self.clicks >= self.ok_on):
+        if sel == "#in" and 200 not in self.fired:
             raise TimeoutError(sel)
 
 
-def login_executor(page):
-    ex = executor({"login_url": "u", "user_field": "#u", "password_field": "#p", "login_button": "#b", "logged_in_marker": "#in"}, page)
+def never_logged_in(sel, **kw):
+    """Ersetzt wait_for_selector: nur das Erkennungsmerkmal der Anmeldung erscheint nie."""
+    if sel == "#in":
+        raise TimeoutError(sel)
+
+
+def login_executor(page, **extra):
+    ex = executor({"login_url": "u", "user_field": "#u", "password_field": "#p", "login_button": "#b", "logged_in_marker": "#in", "login_request": "authenticate", **extra}, page)
     ex.user, ex.password = "a", "b"
     return ex
 
 
-def test_login_is_retried_once_only_when_the_first_click_sent_nothing():
-    page = LoginPage(send=False, ok_on=2)          # der erste Klick wird ignoriert, der zweite wirkt
+def test_login_types_like_a_person_and_clicks_once_when_the_request_goes_out():
+    page = LoginPage(lambda attempt, via: 200)
     login_executor(page)._login()
-    assert page.clicks == 2 and len([c for c in page.calls if c[0] == "goto"]) == 2
-    page = LoginPage(send=False)                   # nie ein Erfolg: nach zwei Versuchen Schluss
-    with pytest.raises(TimeoutError):
+    assert [x[1] for x in page.log if x[0] == "type"] == ["#u", "#p"] and [x[0] for x in page.log if x[0] in ("click", "enter")] == ["click"] and page.attempt == 1
+
+
+def test_login_presses_enter_when_the_click_has_no_effect_and_reloads_when_that_fails_too():
+    page = LoginPage(lambda attempt, via: 200 if via == "enter" else None)       # Klick ignoriert, Enter wirkt
+    login_executor(page)._login()
+    assert page.attempt == 1 and [x[0] for x in page.log if x[0] in ("click", "enter")] == ["click", "enter"]
+    page = LoginPage(lambda attempt, via: 200 if attempt == 2 else None)         # erster Versuch ganz wirkungslos, zweiter klappt
+    login_executor(page)._login()
+    assert page.attempt == 2 and page.fired == [200]
+
+
+def test_login_gives_up_with_a_clear_message_when_nothing_can_be_sent():
+    page = LoginPage(lambda attempt, via: None)
+    with pytest.raises(RuntimeError, match="ließ sich nicht abschicken"):
         login_executor(page)._login()
-    assert page.clicks == 2
+    assert page.attempt == 3                                                      # nie eine Anfrage, also nie ein gezähltes Passwort
 
 
 def test_login_is_never_repeated_after_it_was_sent_so_a_wrong_password_cannot_lock_the_account():
-    page = LoginPage(send=True, status=200)        # abgeschickt, kein Erfolg, keine Ablehnung erkennbar (etwa langsame Seite)
+    page = LoginPage(lambda attempt, via: 200)
+    page.fired = []                                                              # abgeschickt, aber ohne Erfolg: die Seite zeigt nichts an
+    page.wait_for_selector = never_logged_in
     with pytest.raises(TimeoutError):
         login_executor(page)._login()
-    assert page.clicks == 1
+    assert page.attempt == 1 and [x[0] for x in page.log if x[0] in ("click", "enter")] == ["click"]
 
 
 def test_login_rejection_is_recognised_from_the_answer_or_the_message_on_the_page():
     from bot.executor import LoginRejected
-    page = LoginPage(send=True, status=401)
+    page = LoginPage(lambda attempt, via: 401)
     with pytest.raises(LoginRejected, match="Anmeldung abgelehnt"):
         login_executor(page)._login()
-    assert page.clicks == 1
-    page = LoginPage(send=True, status=200, text="Ihr Konto ist gesperrt, weil Sie mehr als 3 Mal das falsche Passwort eingegeben haben.")
+    assert page.attempt == 1
+    page = LoginPage(lambda attempt, via: 200, text="Ihr Konto ist gesperrt, weil Sie mehr als 3 Mal das falsche Passwort eingegeben haben.")
+    page.wait_for_selector = never_logged_in
     with pytest.raises(LoginRejected, match="gesperrt"):
         login_executor(page)._login()
-    assert page.clicks == 1
+    assert page.attempt == 1
+
+
+def test_only_requests_to_the_login_address_count_as_sent():
+    class Noise(LoginPage):
+        def _fire(self, via):               # eine fremde Anfrage (etwa Statistik) darf nicht als Anmeldung zählen
+            r = Req(url="https://x.example/api/track")
+            for h in self.handlers.get("request", []): h(r)
+            self.log.append((via, None))
+    page = Noise(lambda attempt, via: None)
+    with pytest.raises(RuntimeError, match="ließ sich nicht abschicken"):
+        login_executor(page)._login()
