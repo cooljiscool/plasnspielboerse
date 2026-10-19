@@ -1,7 +1,8 @@
 {
-  "_hinweis": "Aus dem echten Seitenquelltext des Planspiels (Version 1.5.6, Stand 30.09.2026) abgeleitet. GEPRÜFT gegen das HTML: Anmeldung, Depotwechsel, Barbestand, Positionstabelle (Leerzustand), Marktübersicht, Kaufmaske. NOCH NICHT GESEHEN, deshalb geschätzt: Rückmeldung nach 'Ordern' (Bestätigungsfenster oder Meldung), Verkaufsmaske, Zeilen der Positionstabelle mit echten Positionen, Kaufmaske des Wettbewerbsdepots nach dem ersten Handelstag (01.10.2026 08:00). Alle Selektoren sind unabhängig von der Sprache der Seite (ids und Attribute statt Beschriftungen), nur die Kauf-Schaltflächen heißen 'Kauf <Name>'.",
+  "_hinweis": "Aus dem echten Seitenquelltext des Planspiels (Version 1.5.6, Stand 30.09.2026) abgeleitet. GEPRÜFT gegen das HTML: Anmeldung, Depotwechsel, Barbestand, Positionstabelle (Leerzustand), Marktübersicht, Kaufmaske. NOCH NICHT GESEHEN, deshalb geschätzt: Rückmeldung nach 'Ordern' (Bestätigungsfenster oder Meldung), Verkaufsmaske, Zeilen der Positionstabelle mit echten Positionen, Kaufmaske des Wettbewerbsdepots nach dem ersten Handelstag (01.10.2026 08:00). Alle Selektoren sind unabhängig von der Sprache der Seite (ids und Attribute statt Beschriftungen), nur die Kauf-Schaltflächen heißen 'Kauf <Name>'. busy_selector ist die Ladeanzeige der Plattform (<app-loader>): Solange sie eine Schicht <div class=\"overlay\"> über die Seite legt, schluckt sie alle Klicks (am 19.10.2026 um 10:20 Uhr stand sie so lange, dass der Klick auf das Wettbewerbsdepot nach 20 Sekunden aufgab). Der Bot wartet deshalb vor jedem Klick bis zu 60 Sekunden, dass sie verschwindet. Im Ruhezustand ist <app-loader> leer.",
   "login_url": "https://trading.planspiel-boerse.de/web/auth/login",
   "login_request": "authenticate",
+  "busy_selector": "app-loader .overlay",
   "pre_login_steps": [
     {
       "do": "click",

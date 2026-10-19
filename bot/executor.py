@@ -18,6 +18,7 @@ LOGIN_TRIES, LOGIN_WAIT_MS = 3, 30000   # weitere Versuche nur, wenn der vorige 
 REJECT_RE = re.compile(r"falsch|gesperrt|ungültig|incorrect|invalid|locked|zu viele", re.I)
 NAV_TIMEOUT_MS = 60000
 OPTIONAL_TIMEOUT_MS = 4000   # so lange wird auf einen Schritt mit "optional": true gewartet (etwa ein Bestätigungsfenster, das nicht immer erscheint)
+BUSY_WAIT_MS = 60000         # so lange wird auf das Ende der Ladeanzeige der Plattform (selectors.json: busy_selector) gewartet, bevor geklickt wird
 
 
 def fill_placeholders(text, values: dict) -> str:
@@ -138,6 +139,7 @@ class PlaywrightExecutor:
             for field, value in (("user_field", self.user), ("password_field", self.password)):
                 self.page.fill(self.sel[field], "")
                 self.page.type(self.sel[field], value, delay=40)       # echte Tastendrücke wie von Hand
+            self._idle()
             self.page.click(self.sel["login_button"])
             if not self._wait_sent(sent, n0, 6000):
                 self.page.press(self.sel["password_field"], "Enter")
@@ -155,6 +157,19 @@ class PlaywrightExecutor:
                 self._check_rejected()                          # abgeschickt, aber ohne Erfolg: kein weiterer Versuch
                 raise
         raise RuntimeError(f"Die Anmeldung ließ sich nicht abschicken: Der Klick löste in {LOGIN_TRIES} Versuchen keine Anfrage aus (Seite zeigte keine Meldung)")
+
+    def _idle(self) -> None:
+        """Wartet, bis die Ladeanzeige der Plattform (busy_selector) weg ist: Solange sie steht, liegt eine unsichtbare Schicht über der Seite und schluckt jeden Klick
+        (bei Andrang minutenlang). Steht sie nach BUSY_WAIT_MS noch, wird es trotzdem versucht; ein verdeckter Button meldet Playwright dann selbst."""
+        busy = self.sel.get("busy_selector")
+        if not busy:
+            return
+        try:
+            self.page.wait_for_selector(busy, state="hidden", timeout=BUSY_WAIT_MS)
+        except Exception as e:  # noqa: BLE001
+            if type(e).__name__ != "TimeoutError":
+                raise
+            print(f"Die Plattform zeigt seit {BUSY_WAIT_MS // 1000} Sekunden ihre Ladeanzeige, es wird trotzdem versucht", flush=True)
 
     def _wait_sent(self, sent: list, n0: int, ms: int) -> bool:
         """Wartet bis zu ms Millisekunden darauf, dass die Anmelde-Anfrage hinausgeht."""
@@ -280,6 +295,8 @@ class PlaywrightExecutor:
             if target and "{tab}" in st["selector"] and not values.get("tab"):
                 raise RuntimeError(f"Für {values.get('isin')} ist in selectors.json (order.tabs) kein Marktreiter hinterlegt")
             opt = {"timeout": OPTIONAL_TIMEOUT_MS} if st.get("optional") else {}
+            if act not in ("goto", "wait"):           # alles, was klickt oder tippt, erst nach der Ladeanzeige
+                self._idle()
             try:
                 if act == "goto":
                     self._goto(val)
@@ -310,6 +327,7 @@ class PlaywrightExecutor:
     def _confirm(self) -> str:
         """Wartet auf die Rückmeldung der Plattform nach dem Ordern und bricht ab, wenn sie wie eine Fehlermeldung klingt (order.error_pattern)."""
         o = self.sel["order"]
+        self._idle()                                  # während die Plattform die Order verarbeitet, steht ihre Ladeanzeige
         el = self.page.wait_for_selector(o["confirmation_marker"])
         text = (el.inner_text() if el else "").strip()
         if o.get("error_pattern") and re.search(o["error_pattern"], text, re.I):

@@ -66,6 +66,36 @@ def test_steps_take_placeholders_in_selectors_and_values_and_wait_states():
     assert page.calls == [("click", 'tr:has-text("DE0005140008") button', {}), ("fill", "#q", {"value": "7"}), ("wait", "#m", {"state": "attached"})]
 
 
+LOADER = "app-loader .overlay"
+
+
+def test_steps_wait_for_the_loading_overlay_before_every_click_or_input_but_not_before_goto_and_wait():
+    class GotoPage(Page):
+        def goto(self, url, **kw): self.calls.append(("goto", url, kw))
+    page = GotoPage()
+    executor({"busy_selector": LOADER}, page)._run_steps([{"do": "goto", "value": "https://x/y"}, {"do": "wait", "selector": "#a"}, {"do": "click", "selector": "#a"},
+                                                         {"do": "fill", "selector": "#q", "value": "3"}, {"do": "click", "selector": "#ok", "optional": True}], {})
+    busy = ("wait", LOADER, {"state": "hidden", "timeout": 60000})
+    assert page.calls == [("goto", "https://x/y", {"wait_until": "domcontentloaded"}), ("wait", "#a", {}), busy, ("click", "#a", {}), busy, ("fill", "#q", {"value": "3"}),
+                          busy, ("click", "#ok", {"timeout": 4000})]
+
+
+def test_a_loading_overlay_that_never_goes_away_does_not_stop_the_step_from_being_tried(capsys):
+    page = Page(missing={LOADER})
+    executor({"busy_selector": LOADER}, page)._run_steps([{"do": "click", "selector": "#a"}], {})
+    assert [c[1] for c in page.calls] == [LOADER, "#a"] and "Ladeanzeige" in capsys.readouterr().out
+    class Closed(Page):
+        def wait_for_selector(self, sel, **kw): raise ValueError("Seite geschlossen")
+    with pytest.raises(ValueError):                  # andere Fehler als die Zeitüberschreitung werden nicht verschluckt
+        executor({"busy_selector": LOADER}, Closed())._run_steps([{"do": "click", "selector": "#a"}], {})
+
+
+def test_confirmation_waits_for_the_loading_overlay_first():
+    page = Page()
+    assert executor({"busy_selector": LOADER, "order": {"confirmation_marker": ".ok", "error_pattern": "fehler"}}, page)._confirm() == ""
+    assert [c[1] for c in page.calls] == [LOADER, ".ok"]
+
+
 def test_market_tab_is_taken_from_the_first_known_index_and_required_when_used():
     ex = executor()
     assert ex._tab({"indices": ["tecdax", "dax"]}) == "DAX"          # tecdax ist nicht eingetragen, dax schon
@@ -96,6 +126,7 @@ def sel():
 def test_shipped_selectors_have_every_section_the_executor_reads(sel):
     for k in ("login_url", "user_field", "password_field", "login_button", "logged_in_marker"):
         assert sel[k]
+    assert "app-loader" in sel["busy_selector"]       # die Ladeanzeige der Plattform, auf die vor jedem Klick gewartet wird
     assert all(sel["portfolio"][k] for k in ("url", "cash_selector", "row_selector", "isin_cell", "shares_cell", "avg_price_cell"))
     assert all(sel["order"][k] for k in ("buy_steps", "sell_steps", "confirmation_marker"))
     sw = sel["depot_switch"]
@@ -285,3 +316,14 @@ def test_only_requests_to_the_login_address_count_as_sent():
     page = Noise(lambda attempt, via: None)
     with pytest.raises(RuntimeError, match="ließ sich nicht abschicken"):
         login_executor(page)._login()
+
+
+def test_login_button_is_clicked_only_after_the_loading_overlay_is_gone():
+    class Ordered(LoginPage):
+        def wait_for_selector(self, sel, **kw):
+            self.log.append(("wait", sel))
+            super().wait_for_selector(sel, **kw)
+    page = Ordered(lambda attempt, via: 200)
+    login_executor(page, busy_selector=LOADER)._login()
+    kinds = [x[0] if x[0] != "wait" else x[1] for x in page.log]
+    assert kinds.count(LOADER) == 1 and kinds.index(LOADER) < kinds.index("click")
